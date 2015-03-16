@@ -1,0 +1,40 @@
+{
+    "name": "linio/cache",
+    "description": "Provides a multi-layered caching abstraction",
+    "keywords": ["linio", "cache", "redis", "memcache"],
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": "~5.4",
+        "linio/util": "~1.0",
+        "linio/database": "~1.0",
+        "predis/predis": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.5.*",
+        "phpmd/phpmd": "2.1.*",
+        "phploc/phploc": "2.0.*",
+        "sebastian/phpcpd": "2.0.*",
+        "squizlabs/php_codesniffer": "2.0.*@dev",
+        "contorion/aerospike-stub": "1.0.*"
+    },
+    "suggest": {
+        "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol",
+        "ext-aerospike": "Allows usage of Aerospike adapter"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-4": {
+            "Linio\\Component\\Cache\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Linio\\Component\\Cache\\": "tests"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
