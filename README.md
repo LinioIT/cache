@@ -1,4 +1,5 @@
 # Linio Cache
+[![Latest Stable Version](https://poser.pugx.org/linio/cache/v/stable.svg)](https://packagist.org/packages/linio/cache) [![License](https://poser.pugx.org/linio/cache/license.svg)](https://packagist.org/packages/linio/cache) [![Build Status](https://secure.travis-ci.org/LinioIT/cache.png)](http://travis-ci.org/LinioIT/cache) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/LinioIT/cache/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/LinioIT/cache/?branch=master)
 
 Linio Cache is yet another component of the Linio Framework. It aims to
 abstract caching by supporting multiple adapters.
