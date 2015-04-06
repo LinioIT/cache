@@ -24,11 +24,11 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function get($key)
     {
-        try {
+        if (array_key_exists($this->addNamespaceToKey($key), $this->cacheData)){
             return $this->cacheData[$this->addNamespaceToKey($key)];
-        } catch (\Exception $e) {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -39,9 +39,8 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
         $values = [];
 
         foreach ($keys as $key) {
-            try {
+            if (array_key_exists($this->addNamespaceToKey($key), $this->cacheData)) {
                 $values[$key] = $this->cacheData[$this->addNamespaceToKey($key)];
-            } catch (\Exception $e) {
             }
         }
 
