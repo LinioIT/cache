@@ -12,20 +12,20 @@ interface AdapterInterface
     /**
      * @param string $key
      *
-     * @return string
+     * @return mixed
      */
     public function get($key);
 
     /**
      * @param array $keys
      *
-     * @return string[]
+     * @return mixed[]
      */
     public function getMulti(array $keys);
 
     /**
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      *
      * @return bool
      */
