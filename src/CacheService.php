@@ -81,7 +81,7 @@ class CacheService
     /**
      * @param string $key
      *
-     * @return string
+     * @return mixed
      */
     public function get($key)
     {
@@ -119,7 +119,7 @@ class CacheService
     /**
      * @param array $keys
      *
-     * @return string[]
+     * @return mixed[]
      */
     public function getMulti(array $keys)
     {
@@ -166,7 +166,7 @@ class CacheService
 
     /**
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      *
      * @return bool
      */
@@ -179,7 +179,7 @@ class CacheService
 
     /**
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      * @param int $level
      *
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
