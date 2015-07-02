@@ -2,7 +2,7 @@
 
 namespace Linio\Component\Cache\Encoder;
 
-class SerializeEncoder implements EncoderInterface
+class SerialEncoder implements EncoderInterface
 {
     /**
      * {@inheritdoc}

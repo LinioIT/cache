@@ -2,7 +2,7 @@
 
 namespace Linio\Component\Cache\Encoder;
 
-class SerializeEncoderTest extends \PHPUnit_Framework_TestCase
+class SerialEncoderTest extends \PHPUnit_Framework_TestCase
 {
     public function testIsEncoding()
     {
@@ -13,9 +13,9 @@ class SerializeEncoderTest extends \PHPUnit_Framework_TestCase
 
         $expected = 'a:2:{s:3:"foo";i:1;s:3:"bar";s:6:"string";}';
 
-        $serializeEncoder = new SerializeEncoder();
+        $serialEncoder = new SerialEncoder();
 
-        $actual = $serializeEncoder->encode($value);
+        $actual = $serialEncoder->encode($value);
 
         $this->assertEquals($expected, $actual);
     }
@@ -29,9 +29,9 @@ class SerializeEncoderTest extends \PHPUnit_Framework_TestCase
             'bar' => 'string',
         ];
 
-        $serializeEncoder = new SerializeEncoder();
+        $serialEncoder = new SerialEncoder();
 
-        $actual = $serializeEncoder->decode($value);
+        $actual = $serialEncoder->decode($value);
 
         $this->assertEquals($expected, $actual);
     }
