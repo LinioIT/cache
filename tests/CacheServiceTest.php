@@ -55,7 +55,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsValidatingServiceConfiguration()
     {
-        $cacheService = new CacheService(
+        new CacheService(
             [
                 'namespace' => 'mx',
             ]
@@ -64,15 +64,36 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Adapter class does not exist: Linio\Component\Cache\Adapter\NopAdapter
      */
     public function testIsValidatingAdapters()
     {
-        $cacheService = new CacheService(
+        new CacheService(
             [
                 'namespace' => 'mx',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'nop',
+                        'adapter_options' => [],
+                    ],
+                ],
+            ]
+        );
+    }
+
+    /**
+     * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage Encoder class does not exist: Linio\Component\Cache\Encoder\NopEncoder
+     */
+    public function testIsValidatingEncoder()
+    {
+        new CacheService(
+            [
+                'namespace' => 'mx',
+                'encoder' => 'nop',
+                'layers' => [
+                    0 => [
+                        'adapter_name' => 'apc',
                         'adapter_options' => [],
                     ],
                 ],
