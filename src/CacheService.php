@@ -97,7 +97,7 @@ class CacheService
      */
     public function get($key)
     {
-        return $this->encoder->decode($this->recursiveGet($key), true);
+        return $this->encoder->decode($this->recursiveGet($key));
     }
 
     /**
@@ -138,7 +138,7 @@ class CacheService
         $values = $this->recursiveGetMulti($keys);
 
         foreach ($values as $key => $value) {
-            $values[$key] = $this->encoder->decode($value, true);
+            $values[$key] = $this->encoder->decode($value);
         }
 
         return $values;
