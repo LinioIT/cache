@@ -3,6 +3,7 @@
 namespace Linio\Component\Cache;
 
 use Linio\Component\Cache\Adapter\AdapterInterface;
+use Linio\Component\Cache\Encoder\EncoderInterface;
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
 use Linio\Component\Util\String;
 
@@ -15,6 +16,12 @@ class CacheService
      * @var AdapterInterface[]
      */
     protected $adapterStack;
+
+
+    /**
+     * @var EncoderInterface
+     */
+    protected $encoder;
 
     /**
      * @var string
@@ -39,9 +46,14 @@ class CacheService
             $this->namespace = $cacheConfig['namespace'];
         }
 
+        if (!isset($cacheConfig['encoder'])) {
+            $cacheConfig['encoder'] = 'json';
+        }
+
         $this->validateServiceConfiguration($cacheConfig);
 
         $this->createAdapterStack($cacheConfig['layers'], $this->namespace);
+        $this->createEncoder($cacheConfig['encoder']);
     }
 
     /**
@@ -85,7 +97,7 @@ class CacheService
      */
     public function get($key)
     {
-        return json_decode($this->recursiveGet($key), true);
+        return $this->encoder->decode($this->recursiveGet($key));
     }
 
     /**
@@ -126,7 +138,7 @@ class CacheService
         $values = $this->recursiveGetMulti($keys);
 
         foreach ($values as $key => $value) {
-            $values[$key] = json_decode($value, true);
+            $values[$key] = $this->encoder->decode($value);
         }
 
         return $values;
@@ -172,7 +184,7 @@ class CacheService
      */
     public function set($key, $value)
     {
-        $value = json_encode($value);
+        $value = $this->encoder->encode($value);
 
         return $this->recursiveSet($key, $value);
     }
@@ -214,7 +226,7 @@ class CacheService
     public function setMulti(array $data)
     {
         foreach ($data as $key => $value) {
-            $data[$key] = json_encode($value);
+            $data[$key] = $this->encoder->encode($value);
         }
 
         return $this->recursiveSetMulti($data);
@@ -342,6 +354,22 @@ class CacheService
 
             $this->adapterStack[] = $adapterInstance;
         }
+    }
+
+    /**
+     * @param string $encoderName
+     *
+     * @throws InvalidConfigurationException
+     */
+    protected function createEncoder($encoderName)
+    {
+        $encoderClass = sprintf('%s\\Encoder\\%sEncoder', __NAMESPACE__, String::pascalize($encoderName));
+
+        if (!class_exists($encoderClass)) {
+            throw new InvalidConfigurationException('Encoder class does not exist: ' . $encoderClass);
+        }
+
+        $this->encoder = new $encoderClass();
     }
 
     /**
