@@ -21,7 +21,7 @@ abstract class AbstractAdapter
 
     /**
      * @param array $keys
-     * @param bool $isKeyValue
+     * @param bool  $isKeyValue
      *
      * @return array
      */

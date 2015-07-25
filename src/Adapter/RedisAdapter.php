@@ -2,8 +2,7 @@
 
 namespace Linio\Component\Cache\Adapter;
 
-use Linio\Component\Cache\Exception\InvalidConfigurationException;
-use \Predis\Client;
+use Predis\Client;
 
 class RedisAdapter extends AbstractAdapter implements AdapterInterface
 {

@@ -207,7 +207,7 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
     protected function removeBin($metadata)
     {
         if (!is_array($metadata) || !array_key_exists('bins', $metadata) || !array_key_exists(static::BIN_KEY, $metadata['bins'])) {
-            return null;
+            return;
         }
 
         return $metadata['bins'][static::BIN_KEY];

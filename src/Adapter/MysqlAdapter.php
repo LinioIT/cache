@@ -5,7 +5,7 @@ namespace Linio\Component\Cache\Adapter;
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
 use Linio\Component\Database\DatabaseManager;
 
-class MySqlAdapter extends AbstractAdapter implements AdapterInterface
+class MysqlAdapter extends AbstractAdapter implements AdapterInterface
 {
     /**
      * @var DatabaseManager
@@ -56,7 +56,7 @@ class MySqlAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function get($key)
     {
-        $sql = sprintf("SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1", $this->tableName);
+        $sql = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', $this->tableName);
 
         return $this->dbManager->fetchValue($sql, ['key' => $this->addNamespaceToKey($key)]);
     }
@@ -67,7 +67,7 @@ class MySqlAdapter extends AbstractAdapter implements AdapterInterface
     public function getMulti(array $keys)
     {
         $placeholders = array_fill(1, count($keys), '?');
-        $sql = sprintf("SELECT `key`, `value` FROM `%s` WHERE `key` IN(%s)", $this->tableName, implode(',', $placeholders));
+        $sql = sprintf('SELECT `key`, `value` FROM `%s` WHERE `key` IN(%s)', $this->tableName, implode(',', $placeholders));
 
         $namespacedKeys = $this->addNamespaceToKeys($keys);
         $namespacedData = $this->dbManager->fetchKeyPairs($sql, $namespacedKeys);
@@ -81,7 +81,7 @@ class MySqlAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function set($key, $value)
     {
-        $sql = sprintf("INSERT INTO `%s` (`key`, `value`) VALUES(:key, :value) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)", $this->tableName);
+        $sql = sprintf('INSERT INTO `%s` (`key`, `value`) VALUES(:key, :value) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)', $this->tableName);
 
         $this->dbManager->execute($sql, ['key' => $this->addNamespaceToKey($key), 'value' => $value]);
 
@@ -104,7 +104,7 @@ class MySqlAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         $sql = sprintf(
-            "INSERT INTO `%s` (`key`, `value`) VALUES %s ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)",
+            'INSERT INTO `%s` (`key`, `value`) VALUES %s ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)',
             $this->tableName,
             implode(',', $placeholders)
         );
@@ -132,7 +132,7 @@ class MySqlAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function delete($key)
     {
-        $sql = sprintf("DELETE FROM `%s` WHERE `key` = :key", $this->tableName);
+        $sql = sprintf('DELETE FROM `%s` WHERE `key` = :key', $this->tableName);
 
         $this->dbManager->execute($sql, ['key' => $this->addNamespaceToKey($key)]);
 
@@ -145,7 +145,7 @@ class MySqlAdapter extends AbstractAdapter implements AdapterInterface
     public function deleteMulti(array $keys)
     {
         $placeholders = array_fill(1, count($keys), '?');
-        $sql = sprintf("DELETE FROM `%s` WHERE `key` IN (%s)", $this->tableName, implode(',', $placeholders));
+        $sql = sprintf('DELETE FROM `%s` WHERE `key` IN (%s)', $this->tableName, implode(',', $placeholders));
 
         $namespacedKeys = $this->addNamespaceToKeys($keys);
         $this->dbManager->execute($sql, $namespacedKeys);
@@ -158,7 +158,7 @@ class MySqlAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function flush()
     {
-        $sql = sprintf("DELETE FROM `%s`", $this->tableName);
+        $sql = sprintf('DELETE FROM `%s`', $this->tableName);
 
         $this->dbManager->execute($sql);
 
@@ -171,6 +171,7 @@ class MySqlAdapter extends AbstractAdapter implements AdapterInterface
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      *
      * @return array
+     *
      * @throws InvalidConfigurationException
      */
     protected function validateConnectionOptions(array $config)
@@ -202,7 +203,7 @@ class MySqlAdapter extends AbstractAdapter implements AdapterInterface
     {
         if (!isset($config['ensure_table_created'])) {
             $this->dbManager->execute(
-                "CREATE TABLE IF NOT EXISTS `key_value` (`key` varchar(255) NOT NULL, `value` varchar(10000) DEFAULT NULL, PRIMARY KEY (`key`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+                'CREATE TABLE IF NOT EXISTS `key_value` (`key` varchar(255) NOT NULL, `value` varchar(10000) DEFAULT NULL, PRIMARY KEY (`key`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;'
             );
         }
     }

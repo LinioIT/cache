@@ -17,7 +17,6 @@ class CacheService
      */
     protected $adapterStack;
 
-
     /**
      * @var EncoderInterface
      */
@@ -102,7 +101,7 @@ class CacheService
 
     /**
      * @param string $key
-     * @param int $level
+     * @param int    $level
      *
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      *
@@ -120,7 +119,7 @@ class CacheService
         $value = $this->recursiveGet($key, $level + 1);
 
         if ($value === null) {
-            return null;
+            return;
         }
 
         $adapter->set($key, $value);
@@ -146,7 +145,7 @@ class CacheService
 
     /**
      * @param array $keys
-     * @param int $level
+     * @param int   $level
      *
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      *
@@ -178,7 +177,7 @@ class CacheService
 
     /**
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return bool
      */
@@ -191,8 +190,8 @@ class CacheService
 
     /**
      * @param string $key
-     * @param mixed $value
-     * @param int $level
+     * @param mixed  $value
+     * @param int    $level
      *
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      *
@@ -234,7 +233,7 @@ class CacheService
 
     /**
      * @param array $data
-     * @param int $level
+     * @param int   $level
      *
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      *
@@ -274,7 +273,7 @@ class CacheService
 
     /**
      * @param string $key
-     * @param int $level
+     * @param int    $level
      *
      * @return bool
      */
@@ -332,7 +331,7 @@ class CacheService
     }
 
     /**
-     * @param array $cacheConfig
+     * @param array  $cacheConfig
      * @param string $namespace
      *
      * @throws InvalidConfigurationException
