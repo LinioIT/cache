@@ -5,7 +5,7 @@
     "type": "library",
     "license": "BSD-3-Clause",
     "require": {
-        "php": "~5.4",
+        "php": ">=5.4",
         "linio/util": "~1.0",
         "linio/database": "~1.0",
         "predis/predis": "~1.0",
