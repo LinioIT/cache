@@ -24,10 +24,6 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function __construct(array $config = [])
     {
-        // default config
-        $this->ttl = 0;
-
-        // config
         if (isset($config['ttl'])) {
             $this->ttl = $config['ttl'];
         }
@@ -65,7 +61,11 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function set($key, $value)
     {
-        $result = $this->client->set($key, $value, static::EXPIRE_RESOLUTION_EX, $this->ttl);
+        if ($this->ttl === null) {
+            $result = $this->client->set($key, $value);
+        } else {
+            $result = $this->client->set($key, $value, static::EXPIRE_RESOLUTION_EX, $this->ttl);
+        }
 
         return $result->getPayload() == 'OK';
     }
@@ -80,7 +80,11 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         $responses = $this->client->pipeline(
             function ($pipe) use ($data) {
                 foreach ($data as $key => $value) {
-                    $pipe->set($key, $value, static::EXPIRE_RESOLUTION_EX, $this->ttl);
+                    if ($this->ttl === null) {
+                        $pipe->set($key, $value);
+                    } else {
+                        $pipe->set($key, $value, static::EXPIRE_RESOLUTION_EX, $this->ttl);
+                    }
                 }
             }
         );
@@ -182,5 +186,13 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     {
         $this->client->getOptions()->prefix->setPrefix($namespace . ':');
         parent::setNamespace($namespace);
+    }
+
+    /**
+     * @param int $ttl
+     */
+    public function setTtl($ttl)
+    {
+        $this->ttl = $ttl;
     }
 }

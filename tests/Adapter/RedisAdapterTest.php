@@ -25,7 +25,7 @@ class RedisAdapterTest extends \PHPUnit_Framework_TestCase
         $redisAdapter->setNamespace('ns');
     }
 
-    public function testIsSettingAndGetting()
+    public function testIsSettingAndGettingWithTtl()
     {
         $clientMock = $this->getMockBuilder('\Predis\Client')
             ->disableOriginalConstructor()
@@ -34,7 +34,39 @@ class RedisAdapterTest extends \PHPUnit_Framework_TestCase
 
         $clientMock->expects($this->once())
             ->method('set')
-            ->with($this->equalTo('foo'), $this->equalTo('bar'), $this->equalTo(RedisAdapter::EXPIRE_RESOLUTION_EX), null)
+            ->with($this->equalTo('foo'), $this->equalTo('bar'), $this->equalTo(RedisAdapter::EXPIRE_RESOLUTION_EX), 60)
+            ->willReturn(new Status('OK'));
+
+        $clientMock->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willReturn('bar');
+
+        $adapter = $this->getRedisAdapterMock();
+        $adapter->setClient($clientMock);
+        $adapter->setNamespace('mx');
+        $adapter->setTtl(60);
+
+        $setResult = $adapter->set('foo', 'bar');
+        $actual = $adapter->get('foo');
+
+        $this->assertTrue($setResult);
+        $this->assertEquals('bar', $actual);
+    }
+
+    public function testIsSettingAndGettingWithoutTtl()
+    {
+        $clientMock = $this->getMockBuilder('\Predis\Client')
+            ->disableOriginalConstructor()
+            ->setMethods(['get', 'set'])
+            ->getMock();
+
+        $clientMock->expects($this->once())
+            ->method('set')
+            ->with(
+                $this->equalTo('foo'),
+                $this->equalTo('bar')
+            )
             ->willReturn(new Status('OK'));
 
         $clientMock->expects($this->once())
