@@ -33,26 +33,42 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $client1 = PHPUnit_Framework_Assert::readAttribute($connection1, 'client');
         /* @var $client1 \Redis */
         $info1 = $client1->info();
-        $connected1 = $info1['connected_clients'];
+        $connectedClients1 = $info1['connected_clients'];
 
         $connection2 = new PhpredisAdapter(['connection_persistent' => true]);
         $client2 = PHPUnit_Framework_Assert::readAttribute($connection2, 'client');
         /* @var $client2 \Redis */
         $info2 = $client2->info();
-        $connected2 = $info2['connected_clients'];
+        $connectedClients2 = $info2['connected_clients'];
 
         $connection3 = new PhpredisAdapter(['connection_persistent' => false]);
         $client3 = PHPUnit_Framework_Assert::readAttribute($connection3, 'client');
         /* @var $client3 \Redis */
         $info3 = $client3->info();
-        $connected3 = $info3['connected_clients'];
+        $connectedClients3 = $info3['connected_clients'];
 
         $client1->close();
         $client2->close();
         $client3->close();
 
-        $this->assertEquals(0, $connected2 - $connected1);
-        $this->assertEquals(1, $connected3 - $connected2);
+        $this->assertEquals(0, $connectedClients2 - $connectedClients1);
+        $this->assertEquals(1, $connectedClients3 - $connectedClients2);
+    }
+
+    public function testIsRespectingPoolSize()
+    {
+        $connections = [];
+        for ($i = 1; $i <= 100; $i++) {
+            $connection = new PhpredisAdapter(['connection_persistent' => true, 'pool_size' => 10]);
+            $connections[] = $connection;
+        }
+
+        $client100 = PHPUnit_Framework_Assert::readAttribute($connection, 'client');
+        /* @var $client100 \Redis */
+        $info = $client100->info();
+        $connectedClients = $info['connected_clients'];
+
+        $this->assertEquals(10, $connectedClients);
     }
 
     public function testIsSettingAndGetting()

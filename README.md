@@ -246,6 +246,7 @@ Adapter options:
 - `database` *optional* default: 0 (int)
 - `password` *optional* default: null (no password)
 - `connection_persistent` *optional* default: false
+  - `pool_size` *optional* default: 1
 - `timeout` *optional* default: 0 (unlimited)
 - `retry_interval` *optional* default: 0 (value in milliseconds)
 - `ttl` *optional* default: 0 (unlimited)

@@ -149,8 +149,12 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         $params = $this->getConnectionParameters($config);
         $this->client = new Redis();
 
-        if (isset($config['connection_persistent']) && $config['connection_persistent']) {
-            $persistentId = sprintf('%s-%s', $params['port'], $params['database']);
+        if ($params['connection_persistent']) {
+            $connectionId = 1;
+            if ($params['pool_size'] > 1) {
+                $connectionId = mt_rand(1, $params['pool_size']);
+            }
+            $persistentId = sprintf('%s-%s-%s', $params['port'], $params['database'], $connectionId);
             $this->client->pconnect($params['host'], $params['port'], $params['timeout'], $persistentId, $params['retry_interval']);
         } else {
             $this->client->connect($params['host'], $params['port'], $params['timeout'], null, $params['retry_interval']);
@@ -203,6 +207,8 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         $connectionParameters['timeout'] = isset($config['timeout']) ? $config['timeout'] : null;
         $connectionParameters['retry_interval'] = isset($config['retry_interval']) ? $config['retry_interval'] : null;
         $connectionParameters['serializer'] = isset($config['serializer']) ? $config['serializer'] : null;
+        $connectionParameters['connection_persistent'] = isset($config['connection_persistent']) ? $config['connection_persistent'] : false;
+        $connectionParameters['pool_size'] = isset($config['pool_size']) ? $config['pool_size'] : 1;
 
         return $connectionParameters;
     }
