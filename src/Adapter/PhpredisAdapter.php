@@ -38,7 +38,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function get($key)
     {
-        $result =  $this->client->get($key);
+        $result = $this->client->get($key);
 
         if ($result === false) {
             return null;
