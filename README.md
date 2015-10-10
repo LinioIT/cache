@@ -206,9 +206,9 @@ This cache does not have any persistence between requests.
 
 Adapter options:
 
-- `ttl` default: 0
+- `ttl` *optional* default: 0 (unlimited)
 
-Requires [APC Extension](http://php.net/manual/en/book.apc.php).
+Requires [APC extension](http://php.net/manual/en/book.apc.php) or [APCu extension](https://pecl.php.net/package/APCu).
 
 ----------
 
@@ -216,9 +216,9 @@ Requires [APC Extension](http://php.net/manual/en/book.apc.php).
 
 Adapter options:
 
-- `ttl` default: 0
+- `ttl` *optional* default: 0 (unlimited)
 
-Requires [WinCache Extension](http://www.iis.net/downloads/microsoft/wincache-extension).
+Requires [WinCache extension](http://www.iis.net/downloads/microsoft/wincache-extension).
 
 ----------
 
@@ -226,14 +226,37 @@ Requires [WinCache Extension](http://www.iis.net/downloads/microsoft/wincache-ex
 
 Adapter options:
 
-- `host` default: 127.0.0.1
-- `port` default: 6379
-- `database` default: null
-- `password` default: null
-- `connection_persistent` default: false
-- `ttl` default: 0
+- `host` *optional* default: 127.0.0.1
+- `port` *optional* default: 6379
+- `database` *optional* default: 0 (int)
+- `password` *optional* default: null (no password)
+- `connection_persistent` *optional* default: false
+- `ttl` *optional* default: 0 (unlimited)
 
-More information on the available parameters at the [Predis Documentation](https://github.com/nrk/predis/wiki/Connection-Parameters).
+More information on the available parameters at the [Predis documentation](https://github.com/nrk/predis/wiki/Connection-Parameters).
+
+----------
+
+### `phpredis`
+
+Adapter options:
+
+- `host` *optional* default: 127.0.0.1
+- `port` *optional* default: 6379
+- `database` *optional* default: 0 (int)
+- `password` *optional* default: null (no password)
+- `connection_persistent` *optional* default: false
+- `timeout` *optional* default: 0 (unlimited)
+- `retry_interval` *optional* default: 0 (value in milliseconds)
+- `ttl` *optional* default: 0 (unlimited)
+- `serializer` *optional* default: none
+  - `php` use built-in serialize/unserialize
+  - `igbinary` use igBinary serialize/unserialize (requires `igbinary` extension)
+
+
+More information on the available parameters at the [phpredis documentation](https://github.com/phpredis/phpredis).
+
+Requires [redis extension](https://pecl.php.net/package/redis).
 
 ----------
 
@@ -263,9 +286,9 @@ The `ensure_table_created` is used to ensure the cache table exists in the datab
 Adapter options:
 
 - `hosts`
-- `persistent` default: true
-- `options` default: []
-- `ttl` default: 0
+- `persistent` *optional* default: true
+- `options` *optional* default: []
+- `ttl` *optional* default: 0 (unlimited)
 
 Requires [Aerospike Extension](https://github.com/aerospike/aerospike-client-php).
 
