@@ -21,7 +21,8 @@
     },
     "suggest": {
         "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol",
-        "ext-aerospike": "Allows usage of Aerospike adapter"
+        "ext-aerospike": "Allows usage of Aerospike adapter",
+        "ext-redis": "Allows usage of phpredis adapter"
     },
     "config": {
         "bin-dir": "bin"
