@@ -23,7 +23,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
     public function __construct(array $config = [])
     {
         if (!extension_loaded('redis')) {
-            throw new InvalidConfigurationException('PhpRedisAdapter requires phpredis extension. See https://github.com/phpredis/phpredis.');
+            throw new InvalidConfigurationException('PhpRedisAdapter requires "phpredis" extension. See https://github.com/phpredis/phpredis.');
         }
 
         if (isset($config['ttl'])) {
@@ -151,9 +151,11 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
 
         if ($params['connection_persistent']) {
             $connectionId = 1;
+
             if ($params['pool_size'] > 1) {
                 $connectionId = mt_rand(1, $params['pool_size']);
             }
+
             $persistentId = sprintf('%s-%s-%s', $params['port'], $params['database'], $connectionId);
             $this->client->pconnect($params['host'], $params['port'], $params['timeout'], $persistentId, $params['retry_interval']);
         } else {
@@ -177,7 +179,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
                     break;
                 case 'igbinary':
                     if (!extension_loaded('igbinary')) {
-                        throw new InvalidConfigurationException('Serializer igbinary requires extension. See https://pecl.php.net/package/igbinary');
+                        throw new InvalidConfigurationException('Serializer igbinary requires "igbinary" extension. See https://pecl.php.net/package/igbinary');
                     }
 
                     if (!defined('Redis:::SERIALIZER_IGBINARY')) {
