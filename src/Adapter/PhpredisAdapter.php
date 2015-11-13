@@ -18,6 +18,11 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
     protected $ttl;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(array $config = [])
@@ -26,11 +31,19 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidConfigurationException('PhpRedisAdapter requires "phpredis" extension. See https://github.com/phpredis/phpredis.');
         }
 
-        if (isset($config['ttl'])) {
-            $this->ttl = $config['ttl'];
+        $this->config = $config;
+    }
+
+    /**
+     * @return Redis
+     */
+    protected function getClient()
+    {
+        if (!$this->client instanceof Redis) {
+            $this->createClient($this->config);
         }
 
-        $this->createClient($config);
+        return $this->client;
     }
 
     /**
@@ -38,7 +51,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function get($key)
     {
-        $result = $this->client->get($key);
+        $result = $this->getClient()->get($key);
 
         if ($result === false) {
             return null;
@@ -52,7 +65,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function getMulti(array $keys)
     {
-        $result = $this->client->mGet($keys);
+        $result = $this->getClient()->mGet($keys);
         $values = [];
 
         foreach ($keys as $index => $key) {
@@ -70,9 +83,9 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
     public function set($key, $value)
     {
         if ($this->ttl === null) {
-            $result = $this->client->set($key, $value);
+            $result = $this->getClient()->set($key, $value);
         } else {
-            $result = $this->client->setex($key, $this->ttl, $value);
+            $result = $this->getClient()->setex($key, $this->ttl, $value);
         }
 
         return (bool) $result;
@@ -86,7 +99,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
     public function setMulti(array $data)
     {
         if ($this->ttl === null) {
-            $result = $this->client->mset($data);
+            $result = $this->getClient()->mset($data);
         } else {
             $result = true;
             foreach ($data as $key => $value) {
@@ -102,7 +115,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function contains($key)
     {
-        return $this->client->exists($key);
+        return $this->getClient()->exists($key);
     }
 
     /**
@@ -130,7 +143,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function flush()
     {
-        return (bool) $this->client->flushDB();
+        return (bool) $this->getClient()->flushDB();
     }
 
     /**
@@ -174,6 +187,9 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
 
         if ($params['serializer']) {
             switch ($params['serializer']) {
+                case 'none':
+                    $this->client->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_NONE);
+                    break;
                 case 'php':
                     $this->client->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
                     break;
@@ -192,6 +208,10 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         $this->client->setOption(Redis::OPT_SCAN, Redis::SCAN_NORETRY);
+
+        if (isset($config['ttl'])) {
+            $this->ttl = $config['ttl'];
+        }
     }
 
     /**

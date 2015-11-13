@@ -251,6 +251,7 @@ Adapter options:
 - `retry_interval` *optional* default: 0 (value in milliseconds)
 - `ttl` *optional* default: 0 (unlimited)
 - `serializer` *optional* default: none
+  - `none` don't serialize data
   - `php` use built-in serialize/unserialize
   - `igbinary` use igBinary serialize/unserialize (requires `igbinary` extension)
 
