@@ -55,7 +55,7 @@ class CacheService
         }
 
         if (!isset($cacheConfig['encoder'])) {
-            $cacheConfig['encoder'] = 'none';
+            $cacheConfig['encoder'] = 'json';
         }
 
         $this->createEncoder($cacheConfig['encoder']);
