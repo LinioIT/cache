@@ -25,13 +25,17 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], $lazy = true)
     {
         if (!extension_loaded('redis')) {
             throw new InvalidConfigurationException('PhpRedisAdapter requires "phpredis" extension. See https://github.com/phpredis/phpredis.');
         }
 
         $this->config = $config;
+
+        if (!$lazy) {
+            $this->getClient();
+        }
     }
 
     /**
@@ -240,7 +244,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function setNamespace($namespace)
     {
-        $this->client->setOption(Redis::OPT_PREFIX, $namespace . ':');
+        $this->getClient()->setOption(Redis::OPT_PREFIX, $namespace . ':');
         parent::setNamespace($namespace);
     }
 

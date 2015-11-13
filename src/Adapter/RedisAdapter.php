@@ -20,15 +20,32 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     protected $ttl;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * {@inheritdoc}
      */
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], $lazy = true)
     {
-        if (isset($config['ttl'])) {
-            $this->ttl = $config['ttl'];
+        $this->config = $config;
+
+        if (!$lazy) {
+            $this->getClient();
+        }
+    }
+
+    /**
+     * @return Client
+     */
+    protected function getClient()
+    {
+        if (!$this->client instanceof Client) {
+            $this->createClient($this->config);
         }
 
-        $this->createClient($config);
+        return $this->client;
     }
 
     /**
@@ -36,7 +53,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function get($key)
     {
-        return $this->client->get($key);
+        return $this->getClient()->get($key);
     }
 
     /**
@@ -44,7 +61,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function getMulti(array $keys)
     {
-        $result = $this->client->mget($keys);
+        $result = $this->getClient()->mget($keys);
         $values = [];
 
         foreach ($keys as $index => $key) {
@@ -62,9 +79,9 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     public function set($key, $value)
     {
         if ($this->ttl === null) {
-            $result = $this->client->set($key, $value);
+            $result = $this->getClient()->set($key, $value);
         } else {
-            $result = $this->client->set($key, $value, static::EXPIRE_RESOLUTION_EX, $this->ttl);
+            $result = $this->getClient()->set($key, $value, static::EXPIRE_RESOLUTION_EX, $this->ttl);
         }
 
         return $result->getPayload() == 'OK';
@@ -77,7 +94,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function setMulti(array $data)
     {
-        $responses = $this->client->pipeline(
+        $responses = $this->getClient()->pipeline(
             function ($pipe) use ($data) {
                 foreach ($data as $key => $value) {
                     if ($this->ttl === null) {
@@ -103,7 +120,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function contains($key)
     {
-        return $this->client->exists($key);
+        return $this->getClient()->exists($key);
     }
 
     /**
@@ -111,7 +128,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function delete($key)
     {
-        $this->client->del($key);
+        $this->getClient()->del($key);
 
         return true;
     }
@@ -122,7 +139,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     public function deleteMulti(array $keys)
     {
         foreach ($keys as $key) {
-            $this->client->del($key);
+            $this->getClient()->del($key);
         }
 
         return true;
@@ -133,7 +150,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function flush()
     {
-        $result = $this->client->flushAll();
+        $result = $this->getClient()->flushAll();
 
         return $result->getPayload() == 'OK';
     }
@@ -152,6 +169,10 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     protected function createClient(array $config)
     {
         $this->client = new Client($this->getConnectionParameters($config), ['prefix' => null]);
+
+        if (isset($config['ttl'])) {
+            $this->ttl = $config['ttl'];
+        }
     }
 
     /**
@@ -184,7 +205,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function setNamespace($namespace)
     {
-        $this->client->getOptions()->prefix->setPrefix($namespace . ':');
+        $this->getClient()->getOptions()->prefix->setPrefix($namespace . ':');
         parent::setNamespace($namespace);
     }
 

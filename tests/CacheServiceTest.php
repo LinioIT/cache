@@ -32,6 +32,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -58,6 +59,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
             ]
         );
     }
@@ -68,9 +70,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsValidatingAdapters()
     {
-        new CacheService(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'nop',
@@ -79,6 +82,8 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
                 ],
             ]
         );
+
+        $cacheService->get('test');
     }
 
     /**
@@ -90,6 +95,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'encoder' => 'nop',
                 'layers' => [
                     0 => [
@@ -103,9 +109,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGettingKey()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -132,9 +139,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGettingKeyRecursively()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -161,9 +169,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGettingMissingKey()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -190,9 +199,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGettingKeyMultipleKeys()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -223,9 +233,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGettingKeyMultipleKeysRecursively()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -254,9 +265,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGettingKeyMultipleKeysRecursivelyWithComplimentaryLevelData()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -285,9 +297,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGettingKeyMultipleKeysRecursivelyWithMissingKeys()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -316,9 +329,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSettingKeyRecursively()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -344,9 +358,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSettingMultipleKeysRecursively()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -374,9 +389,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsCheckingContainsKey()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -403,9 +419,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsCheckingContainsKeyRecursively()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -432,9 +449,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsCheckingNotContainsKey()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -461,9 +479,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingKeyRecursively()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -492,9 +511,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingMissingKeyRecursively()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -523,9 +543,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingMultipleKeysRecursively()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -558,9 +579,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingMultipleMissingKeysRecursively()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -593,9 +615,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testIsFlushingRecursively()
     {
-        $cacheService = new CacheServiceDouble(
+        $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
+                'encoder' => 'json',
                 'layers' => [
                     0 => [
                         'adapter_name' => 'array',
@@ -627,13 +650,3 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class CacheServiceDouble extends CacheService
-{
-    /**
-     * @return AdapterInterface[]
-     */
-    public function getAdapterStack()
-    {
-        return $this->adapterStack;
-    }
-}

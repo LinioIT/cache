@@ -33,10 +33,19 @@ class CacheService
     protected $logger;
 
     /**
+     * @var array
+     */
+    protected $cacheConfig;
+
+    /**
      * @param array $cacheConfig
      */
     public function __construct(array $cacheConfig)
     {
+        $this->validateServiceConfiguration($cacheConfig);
+
+        $this->cacheConfig = $cacheConfig;
+
         // default config
         $this->namespace = '';
 
@@ -46,12 +55,9 @@ class CacheService
         }
 
         if (!isset($cacheConfig['encoder'])) {
-            $cacheConfig['encoder'] = 'json';
+            $cacheConfig['encoder'] = 'none';
         }
 
-        $this->validateServiceConfiguration($cacheConfig);
-
-        $this->createAdapterStack($cacheConfig['layers'], $this->namespace);
         $this->createEncoder($cacheConfig['encoder']);
     }
 
@@ -90,6 +96,18 @@ class CacheService
     }
 
     /**
+     * @return Adapter\AdapterInterface[]|null
+     */
+    public function getAdapterStack()
+    {
+        if ($this->adapterStack === null) {
+            $this->createAdapterStack($this->cacheConfig);
+        }
+
+        return $this->adapterStack;
+    }
+
+    /**
      * @param string $key
      *
      * @return mixed
@@ -109,10 +127,12 @@ class CacheService
      */
     protected function recursiveGet($key, $level = 0)
     {
-        $adapter = $this->adapterStack[$level];
+        $adapterStack = $this->getAdapterStack();
+
+        $adapter = $adapterStack[$level];
         $value = $adapter->get($key);
 
-        if (($value !== null) || ($level == (count($this->adapterStack) - 1))) {
+        if (($value !== null) || ($level == (count($adapterStack) - 1))) {
             return $value;
         }
 
@@ -153,10 +173,12 @@ class CacheService
      */
     protected function recursiveGetMulti(array $keys, $level = 0)
     {
-        $adapter = $this->adapterStack[$level];
+        $adapterStack = $this->getAdapterStack();
+
+        $adapter = $adapterStack[$level];
         $values = $adapter->getMulti($keys);
 
-        if (count($values) == count($keys) || ($level == (count($this->adapterStack) - 1))) {
+        if (count($values) == count($keys) || ($level == (count($adapterStack) - 1))) {
             return $values;
         }
 
@@ -168,7 +190,9 @@ class CacheService
         }
 
         $notFoundValues = $this->recursiveGetMulti($notFoundKeys, $level + 1);
-        $adapter->setMulti($notFoundValues);
+        if (!empty($notFoundValues)) {
+            $adapter->setMulti($notFoundValues);
+        }
 
         $values = array_merge($values, $notFoundValues);
 
@@ -199,18 +223,20 @@ class CacheService
      */
     protected function recursiveSet($key, $value, $level = null)
     {
+        $adapterStack = $this->getAdapterStack();
+
         if ($level === null) {
-            $level = count($this->adapterStack) - 1;
+            $level = count($adapterStack) - 1;
         }
 
-        $adapter = $this->adapterStack[$level];
+        $adapter = $adapterStack[$level];
         $result = $adapter->set($key, $value);
 
         if ($level == 0) {
             return true;
         }
 
-        if (($result === false) && ($level == count($this->adapterStack) - 1)) {
+        if (($result === false) && ($level == count($adapterStack) - 1)) {
             return false;
         }
 
@@ -241,18 +267,20 @@ class CacheService
      */
     protected function recursiveSetMulti(array $data, $level = null)
     {
+        $adapterStack = $this->getAdapterStack();
+
         if ($level === null) {
-            $level = count($this->adapterStack) - 1;
+            $level = count($adapterStack) - 1;
         }
 
-        $adapter = $this->adapterStack[$level];
+        $adapter = $adapterStack[$level];
         $result = $adapter->setMulti($data);
 
         if ($level == 0) {
             return true;
         }
 
-        if (($result === false) && ($level == count($this->adapterStack) - 1)) {
+        if (($result === false) && ($level == count($adapterStack) - 1)) {
             return false;
         }
 
@@ -279,9 +307,11 @@ class CacheService
      */
     protected function recursiveContains($key, $level = 0)
     {
-        $adapter = $this->adapterStack[$level];
+        $adapterStack = $this->getAdapterStack();
+
+        $adapter = $adapterStack[$level];
         $value = $adapter->contains($key);
-        if (($value !== false) || ($level == (count($this->adapterStack) - 1))) {
+        if (($value !== false) || ($level == (count($adapterStack) - 1))) {
             return $value;
         }
 
@@ -297,7 +327,9 @@ class CacheService
      */
     public function delete($key)
     {
-        foreach ($this->adapterStack as $adapter) {
+        $adapterStack = $this->getAdapterStack();
+
+        foreach ($adapterStack as $adapter) {
             $adapter->delete($key);
         }
 
@@ -311,7 +343,9 @@ class CacheService
      */
     public function deleteMulti(array $keys)
     {
-        foreach ($this->adapterStack as $adapter) {
+        $adapterStack = $this->getAdapterStack();
+
+        foreach ($adapterStack as $adapter) {
             $adapter->deleteMulti($keys);
         }
 
@@ -323,7 +357,9 @@ class CacheService
      */
     public function flush()
     {
-        foreach ($this->adapterStack as $adapter) {
+        $adapterStack = $this->getAdapterStack();
+
+        foreach ($adapterStack as $adapter) {
             $adapter->flush();
         }
 
@@ -336,9 +372,9 @@ class CacheService
      *
      * @throws InvalidConfigurationException
      */
-    protected function createAdapterStack(array $cacheConfig, $namespace)
+    protected function createAdapterStack(array $cacheConfig)
     {
-        foreach ($cacheConfig as $adapterConfig) {
+        foreach ($cacheConfig['layers'] as $adapterConfig) {
             $this->validateAdapterConfig($adapterConfig);
 
             $adapterClass = sprintf('%s\\Adapter\\%sAdapter', __NAMESPACE__, Inflector::classify($adapterConfig['adapter_name']));
@@ -349,7 +385,7 @@ class CacheService
 
             $adapterInstance = new $adapterClass($adapterConfig['adapter_options']);
             /* @var $adapterInstance AdapterInterface */
-            $adapterInstance->setNamespace($namespace);
+            $adapterInstance->setNamespace($this->namespace);
 
             $this->adapterStack[] = $adapterInstance;
         }

@@ -21,7 +21,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->adapter = new PhpredisAdapter(['connection_persistent' => true]);
+        $this->adapter = new PhpredisAdapter(['connection_persistent' => true], false);
         $this->namespace = 'mx';
         $this->adapter->setNamespace($this->namespace);
         $this->adapter->flush();
@@ -29,19 +29,19 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 
     public function testIsCreatingPersistentConnection()
     {
-        $connection1 = new PhpredisAdapter(['connection_persistent' => true]);
+        $connection1 = new PhpredisAdapter(['connection_persistent' => true], false);
         $client1 = PHPUnit_Framework_Assert::readAttribute($connection1, 'client');
         /* @var $client1 \Redis */
         $info1 = $client1->info();
         $connectedClients1 = $info1['connected_clients'];
 
-        $connection2 = new PhpredisAdapter(['connection_persistent' => true]);
+        $connection2 = new PhpredisAdapter(['connection_persistent' => true], false);
         $client2 = PHPUnit_Framework_Assert::readAttribute($connection2, 'client');
         /* @var $client2 \Redis */
         $info2 = $client2->info();
         $connectedClients2 = $info2['connected_clients'];
 
-        $connection3 = new PhpredisAdapter(['connection_persistent' => false]);
+        $connection3 = new PhpredisAdapter(['connection_persistent' => false], false);
         $client3 = PHPUnit_Framework_Assert::readAttribute($connection3, 'client');
         /* @var $client3 \Redis */
         $info3 = $client3->info();
@@ -59,7 +59,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
     {
         $connections = [];
         for ($i = 1; $i <= 100; $i++) {
-            $connection = new PhpredisAdapter(['connection_persistent' => true, 'pool_size' => 10]);
+            $connection = new PhpredisAdapter(['connection_persistent' => true, 'pool_size' => 10], false);
             $connections[] = $connection;
         }
 
