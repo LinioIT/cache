@@ -12,6 +12,11 @@ interface AdapterInterface
     public function __construct(array $config);
 
     /**
+     * @return bool
+     */
+    public function cacheNotFoundKeys();
+
+    /**
      * @param string $key
      *
      * @throws KeyNotFoundException

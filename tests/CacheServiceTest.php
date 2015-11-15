@@ -197,6 +197,40 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual);
     }
 
+    public function testIsCachingGettingMissingKey()
+    {
+        $cacheService = new CacheService(
+            [
+                'namespace' => 'mx',
+                'encoder' => 'json',
+                'layers' => [
+                    0 => [
+                        'adapter_name' => 'array',
+                        'adapter_options' => [
+                            'cache_not_found_keys' => true,
+                        ],
+                    ],
+                    1 => [
+                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_options' => [
+                            'ttl' => 3600,
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $adapterStack = $cacheService->getAdapterStack();
+        $adapterStack[0]->set('foo', json_encode('bar'));
+        $adapterStack[1]->set('foo', json_encode('bar'));
+
+        $actual = $cacheService->get('nop');
+
+        $this->assertNull($actual);
+
+        $this->assertTrue($adapterStack[0]->contains('nop'));
+    }
+
     public function testIsGettingKeyMultipleKeys()
     {
         $cacheService = new CacheService(

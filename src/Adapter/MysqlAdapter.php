@@ -27,6 +27,10 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
 
         $connectionOptions = $this->getConnectionOptions($config);
 
+        if (isset($config['cache_not_found_keys'])) {
+            $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
+        }
+
         $dbManager = new DatabaseManager();
         $dbManager->addConnection(DatabaseManager::DRIVER_MYSQL, $connectionOptions);
 

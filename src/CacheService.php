@@ -153,11 +153,9 @@ class CacheService
 
         list($value, $keyFound) = $this->recursiveGet($key, $level + 1);
 
-        if (!$keyFound) {
-            return;
+        if ($keyFound || (!$keyFound && $adapter->cacheNotFoundKeys())) {
+            $adapter->set($key, $value);
         }
-
-        $adapter->set($key, $value);
 
         return [$value, $keyFound];
     }

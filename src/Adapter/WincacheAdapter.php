@@ -23,6 +23,10 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
         if (isset($config['ttl'])) {
             $this->ttl = $config['ttl'];
         }
+
+        if (isset($config['cache_not_found_keys'])) {
+            $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
+        }
     }
 
     /**

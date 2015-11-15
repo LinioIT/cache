@@ -10,6 +10,19 @@ abstract class AbstractAdapter
     protected $namespace;
 
     /**
+     * @var bool
+     */
+    protected $cacheNotFoundKeys = false;
+
+    /**
+     * @return boolean
+     */
+    public function cacheNotFoundKeys()
+    {
+        return $this->cacheNotFoundKeys;
+    }
+
+    /**
      * @param string $key
      *
      * @return string

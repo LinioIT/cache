@@ -47,6 +47,10 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
             $this->ttl = $config['ttl'];
         }
 
+        if (isset($config['cache_not_found_keys'])) {
+            $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
+        }
+
         $aerospikeConfig['hosts'] = $config['hosts'];
 
         $this->db = new \Aerospike($aerospikeConfig, $persistent, $options);

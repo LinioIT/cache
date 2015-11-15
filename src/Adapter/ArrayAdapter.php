@@ -18,6 +18,10 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
     public function __construct(array $config = [])
     {
         $this->cacheData = [];
+
+        if (isset($config['cache_not_found_keys'])) {
+            $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
+        }
     }
     // @codingStandardsIgnoreEnd
 
@@ -76,7 +80,7 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function contains($key)
     {
-        return isset($this->cacheData[$this->addNamespaceToKey($key)]);
+        return array_key_exists($this->addNamespaceToKey($key), $this->cacheData);
     }
 
     /**
