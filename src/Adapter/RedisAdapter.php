@@ -78,7 +78,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function set($key, $value)
     {
-        if ($this->ttl === null) {
+        if ($this->ttl == 0) {
             $result = $this->getClient()->set($key, $value);
         } else {
             $result = $this->getClient()->set($key, $value, static::EXPIRE_RESOLUTION_EX, $this->ttl);
@@ -97,7 +97,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         $responses = $this->getClient()->pipeline(
             function ($pipe) use ($data) {
                 foreach ($data as $key => $value) {
-                    if ($this->ttl === null) {
+                    if ($this->ttl == 0) {
                         $pipe->set($key, $value);
                     } else {
                         $pipe->set($key, $value, static::EXPIRE_RESOLUTION_EX, $this->ttl);
@@ -171,7 +171,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         $this->client = new Client($this->getConnectionParameters($config), ['prefix' => null]);
 
         if (isset($config['ttl'])) {
-            $this->ttl = $config['ttl'];
+            $this->ttl = (int) $config['ttl'];
         }
     }
 
@@ -214,6 +214,6 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function setTtl($ttl)
     {
-        $this->ttl = $ttl;
+        $this->ttl = (int) $ttl;
     }
 }
