@@ -123,9 +123,9 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
         $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
-            ->method('fetchValue')
-            ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']))
-            ->will($this->returnValue('bar'));
+            ->method('fetchColumn')
+            ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']), 0)
+            ->will($this->returnValue(['bar']));
         $this->adapter->setDbManager($mockDb);
         $this->adapter->setTableName(self::TABLE_NAME);
 
@@ -134,21 +134,22 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $actual);
     }
 
+    /**
+     * @expectedException \Linio\Component\Cache\Exception\KeyNotFoundException
+     */
     public function testIsGettingInexistentKey()
     {
         $expectedQuery = sprintf("SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1", self::TABLE_NAME);
 
         $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
-            ->method('fetchValue')
-            ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']))
-            ->will($this->returnValue(null));
+            ->method('fetchColumn')
+            ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']), 0)
+            ->will($this->returnValue(false));
         $this->adapter->setDbManager($mockDb);
         $this->adapter->setTableName(self::TABLE_NAME);
 
         $actual = $this->adapter->get('foo');
-
-        $this->assertNull($actual);
     }
 
     public function testIsFindingKey()
@@ -157,9 +158,9 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
         $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
-            ->method('fetchValue')
-            ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']))
-            ->will($this->returnValue('bar'));
+            ->method('fetchColumn')
+            ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']), 0)
+            ->will($this->returnValue(['bar']));
         $this->adapter->setDbManager($mockDb);
         $this->adapter->setTableName(self::TABLE_NAME);
 
@@ -174,9 +175,9 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
         $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
-            ->method('fetchValue')
-            ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':baz']))
-            ->will($this->returnValue(null));
+            ->method('fetchColumn')
+            ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':baz']), 0)
+            ->will($this->returnValue(false));
         $this->adapter->setDbManager($mockDb);
         $this->adapter->setTableName(self::TABLE_NAME);
 

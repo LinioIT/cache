@@ -2,6 +2,8 @@
 
 namespace Linio\Component\Cache\Adapter;
 
+use Linio\Component\Cache\Exception\KeyNotFoundException;
+
 class ArrayAdapter extends AbstractAdapter implements AdapterInterface
 {
     /**
@@ -24,11 +26,11 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function get($key)
     {
-        if (array_key_exists($this->addNamespaceToKey($key), $this->cacheData)) {
-            return $this->cacheData[$this->addNamespaceToKey($key)];
+        if (!array_key_exists($this->addNamespaceToKey($key), $this->cacheData)) {
+            throw new KeyNotFoundException();
         }
 
-        return;
+        return $this->cacheData[$this->addNamespaceToKey($key)];
     }
 
     /**

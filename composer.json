@@ -17,7 +17,8 @@
         "phploc/phploc": "2.0.*",
         "sebastian/phpcpd": "2.0.*",
         "squizlabs/php_codesniffer": "2.0.*@dev",
-        "contorion/aerospike-stub": "1.0.*"
+        "contorion/aerospike-stub": "1.0.*",
+        "fabpot/php-cs-fixer": "^1.9"
     },
     "suggest": {
         "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol",

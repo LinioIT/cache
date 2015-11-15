@@ -6,6 +6,7 @@ use Doctrine\Common\Inflector\Inflector;
 use Linio\Component\Cache\Adapter\AdapterInterface;
 use Linio\Component\Cache\Encoder\EncoderInterface;
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
+use Linio\Component\Cache\Exception\KeyNotFoundException;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyMethods)
@@ -114,7 +115,13 @@ class CacheService
      */
     public function get($key)
     {
-        return $this->encoder->decode($this->recursiveGet($key));
+        list($value, $success) = $this->recursiveGet($key);
+
+        if (!$success) {
+            return;
+        }
+
+        return $this->encoder->decode($value);
     }
 
     /**
@@ -123,28 +130,36 @@ class CacheService
      *
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      *
-     * @return mixed
+     * @return array   [$value, $success]
      */
     protected function recursiveGet($key, $level = 0)
     {
         $adapterStack = $this->getAdapterStack();
 
         $adapter = $adapterStack[$level];
-        $value = $adapter->get($key);
+        $keyFound = true;
+        try {
+            $value = $adapter->get($key);
 
-        if (($value !== null) || ($level == (count($adapterStack) - 1))) {
-            return $value;
+            return [$value, $keyFound];
+        } catch (KeyNotFoundException $e) {
+            $value = null;
+            $keyFound = false;
         }
 
-        $value = $this->recursiveGet($key, $level + 1);
+        if ($level == (count($adapterStack) - 1)) {
+            return [$value, $keyFound];
+        }
 
-        if ($value === null) {
+        list($value, $keyFound) = $this->recursiveGet($key, $level + 1);
+
+        if (!$keyFound) {
             return;
         }
 
         $adapter->set($key, $value);
 
-        return $value;
+        return [$value, $keyFound];
     }
 
     /**

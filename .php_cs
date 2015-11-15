@@ -5,6 +5,6 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
 
 return Symfony\CS\Config\Config::create()
     ->level(Symfony\CS\FixerInterface::SYMFONY_LEVEL)
-    ->fixers(['concat_with_spaces', 'short_array_syntax', 'ordered_use', '-pre_increment'])
+    ->fixers(['concat_with_spaces', 'short_array_syntax', 'ordered_use', '-pre_increment', 'phpdoc_order', 'newline_after_open_tag', '-phpdoc_params'])
     ->finder($finder)
     ->setUsingCache(true);

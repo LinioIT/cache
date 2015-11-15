@@ -3,6 +3,7 @@
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
+use Linio\Component\Cache\Exception\KeyNotFoundException;
 use Linio\Component\Database\DatabaseManager;
 
 class MysqlAdapter extends AbstractAdapter implements AdapterInterface
@@ -58,7 +59,13 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
     {
         $sql = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', $this->tableName);
 
-        return $this->dbManager->fetchValue($sql, ['key' => $this->addNamespaceToKey($key)]);
+        $results = $this->dbManager->fetchColumn($sql, ['key' => $this->addNamespaceToKey($key)], 0);
+
+        if (!$results) {
+            throw new KeyNotFoundException();
+        }
+
+        return $results[0];
     }
 
     /**
@@ -119,8 +126,9 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function contains($key)
     {
-        $value = $this->get($key);
-        if ($value === null) {
+        try {
+            $this->get($key);
+        } catch (KeyNotFoundException $e) {
             return false;
         }
 
@@ -170,9 +178,9 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      *
+     * @throws InvalidConfigurationException
      * @return array
      *
-     * @throws InvalidConfigurationException
      */
     protected function validateConnectionOptions(array $config)
     {

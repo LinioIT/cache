@@ -85,11 +85,14 @@ class RedisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $actual);
     }
 
+    /**
+     * @expectedException \Linio\Component\Cache\Exception\KeyNotFoundException
+     */
     public function testIsGettingInexistentKey()
     {
         $clientMock = $this->getMockBuilder('\Predis\Client')
             ->disableOriginalConstructor()
-            ->setMethods(['get'])
+            ->setMethods(['get', 'exists'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -97,13 +100,16 @@ class RedisAdapterTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo('foo'))
             ->willReturn(null);
 
+        $clientMock->expects($this->once())
+            ->method('exists')
+            ->with($this->equalTo('foo'))
+            ->willReturn(false);
+
         $adapter = $this->getRedisAdapterMock();
         $adapter->setClient($clientMock);
         $adapter->setNamespace('mx');
 
         $actual = $adapter->get('foo');
-
-        $this->assertNull($actual);
     }
 
     public function testIsFindingKey()

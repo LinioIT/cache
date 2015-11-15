@@ -1,6 +1,7 @@
 <?php
 
 namespace Linio\Component\Cache\Adapter;
+use Linio\Component\Cache\Exception\KeyNotFoundException;
 
 /**
  * @requires extension apc
@@ -34,12 +35,13 @@ class ApcAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $actual);
     }
 
+    /**
+     * @expectedException \Linio\Component\Cache\Exception\KeyNotFoundException
+     */
     public function testIsGettingInexistentKey()
     {
 
         $actual = $this->adapter->get('foo');
-
-        $this->assertNull($actual);
     }
 
     public function testIsFindingKey()
@@ -95,7 +97,13 @@ class ApcAdapterTest extends \PHPUnit_Framework_TestCase
         $this->adapter->set('foo', 'bar');
 
         $deleteResult = $this->adapter->delete('foo');
-        $actual = $this->adapter->get('foo');
+
+        $actual = 'bar';
+        try {
+            $actual = $this->adapter->get('foo');
+        } catch (KeyNotFoundException $e) {
+            $actual = null;
+        }
 
         $this->assertTrue($deleteResult);
         $this->assertNull($actual);
@@ -107,8 +115,20 @@ class ApcAdapterTest extends \PHPUnit_Framework_TestCase
         $this->adapter->set('fooz', 'baz');
 
         $deleteResult = $this->adapter->deleteMulti(['foo', 'fooz']);
-        $actual1 = $this->adapter->get('foo');
-        $actual2 = $this->adapter->get('fooz');
+
+        $actual1 = 'bar';
+        try {
+            $actual1 = $this->adapter->get('foo');
+        } catch (KeyNotFoundException $e) {
+            $actual1 = null;
+        }
+
+        $actual2 = 'baz';
+        try {
+            $actual2 = $this->adapter->get('fooz');
+        } catch (KeyNotFoundException $e) {
+            $actual2 = null;
+        }
 
         $this->assertTrue($deleteResult);
         $this->assertNull($actual1);
@@ -117,7 +137,6 @@ class ApcAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingInexistentKey()
     {
-
         $actual = $this->adapter->delete('foo');
 
         $this->assertTrue($actual);
@@ -129,8 +148,20 @@ class ApcAdapterTest extends \PHPUnit_Framework_TestCase
         $this->adapter->set('fooz', 'baz');
 
         $deleteResult = $this->adapter->deleteMulti(['foo', 'nop']);
-        $actual1 = $this->adapter->get('foo');
-        $actual2 = $this->adapter->get('fooz');
+
+        $actual1 = 'bar';
+        try {
+            $actual1 = $this->adapter->get('foo');
+        } catch (KeyNotFoundException $e) {
+            $actual1 = null;
+        }
+
+        $actual2 = 'baz';
+        try {
+            $actual2 = $this->adapter->get('fooz');
+        } catch (KeyNotFoundException $e) {
+            $actual2 = null;
+        }
 
         $this->assertTrue($deleteResult);
         $this->assertNull($actual1);
@@ -143,8 +174,20 @@ class ApcAdapterTest extends \PHPUnit_Framework_TestCase
         $this->adapter->set('fooz', 'baz');
 
         $flushResult = $this->adapter->flush();
-        $actual1 = $this->adapter->get('foo');
-        $actual2 = $this->adapter->get('fooz');
+
+        $actual1 = 'bar';
+        try {
+            $actual1 = $this->adapter->get('foo');
+        } catch (KeyNotFoundException $e) {
+            $actual1 = null;
+        }
+
+        $actual2 = 'baz';
+        try {
+            $actual2 = $this->adapter->get('fooz');
+        } catch (KeyNotFoundException $e) {
+            $actual2 = null;
+        }
 
         $this->assertTrue($flushResult);
         $this->assertNull($actual1);

@@ -2,6 +2,8 @@
 
 namespace Linio\Component\Cache\Adapter;
 
+use Linio\Component\Cache\Exception\KeyNotFoundException;
+
 class ApcAdapter extends AbstractAdapter implements AdapterInterface
 {
     /**
@@ -30,7 +32,11 @@ class ApcAdapter extends AbstractAdapter implements AdapterInterface
     {
         $value = apc_fetch($this->addNamespaceToKey($key), $success);
 
-        return ($success) ? $value : null;
+        if (!$success) {
+            throw new KeyNotFoundException();
+        }
+
+        return $value;
     }
 
     /**
@@ -41,8 +47,8 @@ class ApcAdapter extends AbstractAdapter implements AdapterInterface
         $values = [];
 
         foreach ($keys as $key) {
-            $value = apc_fetch($this->addNamespaceToKey($key));
-            if ($value) {
+            $value = apc_fetch($this->addNamespaceToKey($key), $success);
+            if ($success) {
                 $values[$key] = $value;
             }
         }

@@ -3,6 +3,7 @@
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
+use Linio\Component\Cache\Exception\KeyNotFoundException;
 use Redis;
 
 class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
@@ -57,8 +58,8 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
     {
         $result = $this->getClient()->get($key);
 
-        if ($result === false) {
-            return null;
+        if ($result === false && !$this->getClient()->exists($key)) {
+            throw new KeyNotFoundException();
         }
 
         return $result;

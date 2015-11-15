@@ -2,6 +2,8 @@
 
 namespace Linio\Component\Cache\Adapter;
 
+use Linio\Component\Cache\Exception\KeyNotFoundException;
+
 class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
 {
     const BIN_KEY = 'v';
@@ -63,7 +65,11 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
         $namespacedKey = $this->getNamespacedKey($key);
         $status = $this->db->get($namespacedKey, $metadata);
 
-        return ($status == \Aerospike::OK) ? $this->removeBin($metadata) : null;
+        if ($status != \Aerospike::OK) {
+            throw new KeyNotFoundException();
+        }
+
+        return $this->removeBin($metadata);
     }
 
     /**
