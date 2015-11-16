@@ -2,6 +2,8 @@
 
 namespace Linio\Component\Cache\Adapter;
 
+use Linio\Component\Cache\Exception\KeyNotFoundException;
+
 class WincacheAdapter extends AbstractAdapter implements AdapterInterface
 {
     /**
@@ -21,6 +23,10 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
         if (isset($config['ttl'])) {
             $this->ttl = $config['ttl'];
         }
+
+        if (isset($config['cache_not_found_keys'])) {
+            $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
+        }
     }
 
     /**
@@ -30,7 +36,11 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
     {
         $result = wincache_ucache_get($this->addNamespaceToKey($key), $success);
 
-        return ($success) ? $result : null;
+        if (!$success) {
+            throw new KeyNotFoundException();
+        }
+
+        return $result;
     }
 
     /**

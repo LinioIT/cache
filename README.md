@@ -25,6 +25,12 @@ run PHPUnit.
     $ composer install
     $ phpunit
 
+## Cache Not Found Keys
+
+It is now possible (v.1.0.9) to cache not found keys in upper level adapters of the adapter stack. The configuration option `cache_not_found_keys` can be set at the adapter level.
+
+Note that this option, obviously, does not apply to the last level of the cache hierarchy.
+
 ## Usage
 
 ```php
@@ -37,7 +43,9 @@ $container['cache'] = new CacheService([
     'layers' => [
         0 => [
             'adapter_name' => 'array',
-            'adapter_options' => [],
+            'adapter_options' => [
+                'cache_not_found_keys' => true,
+            ],
         ],
         1 => [
             'adapter_name' => 'apc',
@@ -207,6 +215,7 @@ This cache does not have any persistence between requests.
 Adapter options:
 
 - `ttl` *optional* default: 0 (unlimited)
+- `cache_not_found_keys` *optional* default: false
 
 Requires [APC extension](http://php.net/manual/en/book.apc.php) or [APCu extension](https://pecl.php.net/package/APCu).
 
@@ -217,6 +226,7 @@ Requires [APC extension](http://php.net/manual/en/book.apc.php) or [APCu extensi
 Adapter options:
 
 - `ttl` *optional* default: 0 (unlimited)
+- `cache_not_found_keys` *optional* default: false
 
 Requires [WinCache extension](http://www.iis.net/downloads/microsoft/wincache-extension).
 
@@ -232,6 +242,7 @@ Adapter options:
 - `password` *optional* default: null (no password)
 - `connection_persistent` *optional* default: false
 - `ttl` *optional* default: 0 (unlimited)
+- `cache_not_found_keys` *optional* default: false
 
 More information on the available parameters at the [Predis documentation](https://github.com/nrk/predis/wiki/Connection-Parameters).
 
@@ -250,6 +261,7 @@ Adapter options:
 - `timeout` *optional* default: 0 (unlimited)
 - `retry_interval` *optional* default: 0 (value in milliseconds)
 - `ttl` *optional* default: 0 (unlimited)
+- `cache_not_found_keys` *optional* default: false
 - `serializer` *optional* default: none
   - `none` don't serialize data
   - `php` use built-in serialize/unserialize
@@ -275,6 +287,7 @@ Adapter options:
 - `password`
 - `table_name`
 - `ensure_table_created` *optional* default: false
+- `cache_not_found_keys` *optional* default: false
 
 The `ensure_table_created` is used to ensure the cache table exists in the database. This option has a significant performance impact.
 
@@ -291,6 +304,7 @@ Adapter options:
 - `persistent` *optional* default: true
 - `options` *optional* default: []
 - `ttl` *optional* default: 0 (unlimited)
+- `cache_not_found_keys` *optional* default: false
 
 Requires [Aerospike Extension](https://github.com/aerospike/aerospike-client-php).
 

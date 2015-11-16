@@ -2,6 +2,8 @@
 
 namespace Linio\Component\Cache\Adapter;
 
+use Linio\Component\Cache\Exception\KeyNotFoundException;
+
 interface AdapterInterface
 {
     /**
@@ -10,7 +12,14 @@ interface AdapterInterface
     public function __construct(array $config);
 
     /**
+     * @return bool
+     */
+    public function cacheNotFoundKeys();
+
+    /**
      * @param string $key
+     *
+     * @throws KeyNotFoundException
      *
      * @return mixed
      */

@@ -2,6 +2,8 @@
 
 namespace Linio\Component\Cache\Adapter;
 
+use Linio\Component\Cache\Exception\KeyNotFoundException;
+
 class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_NAMESPACE = 'mx';
@@ -19,14 +21,15 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $actual);
     }
 
+    /**
+     * @expectedException \Linio\Component\Cache\Exception\KeyNotFoundException
+     */
     public function testIsGettingInexistentKey()
     {
         $adapter = new ArrayAdapter();
         $adapter->setNamespace(static::TEST_NAMESPACE);
 
         $actual = $adapter->get('foo');
-
-        $this->assertNull($actual);
     }
 
     public function testIsFindingKey()
@@ -94,7 +97,13 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
         $adapter->set('foo', 'bar');
 
         $deleteResult = $adapter->delete('foo');
-        $actual = $adapter->get('foo');
+
+        $actual = 'bar';
+        try {
+            $actual = $adapter->get('foo');
+        } catch (KeyNotFoundException $e) {
+            $actual = null;
+        }
 
         $this->assertTrue($deleteResult);
         $this->assertNull($actual);
@@ -108,8 +117,20 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
         $adapter->set('fooz', 'baz');
 
         $deleteResult = $adapter->deleteMulti(['foo', 'fooz']);
-        $actual1 = $adapter->get('foo');
-        $actual2 = $adapter->get('fooz');
+
+        $actual1 = 'bar';
+        try {
+            $actual1 = $adapter->get('foo');
+        } catch (KeyNotFoundException $e) {
+            $actual1 = null;
+        }
+
+        $actual2 = 'baz';
+        try {
+            $actual2 = $adapter->get('fooz');
+        } catch (KeyNotFoundException $e) {
+            $actual2 = null;
+        }
 
         $this->assertTrue($deleteResult);
         $this->assertNull($actual1);
@@ -134,8 +155,20 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
         $adapter->set('fooz', 'baz');
 
         $deleteResult = $adapter->deleteMulti(['foo', 'nop']);
-        $actual1 = $adapter->get('foo');
-        $actual2 = $adapter->get('fooz');
+
+        $actual1 = 'bar';
+        try {
+            $actual1 = $adapter->get('foo');
+        } catch (KeyNotFoundException $e) {
+            $actual1 = null;
+        }
+
+        $actual2 = 'baz';
+        try {
+            $actual2 = $adapter->get('fooz');
+        } catch (KeyNotFoundException $e) {
+            $actual2 = null;
+        }
 
         $this->assertTrue($deleteResult);
         $this->assertNull($actual1);
@@ -150,8 +183,20 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
         $adapter->set('fooz', 'baz');
 
         $flushResult = $adapter->flush();
-        $actual1 = $adapter->get('foo');
-        $actual2 = $adapter->get('fooz');
+
+        $actual1 = 'bar';
+        try {
+            $actual1 = $adapter->get('foo');
+        } catch (KeyNotFoundException $e) {
+            $actual1 = null;
+        }
+
+        $actual2 = 'baz';
+        try {
+            $actual2 = $adapter->get('fooz');
+        } catch (KeyNotFoundException $e) {
+            $actual2 = null;
+        }
 
         $this->assertTrue($flushResult);
         $this->assertNull($actual1);

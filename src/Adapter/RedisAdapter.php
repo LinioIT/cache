@@ -2,6 +2,7 @@
 
 namespace Linio\Component\Cache\Adapter;
 
+use Linio\Component\Cache\Exception\KeyNotFoundException;
 use Predis\Client;
 
 class RedisAdapter extends AbstractAdapter implements AdapterInterface
@@ -53,7 +54,13 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function get($key)
     {
-        return $this->getClient()->get($key);
+        $value = $this->getClient()->get($key);
+
+        if ($value === null && !$this->getClient()->exists($key)) {
+            throw new KeyNotFoundException();
+        }
+
+        return $value;
     }
 
     /**
@@ -172,6 +179,10 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
 
         if (isset($config['ttl'])) {
             $this->ttl = (int) $config['ttl'];
+        }
+
+        if (isset($config['cache_not_found_keys'])) {
+            $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
         }
     }
 

@@ -3,6 +3,7 @@
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
+use Linio\Component\Cache\Exception\KeyNotFoundException;
 use Linio\Component\Database\DatabaseManager;
 
 class MysqlAdapter extends AbstractAdapter implements AdapterInterface
@@ -25,6 +26,10 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         $config = $this->validateConnectionOptions($config);
 
         $connectionOptions = $this->getConnectionOptions($config);
+
+        if (isset($config['cache_not_found_keys'])) {
+            $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
+        }
 
         $dbManager = new DatabaseManager();
         $dbManager->addConnection(DatabaseManager::DRIVER_MYSQL, $connectionOptions);
@@ -58,7 +63,13 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
     {
         $sql = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', $this->tableName);
 
-        return $this->dbManager->fetchValue($sql, ['key' => $this->addNamespaceToKey($key)]);
+        $results = $this->dbManager->fetchColumn($sql, ['key' => $this->addNamespaceToKey($key)], 0);
+
+        if (!$results) {
+            throw new KeyNotFoundException();
+        }
+
+        return $results[0];
     }
 
     /**
@@ -119,8 +130,9 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function contains($key)
     {
-        $value = $this->get($key);
-        if ($value === null) {
+        try {
+            $this->get($key);
+        } catch (KeyNotFoundException $e) {
             return false;
         }
 
@@ -170,9 +182,9 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      *
+     * @throws InvalidConfigurationException
      * @return array
      *
-     * @throws InvalidConfigurationException
      */
     protected function validateConnectionOptions(array $config)
     {
