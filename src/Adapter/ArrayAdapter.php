@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
@@ -9,26 +10,16 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @var array
      */
-    protected $cacheData;
+    protected $cacheData = [];
 
-    // @codingStandardsIgnoreStart
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(array $config = [])
     {
-        $this->cacheData = [];
-
         if (isset($config['cache_not_found_keys'])) {
             $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
         }
     }
-    // @codingStandardsIgnoreEnd
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get($key)
+    public function get(string $key)
     {
         if (!array_key_exists($this->addNamespaceToKey($key), $this->cacheData)) {
             throw new KeyNotFoundException();
@@ -37,10 +28,7 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
         return $this->cacheData[$this->addNamespaceToKey($key)];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMulti(array $keys)
+    public function getMulti(array $keys): array
     {
         $values = [];
 
@@ -53,20 +41,14 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
         return $values;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($key, $value)
+    public function set(string $key, $value): bool
     {
         $this->cacheData[$this->addNamespaceToKey($key)] = $value;
 
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMulti(array $data)
+    public function setMulti(array $data): bool
     {
         foreach ($data as $key => $value) {
             $this->cacheData[$this->addNamespaceToKey($key)] = $value;
@@ -75,28 +57,19 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function contains($key)
+    public function contains(string $key): bool
     {
         return array_key_exists($this->addNamespaceToKey($key), $this->cacheData);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         unset($this->cacheData[$this->addNamespaceToKey($key)]);
 
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteMulti(array $keys)
+    public function deleteMulti(array $keys): bool
     {
         foreach ($keys as $key) {
             unset($this->cacheData[$this->addNamespaceToKey($key)]);
@@ -105,10 +78,7 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function flush()
+    public function flush(): bool
     {
         $this->cacheData = [];
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
@@ -23,10 +24,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
      */
     protected $config;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(array $config = [], $lazy = true)
+    public function __construct(array $config = [], bool $lazy = true)
     {
         if (!extension_loaded('redis')) {
             throw new InvalidConfigurationException('PhpRedisAdapter requires "phpredis" extension. See https://github.com/phpredis/phpredis.');
@@ -39,10 +37,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
-    /**
-     * @return Redis
-     */
-    protected function getClient()
+    protected function getClient(): Redis
     {
         if (!$this->client instanceof Redis) {
             $this->createClient($this->config);
@@ -51,10 +46,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         return $this->client;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get($key)
+    public function get(string $key)
     {
         $result = $this->getClient()->get($key);
 
@@ -65,10 +57,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMulti(array $keys)
+    public function getMulti(array $keys): array
     {
         $result = $this->getClient()->mGet($keys);
         $values = [];
@@ -82,10 +71,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         return $values;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($key, $value)
+    public function set(string $key, $value): bool
     {
         if ($this->ttl === null) {
             $result = $this->getClient()->set($key, $value);
@@ -96,12 +82,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         return (bool) $result;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     */
-    public function setMulti(array $data)
+    public function setMulti(array $data): bool
     {
         if ($this->ttl === null) {
             $result = $this->getClient()->mset($data);
@@ -115,53 +96,35 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         return (bool) $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function contains($key)
+    public function contains(string $key): bool
     {
         return $this->getClient()->exists($key);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         $this->client->delete($key);
 
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteMulti(array $keys)
+    public function deleteMulti(array $keys): bool
     {
         $this->client->delete($keys);
 
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function flush()
+    public function flush(): bool
     {
         return (bool) $this->getClient()->flushDB();
     }
 
-    /**
-     * @param Redis $client
-     */
     public function setClient(Redis $client)
     {
         $this->client = $client;
     }
 
-    /**
-     * @param array $config
-     */
     protected function createClient(array $config)
     {
         $params = $this->getConnectionParameters($config);
@@ -223,12 +186,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
-    /**
-     * @param array $config
-     *
-     * @return array
-     */
-    protected function getConnectionParameters(array $config)
+    protected function getConnectionParameters(array $config): array
     {
         $connectionParameters = [];
         $connectionParameters['host'] = isset($config['host']) ? $config['host'] : '127.0.0.1';
@@ -244,19 +202,13 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         return $connectionParameters;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setNamespace($namespace)
+    public function setNamespace(string $namespace)
     {
         $this->getClient()->setOption(Redis::OPT_PREFIX, $namespace . ':');
         parent::setNamespace($namespace);
     }
 
-    /**
-     * @param int $ttl
-     */
-    public function setTtl($ttl)
+    public function setTtl(int $ttl)
     {
         $this->ttl = $ttl;
     }

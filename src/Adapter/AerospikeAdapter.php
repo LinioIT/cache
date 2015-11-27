@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
@@ -19,9 +20,6 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
      */
     protected $ttl;
 
-    /**
-     * @param array $config
-     */
     public function __construct(array $config)
     {
         $aerospikeConfig = [];
@@ -59,12 +57,7 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    public function get($key)
+    public function get(string $key)
     {
         $namespacedKey = $this->getNamespacedKey($key);
         $status = $this->db->get($namespacedKey, $metadata);
@@ -76,12 +69,7 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
         return $this->removeBin($metadata);
     }
 
-    /**
-     * @param array $keys
-     *
-     * @return string[]
-     */
-    public function getMulti(array $keys)
+    public function getMulti(array $keys): array
     {
         $namespacedKeys = [];
         foreach ($keys as $key) {
@@ -104,25 +92,14 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
         return $values;
     }
 
-    /**
-     * @param string $key
-     * @param string $value
-     *
-     * @return bool
-     */
-    public function set($key, $value)
+    public function set(string $key, $value): bool
     {
         $status = $this->db->put($this->getNamespacedKey($key), $this->createBin($value), $this->ttl);
 
         return ($status == \Aerospike::OK);
     }
 
-    /**
-     * @param array $keys
-     *
-     * @return bool
-     */
-    public function setMulti(array $data)
+    public function setMulti(array $data): bool
     {
         $success = true;
         foreach ($data as $key => $value) {
@@ -132,24 +109,14 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
         return $success;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function contains($key)
+    public function contains(string $key): bool
     {
         $status = $this->db->exists($this->getNamespacedKey($key), $metadata);
 
         return ($status == \Aerospike::OK);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         $namespacedKey = $this->getNamespacedKey($key);
 
@@ -158,12 +125,7 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * @param array $keys
-     *
-     * @return bool
-     */
-    public function deleteMulti(array $keys)
+    public function deleteMulti(array $keys): bool
     {
         foreach ($keys as $key) {
             $this->delete($key);
@@ -172,10 +134,7 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public function flush()
+    public function flush(): bool
     {
         $this->db->scan(
             $this->namespace,
@@ -189,31 +148,16 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return array
-     */
-    protected function getNamespacedKey($key)
+    protected function getNamespacedKey(string $key)
     {
         return $this->db->initKey($this->namespace, static::DEFAULT_SET, $key);
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return array
-     */
-    protected function createBin($value)
+    protected function createBin($value): array
     {
         return [self::BIN_KEY => $value];
     }
 
-    /**
-     * @param mixed $metadata
-     *
-     * @return mixed
-     */
     protected function removeBin($metadata)
     {
         if (!is_array($metadata) || !array_key_exists('bins', $metadata) || !array_key_exists(static::BIN_KEY, $metadata['bins'])) {

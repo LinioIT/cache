@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Linio\Component\Cache;
 
@@ -7,16 +8,14 @@ use Linio\Component\Cache\Adapter\AdapterInterface;
 use Linio\Component\Cache\Encoder\EncoderInterface;
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use Psr\Log\LoggerInterface;
 
-/**
- * @SuppressWarnings(PHPMD.TooManyMethods)
- */
 class CacheService
 {
     /**
      * @var AdapterInterface[]
      */
-    protected $adapterStack;
+    protected $adapterStack = [];
 
     /**
      * @var EncoderInterface
@@ -29,7 +28,7 @@ class CacheService
     protected $namespace;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -38,9 +37,6 @@ class CacheService
      */
     protected $cacheConfig;
 
-    /**
-     * @param array $cacheConfig
-     */
     public function __construct(array $cacheConfig)
     {
         $this->validateServiceConfiguration($cacheConfig);
@@ -62,44 +58,30 @@ class CacheService
         $this->createEncoder($cacheConfig['encoder']);
     }
 
-    /**
-     * @return \Psr\Log\LoggerInterface
-     */
-    public function getLogger()
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
 
-    /**
-     * @param \Psr\Log\LoggerInterface $logger
-     */
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-
-        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return $this->namespace;
     }
 
-    /**
-     * @param string $namespace
-     */
-    public function setNamespace($namespace)
+    public function setNamespace(string $namespace)
     {
         $this->namespace = $namespace;
     }
 
     /**
-     * @return Adapter\AdapterInterface[]|null
+     * @return AdapterInterface[]
      */
-    public function getAdapterStack()
+    public function getAdapterStack(): array
     {
         if ($this->adapterStack === null) {
             $this->createAdapterStack($this->cacheConfig);
@@ -108,12 +90,7 @@ class CacheService
         return $this->adapterStack;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function get($key)
+    public function get(string $key)
     {
         list($value, $success) = $this->recursiveGet($key);
 
@@ -125,14 +102,9 @@ class CacheService
     }
 
     /**
-     * @param string $key
-     * @param int    $level
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     *
-     * @return array   [$value, $success]
+     * @return array [$value, $success]
      */
-    protected function recursiveGet($key, $level = 0)
+    protected function recursiveGet(string $key, int $level = 0): array
     {
         $adapterStack = $this->getAdapterStack();
 
@@ -160,12 +132,7 @@ class CacheService
         return [$value, $keyFound];
     }
 
-    /**
-     * @param array $keys
-     *
-     * @return mixed[]
-     */
-    public function getMulti(array $keys)
+    public function getMulti(array $keys): array
     {
         $values = $this->recursiveGetMulti($keys);
 
@@ -176,15 +143,7 @@ class CacheService
         return $values;
     }
 
-    /**
-     * @param array $keys
-     * @param int   $level
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     *
-     * @return array
-     */
-    protected function recursiveGetMulti(array $keys, $level = 0)
+    protected function recursiveGetMulti(array $keys, int $level = 0): array
     {
         $adapterStack = $this->getAdapterStack();
 
@@ -212,29 +171,14 @@ class CacheService
         return $values;
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return bool
-     */
-    public function set($key, $value)
+    public function set(string $key, $value): bool
     {
         $value = $this->encoder->encode($value);
 
         return $this->recursiveSet($key, $value);
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $value
-     * @param int    $level
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     *
-     * @return bool
-     */
-    protected function recursiveSet($key, $value, $level = null)
+    protected function recursiveSet(string $key, $value, int $level = null): bool
     {
         $adapterStack = $this->getAdapterStack();
 
@@ -256,12 +200,7 @@ class CacheService
         return $this->recursiveSet($key, $value, $level - 1);
     }
 
-    /**
-     * @param array $keys
-     *
-     * @return bool
-     */
-    public function setMulti(array $data)
+    public function setMulti(array $data): bool
     {
         foreach ($data as $key => $value) {
             $data[$key] = $this->encoder->encode($value);
@@ -270,15 +209,7 @@ class CacheService
         return $this->recursiveSetMulti($data);
     }
 
-    /**
-     * @param array $data
-     * @param int   $level
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     *
-     * @return array
-     */
-    protected function recursiveSetMulti(array $data, $level = null)
+    protected function recursiveSetMulti(array $data, int $level = null): array
     {
         $adapterStack = $this->getAdapterStack();
 
@@ -300,25 +231,14 @@ class CacheService
         return $this->recursiveSetMulti($data, $level - 1);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function contains($key)
+    public function contains(string $key): bool
     {
         $value = $this->recursiveContains($key);
 
         return $value;
     }
 
-    /**
-     * @param string $key
-     * @param int    $level
-     *
-     * @return bool
-     */
-    protected function recursiveContains($key, $level = 0)
+    protected function recursiveContains(string $key, int $level = 0): bool
     {
         $adapterStack = $this->getAdapterStack();
 
@@ -333,12 +253,7 @@ class CacheService
         return $value;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         $adapterStack = $this->getAdapterStack();
 
@@ -349,12 +264,7 @@ class CacheService
         return true;
     }
 
-    /**
-     * @param array $keys
-     *
-     * @return bool
-     */
-    public function deleteMulti(array $keys)
+    public function deleteMulti(array $keys): bool
     {
         $adapterStack = $this->getAdapterStack();
 
@@ -365,10 +275,7 @@ class CacheService
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public function flush()
+    public function flush(): bool
     {
         $adapterStack = $this->getAdapterStack();
 
@@ -380,9 +287,6 @@ class CacheService
     }
 
     /**
-     * @param array  $cacheConfig
-     * @param string $namespace
-     *
      * @throws InvalidConfigurationException
      */
     protected function createAdapterStack(array $cacheConfig)
@@ -405,11 +309,9 @@ class CacheService
     }
 
     /**
-     * @param string $encoderName
-     *
      * @throws InvalidConfigurationException
      */
-    protected function createEncoder($encoderName)
+    protected function createEncoder(string $encoderName)
     {
         $encoderClass = sprintf('%s\\Encoder\\%sEncoder', __NAMESPACE__, Inflector::classify($encoderName));
 
@@ -421,11 +323,9 @@ class CacheService
     }
 
     /**
-     * @param $adapterConfig
-     *
      * @throws InvalidConfigurationException
      */
-    protected function validateAdapterConfig($adapterConfig)
+    protected function validateAdapterConfig(array $adapterConfig)
     {
         if (!isset($adapterConfig['adapter_name'])) {
             throw new InvalidConfigurationException('Missing required configuration option: adapter_name');
@@ -437,8 +337,6 @@ class CacheService
     }
 
     /**
-     * @param array $cacheConfig
-     *
      * @throws InvalidConfigurationException
      */
     protected function validateServiceConfiguration(array $cacheConfig)

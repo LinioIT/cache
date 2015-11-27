@@ -145,7 +145,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $mockDb->expects($this->once())
             ->method('fetchColumn')
             ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']), 0)
-            ->will($this->returnValue(false));
+            ->will($this->returnValue([]));
         $this->adapter->setDbManager($mockDb);
         $this->adapter->setTableName(self::TABLE_NAME);
 
@@ -177,7 +177,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $mockDb->expects($this->once())
             ->method('fetchColumn')
             ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':baz']), 0)
-            ->will($this->returnValue(false));
+            ->will($this->returnValue([]));
         $this->adapter->setDbManager($mockDb);
         $this->adapter->setTableName(self::TABLE_NAME);
 

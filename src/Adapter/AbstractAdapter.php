@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
@@ -14,31 +15,17 @@ abstract class AbstractAdapter
      */
     protected $cacheNotFoundKeys = false;
 
-    /**
-     * @return boolean
-     */
-    public function cacheNotFoundKeys()
+    public function cacheNotFoundKeys(): bool
     {
         return $this->cacheNotFoundKeys;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function addNamespaceToKey($key)
+    protected function addNamespaceToKey(string $key): string
     {
         return $this->namespace . ':' . $key;
     }
 
-    /**
-     * @param array $keys
-     * @param bool  $isKeyValue
-     *
-     * @return array
-     */
-    protected function addNamespaceToKeys(array $keys, $isKeyValue = false)
+    protected function addNamespaceToKeys(array $keys, bool $isKeyValue = false): array
     {
         $namespacedKeys = [];
 
@@ -53,22 +40,12 @@ abstract class AbstractAdapter
         return $namespacedKeys;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
-    protected function removeNamespaceFromKey($key)
+    protected function removeNamespaceFromKey(string $key): string
     {
         return substr($key, strlen($this->namespace) + 1);
     }
 
-    /**
-     * @param array $keys
-     *
-     * @return array
-     */
-    protected function removeNamespaceFromKeys(array $keys)
+    protected function removeNamespaceFromKeys(array $keys): array
     {
         $nonNamespacedKeys = [];
 
@@ -79,18 +56,12 @@ abstract class AbstractAdapter
         return $nonNamespacedKeys;
     }
 
-    /**
-     * @return string
-     */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         return $this->namespace;
     }
 
-    /**
-     * @param string $namespace
-     */
-    public function setNamespace($namespace)
+    public function setNamespace(string $namespace)
     {
         $this->namespace = $namespace;
     }

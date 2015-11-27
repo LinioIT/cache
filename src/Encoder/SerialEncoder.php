@@ -1,20 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace Linio\Component\Cache\Encoder;
 
 class SerialEncoder implements EncoderInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function encode($value)
+    public function encode($value): string
     {
         return serialize($value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function decode($value)
     {
         return unserialize($value);
