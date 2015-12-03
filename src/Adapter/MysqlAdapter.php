@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
@@ -18,9 +19,6 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
      */
     protected $tableName;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(array $config = [])
     {
         $config = $this->validateConnectionOptions($config);
@@ -40,26 +38,17 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         $this->checkTableCreated($config);
     }
 
-    /**
-     * @param \PDO $dbManager
-     */
-    public function setDbManager($dbManager)
+    public function setDbManager(DatabaseManager $dbManager)
     {
         $this->dbManager = $dbManager;
     }
 
-    /**
-     * @param string $tableName
-     */
-    public function setTableName($tableName)
+    public function setTableName(string $tableName)
     {
         $this->tableName = $tableName;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get($key)
+    public function get(string $key)
     {
         $sql = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', $this->tableName);
 
@@ -72,10 +61,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         return $results[0];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMulti(array $keys)
+    public function getMulti(array $keys): array
     {
         $placeholders = array_fill(1, count($keys), '?');
         $sql = sprintf('SELECT `key`, `value` FROM `%s` WHERE `key` IN(%s)', $this->tableName, implode(',', $placeholders));
@@ -87,10 +73,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         return $data;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($key, $value)
+    public function set(string $key, $value): bool
     {
         $sql = sprintf('INSERT INTO `%s` (`key`, `value`) VALUES(:key, :value) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)', $this->tableName);
 
@@ -99,12 +82,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     */
-    public function setMulti(array $data)
+    public function setMulti(array $data): bool
     {
         $placeholders = [];
         $keyValues = [];
@@ -125,10 +103,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function contains($key)
+    public function contains(string $key): bool
     {
         try {
             $this->get($key);
@@ -139,10 +114,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         $sql = sprintf('DELETE FROM `%s` WHERE `key` = :key', $this->tableName);
 
@@ -151,10 +123,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteMulti(array $keys)
+    public function deleteMulti(array $keys): bool
     {
         $placeholders = array_fill(1, count($keys), '?');
         $sql = sprintf('DELETE FROM `%s` WHERE `key` IN (%s)', $this->tableName, implode(',', $placeholders));
@@ -165,10 +134,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function flush()
+    public function flush(): bool
     {
         $sql = sprintf('DELETE FROM `%s`', $this->tableName);
 
@@ -178,13 +144,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
     }
 
     /**
-     * @param array $config
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     *
      * @throws InvalidConfigurationException
-     * @return array
-     *
      */
     protected function validateConnectionOptions(array $config)
     {
@@ -208,9 +168,6 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
-    /**
-     * @param array $config
-     */
     protected function checkTableCreated(array $config)
     {
         if (!isset($config['ensure_table_created'])) {
@@ -220,12 +177,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
-    /**
-     * @param array $config
-     *
-     * @return array
-     */
-    protected function getConnectionOptions(array $config)
+    protected function getConnectionOptions(array $config): array
     {
         $connectionOptions = [
             'host' => $config['host'],

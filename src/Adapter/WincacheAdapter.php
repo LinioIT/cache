@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
@@ -11,9 +12,6 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
      */
     protected $ttl;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(array $config = [])
     {
         // default config
@@ -29,10 +27,7 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get($key)
+    public function get(string $key)
     {
         $result = wincache_ucache_get($this->addNamespaceToKey($key), $success);
 
@@ -43,10 +38,7 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
         return $result;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMulti(array $keys)
+    public function getMulti(array $keys): array
     {
         $namespacedKeys = $this->addNamespaceToKeys($keys);
         $namespacedValues = wincache_ucache_get($namespacedKeys, $success);
@@ -60,18 +52,12 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
         return $values;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function set($key, $value)
+    public function set(string $key, $value): bool
     {
         return wincache_ucache_set($this->addNamespaceToKey($key), $value, $this->ttl);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMulti(array $data)
+    public function setMulti(array $data): bool
     {
         $namespacedData = $this->addNamespaceToKeys($data, true);
         $errors = wincache_ucache_add($namespacedData, null, $this->ttl);
@@ -79,28 +65,19 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
         return empty($errors);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function contains($key)
+    public function contains(string $key): bool
     {
         return wincache_ucache_exists($this->addNamespaceToKey($key));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         wincache_ucache_delete($this->addNamespaceToKey($key));
 
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteMulti(array $keys)
+    public function deleteMulti(array $keys): bool
     {
         foreach ($keys as $key) {
             wincache_ucache_delete($this->addNamespaceToKey($key));
@@ -109,10 +86,7 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function flush()
+    public function flush(): bool
     {
         return wincache_ucache_clear();
     }

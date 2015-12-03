@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Linio\Component\Cache\Encoder;
 
@@ -6,17 +7,11 @@ use Linio\Component\Util\Json;
 
 class JsonEncoder implements EncoderInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function encode($value)
+    public function encode($value): string
     {
         return Json::encode($value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function decode($value)
     {
         return Json::decode($value);

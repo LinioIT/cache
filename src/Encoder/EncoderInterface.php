@@ -1,20 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Linio\Component\Cache\Encoder;
 
 interface EncoderInterface
 {
-    /**
-     * @param mixed $value
-     *
-     * @return string
-     */
-    public function encode($value);
-
-    /**
-     * @param mixed $value
-     *
-     * @return string
-     */
+    public function encode($value): string;
     public function decode($value);
 }
