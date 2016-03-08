@@ -83,7 +83,7 @@ class CacheService
      */
     public function getAdapterStack(): array
     {
-        if ($this->adapterStack === null) {
+        if (empty($this->adapterStack)) {
             $this->createAdapterStack($this->cacheConfig);
         }
 
