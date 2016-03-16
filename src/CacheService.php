@@ -90,6 +90,11 @@ class CacheService
         return $this->adapterStack;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
     public function get(string $key)
     {
         list($value, $success) = $this->recursiveGet($key);
