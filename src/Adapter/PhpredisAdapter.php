@@ -138,9 +138,9 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
             }
 
             $persistentId = sprintf('%s-%s-%s', $params['port'], $params['database'], $connectionId);
-            $this->client->pconnect($params['host'], $params['port'], $params['timeout'], $persistentId, $params['retry_interval']);
+            $this->client->pconnect($params['host'], $params['port'], $params['timeout'] ?? 0, $persistentId, $params['retry_interval'] ?? 0);
         } else {
-            $this->client->connect($params['host'], $params['port'], $params['timeout'], null, $params['retry_interval']);
+            $this->client->connect($params['host'], $params['port'], $params['timeout'] ?? 0, '', $params['retry_interval'] ?? 0);
         }
 
         if ($params['password']) {
@@ -156,10 +156,10 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         if ($params['serializer']) {
             switch ($params['serializer']) {
                 case 'none':
-                    $this->client->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_NONE);
+                    $this->client->setOption(Redis::OPT_SERIALIZER, (string) Redis::SERIALIZER_NONE);
                     break;
                 case 'php':
-                    $this->client->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+                    $this->client->setOption(Redis::OPT_SERIALIZER, (string) Redis::SERIALIZER_PHP);
                     break;
                 case 'igbinary':
                     if (!extension_loaded('igbinary')) {
@@ -175,7 +175,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
             }
         }
 
-        $this->client->setOption(Redis::OPT_SCAN, Redis::SCAN_NORETRY);
+        $this->client->setOption(Redis::OPT_SCAN, (string) Redis::SCAN_NORETRY);
 
         if (isset($config['ttl'])) {
             $this->ttl = $config['ttl'];
