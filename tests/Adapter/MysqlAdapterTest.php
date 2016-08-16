@@ -121,7 +121,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('fetchColumn')
             ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']), 0)
@@ -141,7 +141,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('fetchColumn')
             ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']), 0)
@@ -156,7 +156,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('fetchColumn')
             ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']), 0)
@@ -173,7 +173,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('fetchColumn')
             ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':baz']), 0)
@@ -190,7 +190,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("SELECT `key`, `value` FROM `%s` WHERE `key` IN(?,?)", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('fetchKeyPairs')
             ->with($this->equalTo($expectedQuery), $this->equalTo([static::TEST_NAMESPACE . ':foo', static::TEST_NAMESPACE . ':fooz']))
@@ -207,7 +207,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("SELECT `key`, `value` FROM `%s` WHERE `key` IN(?,?)", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('fetchKeyPairs')
             ->with($this->equalTo($expectedQuery), $this->equalTo([static::TEST_NAMESPACE . ':foo', static::TEST_NAMESPACE . ':nop']))
@@ -224,7 +224,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("INSERT INTO `%s` (`key`, `value`) VALUES(:key, :value) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('execute')
             ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo', 'value' => 'bar']))
@@ -241,7 +241,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("INSERT INTO `%s` (`key`, `value`) VALUES (?, ?),(?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('execute')
             ->with($this->equalTo($expectedQuery), $this->equalTo([static::TEST_NAMESPACE . ':foo', 'bar', static::TEST_NAMESPACE . ':fooz', 'baz']))
@@ -258,7 +258,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("DELETE FROM `%s` WHERE `key` = :key", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('execute')
             ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':foo']))
@@ -275,7 +275,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("DELETE FROM `%s` WHERE `key` IN (?,?)", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('execute')
             ->with($this->equalTo($expectedQuery), $this->equalTo([static::TEST_NAMESPACE . ':foo', static::TEST_NAMESPACE . ':fooz']))
@@ -292,7 +292,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("DELETE FROM `%s` WHERE `key` = :key", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('execute')
             ->with($this->equalTo($expectedQuery), $this->equalTo(['key' => static::TEST_NAMESPACE . ':nop']))
@@ -309,7 +309,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("DELETE FROM `%s` WHERE `key` IN (?,?)", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('execute')
             ->with($this->equalTo($expectedQuery), $this->equalTo([static::TEST_NAMESPACE . ':foo', static::TEST_NAMESPACE . ':nop']))
@@ -326,7 +326,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $expectedQuery = sprintf("DELETE FROM `%s`", self::TABLE_NAME);
 
-        $mockDb = $this->getMock('Linio\Component\Database\DatabaseManager');
+        $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
             ->method('execute')
             ->with($this->equalTo($expectedQuery))
