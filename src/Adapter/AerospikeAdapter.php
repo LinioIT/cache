@@ -82,11 +82,15 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         $values = [];
-        foreach ($result as $key => $metadata) {
-            if ($metadata === null) {
+        foreach ($result as $entry) {
+            $key = $entry['key']['key'];
+            $value = $this->removeBin($entry);
+
+            if ($value === null) {
                 continue;
             }
-            $values[$key] = $this->removeBin($metadata);
+
+            $values[$key] = $value;
         }
 
         return $values;
@@ -160,8 +164,8 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
 
     protected function removeBin($metadata)
     {
-        if (!is_array($metadata) || !array_key_exists('bins', $metadata) || !array_key_exists(static::BIN_KEY, $metadata['bins'])) {
-            return;
+        if (!is_array($metadata) || !array_key_exists('bins', $metadata) || !is_array($metadata['bins']) || !array_key_exists(static::BIN_KEY, $metadata['bins'])) {
+            return null;
         }
 
         return $metadata['bins'][static::BIN_KEY];
