@@ -214,7 +214,7 @@ class CacheService
         return $this->recursiveSetMulti($data);
     }
 
-    protected function recursiveSetMulti(array $data, int $level = null): array
+    protected function recursiveSetMulti(array $data, int $level = null): bool
     {
         $adapterStack = $this->getAdapterStack();
 
