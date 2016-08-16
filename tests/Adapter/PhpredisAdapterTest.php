@@ -2,6 +2,7 @@
 
 namespace Linio\Component\Cache\Adapter;
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use PHPUnit_Framework_Assert;
 
 /**
  * @requires extension redis
@@ -20,10 +21,18 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->adapter = new PhpredisAdapter();
+        $this->adapter = new PhpredisAdapter(['connection_persistent' => false]);
         $this->namespace = 'mx';
         $this->adapter->setNamespace($this->namespace);
         $this->adapter->flush();
+    }
+
+    protected function tearDown()
+    {
+        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
+
+        /* @var $client \Redis */
+        $client->close();
     }
 
     public function testIsSettingAndGetting()

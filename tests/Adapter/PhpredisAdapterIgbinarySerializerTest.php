@@ -3,6 +3,7 @@
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
+use PHPUnit_Framework_Assert;
 
 /**
  * @requires extension redis
@@ -23,7 +24,7 @@ class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         try {
-            $this->adapter = new PhpredisAdapter(['serializer' => 'igbinary']);
+            $this->adapter = new PhpredisAdapter(['connection_persistent' => false, 'serializer' => 'igbinary']);
         } catch (InvalidConfigurationException $e) {
             $this->markTestSkipped('phpredis extension not compiled with igbinary support');
         }
@@ -31,6 +32,14 @@ class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit_Framework_TestCase
         $this->namespace = 'mx';
         $this->adapter->setNamespace($this->namespace);
         $this->adapter->flush();
+    }
+
+    protected function tearDown()
+    {
+        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
+
+        /* @var $client \Redis */
+        $client->close();
     }
 
     public function testIsSettingAndGettingArray()

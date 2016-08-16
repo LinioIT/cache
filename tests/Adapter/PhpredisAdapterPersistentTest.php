@@ -28,6 +28,14 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->adapter->flush();
     }
 
+    protected function tearDown()
+    {
+        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
+
+        /* @var $client \Redis */
+        $client->close();
+    }
+
     public function testIsCreatingPersistentConnection()
     {
         $connection1 = new PhpredisAdapter(['connection_persistent' => true], false);
