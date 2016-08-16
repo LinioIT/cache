@@ -166,11 +166,11 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
                         throw new InvalidConfigurationException('Serializer igbinary requires "igbinary" extension. See https://pecl.php.net/package/igbinary');
                     }
 
-                    if (!defined('Redis:::SERIALIZER_IGBINARY')) {
+                    if (!defined('Redis::SERIALIZER_IGBINARY')) {
                         throw new InvalidConfigurationException('Serializer igbinary requires run extension compilation using configure with --enable-redis-igbinary');
                     }
 
-                    $this->client->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_IGBINARY);
+                    $this->client->setOption(Redis::OPT_SERIALIZER, (string) Redis::SERIALIZER_IGBINARY);
                     break;
             }
         }
