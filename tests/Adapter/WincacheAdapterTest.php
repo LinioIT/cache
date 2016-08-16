@@ -22,7 +22,6 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSettingAndGetting()
     {
-
         $setResult = $this->adapter->set('foo', 'bar');
         $actual = $this->adapter->get('foo');
 
