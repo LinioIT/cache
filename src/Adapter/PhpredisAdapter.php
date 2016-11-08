@@ -184,6 +184,10 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         if (isset($config['cache_not_found_keys'])) {
             $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
         }
+
+        if (isset($params['read_timeout'])) {
+            $this->client->setOption(Redis::OPT_READ_TIMEOUT, (string) $params['read_timeout']);
+        }
     }
 
     protected function getConnectionParameters(array $config): array
@@ -194,6 +198,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         $connectionParameters['password'] = isset($config['password']) ? $config['password'] : null;
         $connectionParameters['database'] = isset($config['database']) ? $config['database'] : 0;
         $connectionParameters['timeout'] = isset($config['timeout']) ? $config['timeout'] : null;
+        $connectionParameters['read_timeout'] = isset($config['read_timeout']) ? $config['read_timeout'] : null;
         $connectionParameters['retry_interval'] = isset($config['retry_interval']) ? $config['retry_interval'] : null;
         $connectionParameters['serializer'] = isset($config['serializer']) ? $config['serializer'] : null;
         $connectionParameters['connection_persistent'] = isset($config['connection_persistent']) ? $config['connection_persistent'] : false;

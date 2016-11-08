@@ -259,6 +259,7 @@ Adapter options:
 - `connection_persistent` *optional* default: false
 - `pool_size` *optional* default: 1 (only for persistent connections)
 - `timeout` *optional* default: 0 (unlimited)
+- `read_timeout` *optional* default: 0 (unlimited)
 - `retry_interval` *optional* default: 0 (value in milliseconds)
 - `ttl` *optional* default: 0 (unlimited)
 - `cache_not_found_keys` *optional* default: false
