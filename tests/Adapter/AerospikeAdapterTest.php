@@ -1,6 +1,7 @@
 <?php
 
 namespace Linio\Component\Cache\Adapter;
+
 use Linio\Component\Cache\Exception\KeyNotFoundException;
 
 /**

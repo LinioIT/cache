@@ -1,6 +1,7 @@
 <?php
 
 namespace Linio\Component\Cache\Adapter;
+
 use Linio\Component\Cache\Exception\KeyNotFoundException;
 use PHPUnit_Framework_Assert;
 
@@ -92,7 +93,6 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSettingMultipleKeys()
     {
-
         $actual = $this->adapter->setMulti(['foo' => 'bar', 'fooz' => 'baz']);
 
         $this->assertTrue($actual);
@@ -145,7 +145,6 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingInexistentKey()
     {
-
         $actual = $this->adapter->delete('foo');
 
         $this->assertTrue($actual);

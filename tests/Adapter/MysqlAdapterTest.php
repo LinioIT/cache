@@ -119,7 +119,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGetting()
     {
-        $expectedQuery = sprintf("SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1", self::TABLE_NAME);
+        $expectedQuery = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -139,7 +139,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsGettingInexistentKey()
     {
-        $expectedQuery = sprintf("SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1", self::TABLE_NAME);
+        $expectedQuery = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -154,7 +154,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsFindingKey()
     {
-        $expectedQuery = sprintf("SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1", self::TABLE_NAME);
+        $expectedQuery = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -171,7 +171,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsNotFindingKey()
     {
-        $expectedQuery = sprintf("SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1", self::TABLE_NAME);
+        $expectedQuery = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -188,7 +188,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGettingMultipleKeys()
     {
-        $expectedQuery = sprintf("SELECT `key`, `value` FROM `%s` WHERE `key` IN(?,?)", self::TABLE_NAME);
+        $expectedQuery = sprintf('SELECT `key`, `value` FROM `%s` WHERE `key` IN(?,?)', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -205,7 +205,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGettingMultipleKeysWithInvalidKeys()
     {
-        $expectedQuery = sprintf("SELECT `key`, `value` FROM `%s` WHERE `key` IN(?,?)", self::TABLE_NAME);
+        $expectedQuery = sprintf('SELECT `key`, `value` FROM `%s` WHERE `key` IN(?,?)', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -222,7 +222,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSettingKey()
     {
-        $expectedQuery = sprintf("INSERT INTO `%s` (`key`, `value`) VALUES(:key, :value) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)", self::TABLE_NAME);
+        $expectedQuery = sprintf('INSERT INTO `%s` (`key`, `value`) VALUES(:key, :value) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -239,7 +239,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSettingMultipleKeys()
     {
-        $expectedQuery = sprintf("INSERT INTO `%s` (`key`, `value`) VALUES (?, ?),(?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)", self::TABLE_NAME);
+        $expectedQuery = sprintf('INSERT INTO `%s` (`key`, `value`) VALUES (?, ?),(?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -256,7 +256,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingKey()
     {
-        $expectedQuery = sprintf("DELETE FROM `%s` WHERE `key` = :key", self::TABLE_NAME);
+        $expectedQuery = sprintf('DELETE FROM `%s` WHERE `key` = :key', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -273,7 +273,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingMultipleKeys()
     {
-        $expectedQuery = sprintf("DELETE FROM `%s` WHERE `key` IN (?,?)", self::TABLE_NAME);
+        $expectedQuery = sprintf('DELETE FROM `%s` WHERE `key` IN (?,?)', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -290,7 +290,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingInexistentKey()
     {
-        $expectedQuery = sprintf("DELETE FROM `%s` WHERE `key` = :key", self::TABLE_NAME);
+        $expectedQuery = sprintf('DELETE FROM `%s` WHERE `key` = :key', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -307,7 +307,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingInexistentMultipleKeys()
     {
-        $expectedQuery = sprintf("DELETE FROM `%s` WHERE `key` IN (?,?)", self::TABLE_NAME);
+        $expectedQuery = sprintf('DELETE FROM `%s` WHERE `key` IN (?,?)', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())
@@ -324,7 +324,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsFlushingData()
     {
-        $expectedQuery = sprintf("DELETE FROM `%s`", self::TABLE_NAME);
+        $expectedQuery = sprintf('DELETE FROM `%s`', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
         $mockDb->expects($this->once())

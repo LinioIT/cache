@@ -1,6 +1,7 @@
 <?php
 
 namespace Linio\Component\Cache\Adapter;
+
 use Linio\Component\Cache\Exception\KeyNotFoundException;
 
 /**
@@ -40,7 +41,6 @@ class ApcAdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsGettingInexistentKey()
     {
-
         $actual = $this->adapter->get('foo');
     }
 
@@ -84,7 +84,6 @@ class ApcAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSettingMultipleKeys()
     {
-
         $actual = $this->adapter->setMulti(['foo' => 'bar', 'fooz' => 'baz']);
 
         $this->assertTrue($actual);
