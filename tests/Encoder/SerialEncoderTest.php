@@ -35,4 +35,26 @@ class SerialEncoderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function testIsDecodingBoolean()
+    {
+        $value = false;
+        $expected = false;
+
+        $serialEncoder = new SerialEncoder();
+        $actual = $serialEncoder->decode($value);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testIsDecodingNull()
+    {
+        $value = null;
+        $expected = null;
+
+        $serialEncoder = new SerialEncoder();
+        $actual = $serialEncoder->decode($value);
+
+        $this->assertEquals($expected, $actual);
+    }
 }

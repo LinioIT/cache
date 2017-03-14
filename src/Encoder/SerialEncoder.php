@@ -22,6 +22,6 @@ class SerialEncoder implements EncoderInterface
      */
     public function decode($value)
     {
-        return unserialize($value);
+        return unserialize((string) $value);
     }
 }
