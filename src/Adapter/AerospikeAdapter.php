@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
@@ -100,7 +101,7 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
     {
         $status = $this->db->put($this->getNamespacedKey($key), $this->createBin($value), $this->ttl);
 
-        return ($status == \Aerospike::OK);
+        return $status == \Aerospike::OK;
     }
 
     public function setMulti(array $data): bool
@@ -117,7 +118,7 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
     {
         $status = $this->db->exists($this->getNamespacedKey($key), $metadata);
 
-        return ($status == \Aerospike::OK);
+        return $status == \Aerospike::OK;
     }
 
     public function delete(string $key): bool

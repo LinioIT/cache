@@ -10,7 +10,6 @@ class ArrayAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSettingAndGetting()
     {
-
         $adapter = new ArrayAdapter();
         $adapter->setNamespace(static::TEST_NAMESPACE);
 

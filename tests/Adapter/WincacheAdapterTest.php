@@ -1,6 +1,7 @@
 <?php
 
 namespace Linio\Component\Cache\Adapter;
+
 use Linio\Component\Cache\Exception\KeyNotFoundException;
 
 /**
@@ -34,7 +35,6 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsGettingInexistentKey()
     {
-
         $actual = $this->adapter->get('foo');
     }
 
@@ -78,7 +78,6 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSettingMultipleKeys()
     {
-
         $actual = $this->adapter->setMulti(['foo' => 'bar', 'fooz' => 'baz']);
 
         $this->assertTrue($actual);

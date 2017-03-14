@@ -137,7 +137,6 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 
     public function testIsSettingMultipleKeys()
     {
-
         $actual = $this->adapter->setMulti(['foo' => 'bar', 'fooz' => 'baz']);
 
         $this->assertTrue($actual);
@@ -190,7 +189,6 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDeletingInexistentKey()
     {
-
         $actual = $this->adapter->delete('foo');
 
         $this->assertTrue($actual);

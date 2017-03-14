@@ -2,8 +2,6 @@
 
 namespace Linio\Component\Cache;
 
-use Linio\Component\Cache\Adapter\AdapterInterface;
-
 class CacheServiceTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -683,4 +681,3 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($adapterStack[1]->contains('fooz'));
     }
 }
-
