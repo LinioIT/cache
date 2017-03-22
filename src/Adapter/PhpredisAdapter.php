@@ -140,7 +140,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
             $persistentId = sprintf('%s-%s-%s', $params['port'], $params['database'], $connectionId);
             $this->client->pconnect($params['host'], $params['port'], $params['timeout'] ?? 0, $persistentId, $params['retry_interval'] ?? 0);
         } else {
-            $this->client->connect($params['host'], $params['port'], $params['timeout'] ?? 0, $params['retry_interval'] ?? 0);
+            $this->client->connect($params['host'], $params['port'], $params['timeout'] ?? 0, '', $params['retry_interval'] ?? 0);
         }
 
         if ($params['password']) {

@@ -226,7 +226,7 @@ class RedisAdapterTest extends \PHPUnit_Framework_TestCase
 
         $clientMock->expects($this->once())
             ->method('del')
-            ->with($this->equalTo('foo'))
+            ->with($this->equalTo(['foo']))
             ->willReturn(true);
 
         $adapter = $this->getRedisAdapterMock();
@@ -245,9 +245,9 @@ class RedisAdapterTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['del'])
             ->getMock();
 
-        $clientMock->expects($this->exactly(2))
+        $clientMock->expects($this->once())
             ->method('del')
-            ->withConsecutive([$this->equalTo('foo')], [])
+            ->with($this->equalTo(['foo', 'fooz']))
             ->willReturn(true);
 
         $adapter = $this->getRedisAdapterMock();
@@ -268,7 +268,7 @@ class RedisAdapterTest extends \PHPUnit_Framework_TestCase
 
         $clientMock->expects($this->once())
             ->method('del')
-            ->with($this->equalTo('foo'))
+            ->with($this->equalTo(['foo']))
             ->willReturn(true);
 
         $adapter = $this->getRedisAdapterMock();
@@ -287,10 +287,10 @@ class RedisAdapterTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['del'])
             ->getMock();
 
-        $clientMock->expects($this->exactly(2))
+        $clientMock->expects($this->once())
             ->method('del')
-            ->withConsecutive([$this->equalTo('foo')], [$this->equalTo('nop')])
-            ->willReturnOnConsecutiveCalls(true, true);
+            ->with($this->equalTo(['foo', 'nop']))
+            ->willReturn(true);
 
         $adapter = $this->getRedisAdapterMock();
         $adapter->setClient($clientMock);
