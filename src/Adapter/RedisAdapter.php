@@ -85,6 +85,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     {
         $responses = $this->getClient()->pipeline(
             function ($pipe) use ($data) {
+                /* @var $pipe \Predis\Client */
                 foreach ($data as $key => $value) {
                     if ($this->ttl == 0) {
                         $pipe->set($key, $value);
@@ -106,21 +107,19 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
 
     public function contains(string $key): bool
     {
-        return $this->getClient()->exists($key);
+        return (bool) $this->getClient()->exists($key);
     }
 
     public function delete(string $key): bool
     {
-        $this->getClient()->del($key);
+        $this->getClient()->del([$key]);
 
         return true;
     }
 
     public function deleteMulti(array $keys): bool
     {
-        foreach ($keys as $key) {
-            $this->getClient()->del($key);
-        }
+        $this->getClient()->del($keys);
 
         return true;
     }
