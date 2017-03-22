@@ -45,6 +45,7 @@ $container['cache'] = new CacheService([
             'adapter_name' => 'array',
             'adapter_options' => [
                 'cache_not_found_keys' => true,
+                'encoder' => 'json',
             ],
         ],
         1 => [
@@ -59,6 +60,8 @@ $container['cache'] = new CacheService([
                 'host' => 'localhost',
                 'port' => 6379,
                 'ttl' => 0,
+                'encoder' => 'serial',
+            ],
         ],
     ],
 ]);
