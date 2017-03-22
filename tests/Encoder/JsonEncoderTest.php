@@ -17,7 +17,7 @@ class JsonEncoderTest extends \PHPUnit_Framework_TestCase
 
         $actual = $jsonEncoder->encode($value);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testIsDecoding()
@@ -33,6 +33,28 @@ class JsonEncoderTest extends \PHPUnit_Framework_TestCase
 
         $actual = $jsonEncoder->decode($value);
 
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testIsDecodingBoolean()
+    {
+        $value = false;
+        $expected = false;
+
+        $serialEncoder = new JsonEncoder();
+        $actual = $serialEncoder->decode($value);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testIsDecodingNull()
+    {
+        $value = null;
+        $expected = null;
+
+        $serialEncoder = new JsonEncoder();
+        $actual = $serialEncoder->decode($value);
+
+        $this->assertSame($expected, $actual);
     }
 }

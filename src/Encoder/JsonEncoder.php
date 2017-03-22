@@ -25,6 +25,10 @@ class JsonEncoder implements EncoderInterface
      */
     public function decode($value)
     {
+        if (!is_string($value)) {
+            return $value;
+        }
+
         return Json::decode($value);
     }
 }
