@@ -41,27 +41,18 @@ class ApcuAdapter extends AbstractAdapter implements AdapterInterface
 
     public function getMulti(array $keys): array
     {
-        $values = [];
-
-        foreach ($keys as $key) {
-            $value = apcu_fetch($this->addNamespaceToKey($key), $success);
-            if ($success) {
-                $values[$key] = $value;
-            }
-        }
-
-        return $values;
+        return apcu_fetch($this->addNamespaceToKeys($keys));
     }
 
     public function set(string $key, $value): bool
     {
-        return apcu_add($this->addNamespaceToKey($key), $value, $this->ttl);
+        return apcu_store($this->addNamespaceToKey($key), $value, $this->ttl);
     }
 
     public function setMulti(array $data): bool
     {
         $namespacedData = $this->addNamespaceToKeys($data, true);
-        $errors = apcu_add($namespacedData, $this->ttl);
+        $errors = apcu_store($namespacedData, $this->ttl);
 
         return empty($errors);
     }

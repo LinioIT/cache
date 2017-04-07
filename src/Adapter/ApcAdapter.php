@@ -55,13 +55,13 @@ class ApcAdapter extends AbstractAdapter implements AdapterInterface
 
     public function set(string $key, $value): bool
     {
-        return apc_add($this->addNamespaceToKey($key), $value, $this->ttl);
+        return apc_store($this->addNamespaceToKey($key), $value, $this->ttl);
     }
 
     public function setMulti(array $data): bool
     {
         $namespacedData = $this->addNamespaceToKeys($data, true);
-        $errors = apc_add($namespacedData, $this->ttl);
+        $errors = apc_store($namespacedData, $this->ttl);
 
         return empty($errors);
     }
