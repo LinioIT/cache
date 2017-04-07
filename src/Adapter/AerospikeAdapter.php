@@ -4,17 +4,23 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
+use Linio\Component\Cache\Exception\InvalidConfigurationException;
 use Linio\Component\Cache\Exception\KeyNotFoundException;
 
 class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
 {
     const BIN_KEY = 'v';
-    const DEFAULT_SET = 'default';
+    const DEFAULT_AEROSPIKE_NAMESPACE = 'test';
 
     /**
      * @var \Aerospike
      */
     protected $db;
+
+    /**
+     * @var string
+     */
+    protected $aerospikeNamespace;
 
     /**
      * @var int
@@ -48,6 +54,12 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
 
         if (isset($config['cache_not_found_keys'])) {
             $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
+        }
+
+        if (isset($config['aerospike_namespace'])) {
+            $this->aerospikeNamespace = $config['aerospike_namespace'];
+        } else {
+            $this->aerospikeNamespace = self::DEFAULT_AEROSPIKE_NAMESPACE;
         }
 
         $aerospikeConfig['hosts'] = $config['hosts'];
@@ -142,8 +154,8 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
     public function flush(): bool
     {
         $this->db->scan(
+            $this->aerospikeNamespace,
             $this->namespace,
-            static::DEFAULT_SET,
             function ($record) {
                 unset($record['key']['key']);
                 $this->db->remove($record['key']);
@@ -155,7 +167,7 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
 
     protected function getNamespacedKey(string $key)
     {
-        return $this->db->initKey($this->namespace, static::DEFAULT_SET, $key);
+        return $this->db->initKey($this->aerospikeNamespace, $this->namespace, $key);
     }
 
     protected function createBin($value): array
