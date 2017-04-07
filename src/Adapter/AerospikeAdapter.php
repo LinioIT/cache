@@ -167,7 +167,7 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
 
     protected function getNamespacedKey(string $key)
     {
-        return $this->db->initKey($this->aerospikeNamespace, $this->namespace, $key);
+        return $this->db->initKey($this->aerospikeNamespace, str_replace($this->namespace, [':', '.'], '_'), $key);
     }
 
     protected function createBin($value): array
