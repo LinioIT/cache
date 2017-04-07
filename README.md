@@ -305,10 +305,13 @@ The `ensure_table_created` is used to ensure the cache table exists in the datab
 Adapter options:
 
 - `hosts`
+- `aerospike_namespace` *optional* default: test
 - `persistent` *optional* default: true
 - `options` *optional* default: []
 - `ttl` *optional* default: 0 (unlimited)
 - `cache_not_found_keys` *optional* default: false
+
+For the Aerospike adapter, the *aerospike_namespace* property will be used as the *namespace* in Aerospike, and the *namespace* configuration in the *CacheService* will be used as the *set* in Aerospike.
 
 Requires [Aerospike Extension](https://github.com/aerospike/aerospike-client-php).
 
