@@ -11,17 +11,17 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
 
     public function __construct()
     {
-        $this->layer1CacheAdapterName = (extension_loaded('apc')) ? 'apc' : 'wincache';
+        $this->layer1CacheAdapterName = (extension_loaded('apcu')) ? 'apcu' : 'wincache';
     }
 
     protected function setUp()
     {
-        if (extension_loaded('apc')) {
-            apc_clear_cache('user');
+        if (extension_loaded('apcu')) {
+            apcu_clear_cache();
         } elseif (extension_loaded('wincache')) {
             wincache_ucache_clear();
         } else {
-            $this->markTestSkipped('missing cache extension: apc |" wincache');
+            $this->markTestSkipped('missing cache extension: apcu |" wincache');
         }
     }
 
@@ -97,7 +97,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
                 'encoder' => 'nop',
                 'layers' => [
                     0 => [
-                        'adapter_name' => 'apc',
+                        'adapter_name' => 'apcu',
                         'adapter_options' => [],
                     ],
                 ],
