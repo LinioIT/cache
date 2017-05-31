@@ -235,6 +235,20 @@ Requires [WinCache extension](http://www.iis.net/downloads/microsoft/wincache-ex
 
 ----------
 
+### `memcached`
+
+Adapter options:
+
+- `servers` array of memcache servers. format: [[<host1>, <port1>, <weight1>], [<host2>, <port2>, <weight2>], ...]
+- `options` array of memcache options. format: [<option_name1> => <value1>, <option_name2> => <value2>, ...] 
+- `persistent_id` *optional* default: null
+- `ttl` *optional* default: 0 (unlimited)
+- `cache_not_found_keys` *optional* default: false
+
+Requires [Memcached extension](http://php.net/manual/en/book.memcached.php).
+
+----------
+
 ### `redis`
 
 Adapter options:
