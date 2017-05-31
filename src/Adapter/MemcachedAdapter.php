@@ -62,7 +62,9 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
 
     public function getMulti(array $keys): array
     {
-        return $this->memcached->getMulti($this->addNamespaceToKeys($keys));
+        $namespacedKeys = $this->memcached->getMulti($this->addNamespaceToKeys($keys));
+
+        return $this->removeNamespaceFromKeys($namespacedKeys);
     }
 
     public function set(string $key, $value): bool
