@@ -1,12 +1,27 @@
 language: php
 
+env:
+  - PHP_BUILD_ZTS_ENABLE=off
+
 php:
   - 7.0
+  - 7.1
+
+services:
+  - memcached
+  - redis
 
 before_install:
   - travis_retry composer self-update
+  - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "apc.enable_cli = On" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - pecl install igbinary
+  - wget https://pecl.php.net/get/apcu_bc-1.0.3.tgz && tar -xzf apcu_bc-1.0.3.tgz && cd apcu_bc-1.0.3 && phpize . && ./configure && make install && echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini && cd ..
+  - wget https://pecl.php.net/get/redis-3.1.2.tgz && tar -xzf redis-3.1.2.tgz && cd redis-3.1.2 && phpize . && ./configure --enable-redis-igbinary && make install && echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini && cd ..
+
 install:
-  - travis_retry composer install --no-interaction --prefer-source --dev
+  - travis_retry composer install --no-interaction --prefer-source
 
 script:
   - bin/phpunit --verbose

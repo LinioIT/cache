@@ -38,6 +38,10 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 
     public function testIsCreatingPersistentConnection()
     {
+        if (!$this->isThreadSafe()) {
+            $this->markTestSkipped("Using thread safe version. Persistent connection is not supported when thread safe is enabled.");
+        }
+
         $connection1 = new PhpredisAdapter(['connection_persistent' => true], false);
         $client1 = PHPUnit_Framework_Assert::readAttribute($connection1, 'client');
         /* @var $client1 \Redis */
@@ -66,6 +70,10 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 
     public function testIsRespectingPoolSize()
     {
+        if (!$this->isThreadSafe()) {
+            $this->markTestSkipped("Using thread safe version. Persistent connection is not supported when thread safe is enabled.");
+        }
+
         $connections = [];
         for ($i = 1; $i <= 100; $i++) {
             $connection = new PhpredisAdapter(['connection_persistent' => true, 'pool_size' => 10], false);
@@ -244,5 +252,12 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($flushResult);
         $this->assertNull($actual1);
         $this->assertNull($actual2);
+    }
+
+    protected function isThreadSafe()
+    {
+        ob_start();
+        phpinfo(INFO_GENERAL);
+        return preg_match('/Thread\s*Safety\s*enabled/i', strip_tags(ob_get_clean()));
     }
 }
