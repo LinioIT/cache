@@ -34,7 +34,7 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
 
         $persistentId = null;
         if (isset($config['connection_persistent']) && $config['connection_persistent']) {
-            $persistentId = (string) 1;
+            $persistentId = '1';
 
             if (isset($config['pool_size']) && $config['pool_size'] > 1) {
                 $persistentId = (string) mt_rand(1, $config['pool_size']);

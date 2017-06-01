@@ -37,6 +37,13 @@ class MemcachedAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 
     public function testIsRespectingPoolSize()
     {
+        $connection = new MemcachedAdapter($this->getMemcachedPersistentTestConfiguration());
+        $client1 = PHPUnit_Framework_Assert::readAttribute($connection, 'memcached');
+        /* @var $client100 \Memcached */
+        $stats = $client100->getStats();
+        $serverStats = reset($stats);
+        $initialConnections = $serverStats['curr_connections'];
+
         $connections = [];
         for ($i = 1; $i <= 100; $i++) {
             $connection = new MemcachedAdapter($this->getMemcachedPersistentTestConfiguration());
@@ -49,7 +56,7 @@ class MemcachedAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $serverStats = reset($stats);
         $currentConnections = $serverStats['curr_connections'];
 
-        $this->assertEquals(10, $currentConnections);
+        $this->assertEquals(10, $currentConnections - $initialConnections);
     }
 
     public function testIsSettingAndGetting()
