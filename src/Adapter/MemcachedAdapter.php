@@ -44,10 +44,6 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
             $this->memcached->setOptions($config['options']);
         }
 
-        if ($this->namespace) {
-            $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $this->namespace);
-        }
-
         if (isset($config['cache_not_found_keys'])) {
             $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
         }
@@ -132,5 +128,11 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
         if (isset($config['ttl']) && !is_numeric($config['ttl'])) {
             throw new InvalidConfigurationException('Invalid configuration parameter: ttl');
         }
+    }
+
+    public function setNamespace(string $namespace)
+    {
+        parent::setNamespace($namespace);
+        $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $this->namespace);
     }
 }
