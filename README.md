@@ -241,7 +241,8 @@ Adapter options:
 
 - `servers` array of memcache servers. format: [[<host1>, <port1>, <weight1>], [<host2>, <port2>, <weight2>], ...]
 - `options` array of memcache options. format: [<option_name1> => <value1>, <option_name2> => <value2>, ...] 
-- `persistent_id` *optional* default: null
+- `connection_persistent` *optional* default: false
+- `pool_size` *optional* default: 1 (only for persistent connections)
 - `ttl` *optional* default: 0 (unlimited)
 - `cache_not_found_keys` *optional* default: false
 
