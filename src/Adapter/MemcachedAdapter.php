@@ -45,7 +45,7 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if ($this->namespace) {
-            $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $this->namespace);
+            $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $this->namespace . ':');
         }
 
         if (isset($config['cache_not_found_keys'])) {
