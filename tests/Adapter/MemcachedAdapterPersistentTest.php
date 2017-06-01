@@ -56,7 +56,7 @@ class MemcachedAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $serverStats = reset($stats);
         $currentConnections = $serverStats['curr_connections'];
 
-        $this->assertLessThanOrEqual(9, $currentConnections - $initialConnections);
+        $this->assertLessThanOrEqual(15, $currentConnections - $initialConnections);
     }
 
     public function testIsSettingAndGetting()
