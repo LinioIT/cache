@@ -42,7 +42,10 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         $this->memcached = new Memcached($persistentId);
-        $this->memcached->addServers($config['servers']);
+
+        if (empty($this->memcached->getServerList())) {
+            $this->memcached->addServers($config['servers']);
+        }
 
         if (isset($config['options']) && !empty($config['options'])) {
             $this->memcached->setOptions($config['options']);
