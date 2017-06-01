@@ -3,6 +3,7 @@
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use PHPUnit_Framework_Assert;
 
 /**
  * @requires extension memcached
