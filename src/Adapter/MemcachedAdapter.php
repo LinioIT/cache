@@ -137,4 +137,10 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidConfigurationException('Invalid configuration parameter: ttl');
         }
     }
+
+    public function setNamespace(string $namespace)
+    {
+        parent::setNamespace($namespace);
+        $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $this->namespace);
+    }
 }
