@@ -3,11 +3,12 @@
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use PHPUnit_Framework_Assert;
 
 /**
  * @requires extension memcached
  */
-class MemcachedAdapterTest extends \PHPUnit_Framework_TestCase
+class MemcachedAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ApcAdapter
@@ -21,10 +22,41 @@ class MemcachedAdapterTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->adapter = new MemcachedAdapter($this->getMemcachedTestConfiguration());
+        $this->adapter = new MemcachedAdapter($this->getMemcachedPersistentTestConfiguration());
         $this->namespace = 'mx';
         $this->adapter->setNamespace($this->namespace);
         $this->adapter->flush();
+    }
+
+    public function testIsCreatingPersistentConnection()
+    {
+        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'memcached');
+        /* @var $client \Memcached */
+        $this->assertTrue($client->isPersistent());
+    }
+
+    public function testIsRespectingPoolSize()
+    {
+        $connection = new MemcachedAdapter($this->getMemcachedPersistentTestConfiguration());
+        $client1 = PHPUnit_Framework_Assert::readAttribute($connection, 'memcached');
+        /* @var $client1 \Memcached */
+        $stats = $client1->getStats();
+        $serverStats = reset($stats);
+        $initialConnections = $serverStats['curr_connections'];
+
+        $connections = [];
+        for ($i = 1; $i <= 100; $i++) {
+            $connection = new MemcachedAdapter($this->getMemcachedPersistentTestConfiguration());
+            $connections[] = $connection;
+        }
+
+        $client100 = PHPUnit_Framework_Assert::readAttribute($connection, 'memcached');
+        /* @var $client100 \Memcached */
+        $stats = $client100->getStats();
+        $serverStats = reset($stats);
+        $currentConnections = $serverStats['curr_connections'];
+
+        $this->assertLessThanOrEqual(15, $currentConnections - $initialConnections);
     }
 
     public function testIsSettingAndGetting()
@@ -193,12 +225,14 @@ class MemcachedAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual2);
     }
 
-    protected function getMemcachedTestConfiguration()
+    protected function getMemcachedPersistentTestConfiguration()
     {
         return [
             'servers' => [
                 ['127.0.0.1', 11211]
             ],
+            'connection_persistent' => true,
+            'pool_size' => 10,
         ];
     }
 }
