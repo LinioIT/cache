@@ -48,6 +48,10 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
             $this->memcached->setOptions($config['options']);
         }
 
+        if ($this->namespace) {
+            $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $this->namespace);
+        }
+
         if (isset($config['cache_not_found_keys'])) {
             $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
         }
@@ -55,7 +59,7 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
 
     public function get(string $key)
     {
-        $value = $this->memcached->get($this->addNamespaceToKey($key));
+        $value = $this->memcached->get($key);
 
         if ($this->memcached->getResultCode() == Memcached::RES_NOTFOUND) {
             throw new KeyNotFoundException();
@@ -66,21 +70,17 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
 
     public function getMulti(array $keys): array
     {
-        $namespacedKeys = $this->memcached->getMulti($this->addNamespaceToKeys($keys));
-
-        return $this->removeNamespaceFromKeys($namespacedKeys);
+        return $this->memcached->getMulti($keys);
     }
 
     public function set(string $key, $value): bool
     {
-        return $this->memcached->set($this->addNamespaceToKey($key), $value, $this->ttl);
+        return $this->memcached->set($key, $value, $this->ttl);
     }
 
     public function setMulti(array $data): bool
     {
-        $namespacedData = $this->addNamespaceToKeys($data, true);
-
-        return $this->memcached->setMulti($namespacedData, $this->ttl);
+        return $this->memcached->setMulti($data, $this->ttl);
     }
 
     public function contains(string $key): bool
@@ -96,16 +96,14 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
 
     public function delete(string $key): bool
     {
-        $this->memcached->delete($this->addNamespaceToKey($key));
+        $this->memcached->delete($key);
 
         return true;
     }
 
     public function deleteMulti(array $keys): bool
     {
-        $namespacedKeys = $this->addNamespaceToKeys($keys);
-
-        $this->memcached->deleteMulti($namespacedKeys);
+        $this->memcached->deleteMulti($keys);
 
         return true;
     }
