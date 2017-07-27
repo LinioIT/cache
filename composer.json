@@ -31,7 +31,5 @@
         "psr-4": {
             "Linio\\Component\\Cache\\": "tests"
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
