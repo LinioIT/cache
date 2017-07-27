@@ -22,9 +22,6 @@
         "ext-aerospike": "Allows usage of Aerospike adapter",
         "ext-redis": "Allows usage of phpredis adapter"
     },
-    "config": {
-        "bin-dir": "bin"
-    },
     "autoload": {
         "psr-4": {
             "Linio\\Component\\Cache\\": "src"
