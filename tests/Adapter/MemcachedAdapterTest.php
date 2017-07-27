@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
@@ -197,7 +199,7 @@ class MemcachedAdapterTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'servers' => [
-                ['127.0.0.1', 11211]
+                ['127.0.0.1', 11211],
             ],
         ];
     }

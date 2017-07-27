@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Linio\Component\Cache\Encoder;
 
 class SerialEncoderTest extends \PHPUnit_Framework_TestCase

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
@@ -30,16 +32,15 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
-        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
-
         /** @var $client \Redis */
+        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
         $client->close();
     }
 
     public function testIsCreatingPersistentConnection()
     {
         if (!$this->isThreadSafe()) {
-            $this->markTestSkipped("Using thread safe version. Persistent connection is not supported when thread safe is enabled.");
+            $this->markTestSkipped('Using thread safe version. Persistent connection is not supported when thread safe is enabled.');
         }
 
         $connection1 = new PhpredisAdapter(['connection_persistent' => true], false);
@@ -71,7 +72,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
     public function testIsRespectingPoolSize()
     {
         if (!$this->isThreadSafe()) {
-            $this->markTestSkipped("Using thread safe version. Persistent connection is not supported when thread safe is enabled.");
+            $this->markTestSkipped('Using thread safe version. Persistent connection is not supported when thread safe is enabled.');
         }
 
         $connections = [];
@@ -258,6 +259,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
     {
         ob_start();
         phpinfo(INFO_GENERAL);
+
         return preg_match('/Thread\s*Safety\s*enabled/i', strip_tags(ob_get_clean()));
     }
 }

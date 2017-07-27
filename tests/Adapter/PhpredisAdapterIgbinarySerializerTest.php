@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
@@ -36,9 +38,8 @@ class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
-        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
-
         /** @var $client \Redis */
+        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
         $client->close();
     }
 

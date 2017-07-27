@@ -194,16 +194,16 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
     protected function getConnectionParameters(array $config): array
     {
         $connectionParameters = [];
-        $connectionParameters['host'] = isset($config['host']) ? $config['host'] : '127.0.0.1';
-        $connectionParameters['port'] = isset($config['port']) ? $config['port'] : 6379;
-        $connectionParameters['password'] = isset($config['password']) ? $config['password'] : null;
-        $connectionParameters['database'] = isset($config['database']) ? $config['database'] : 0;
-        $connectionParameters['timeout'] = isset($config['timeout']) ? $config['timeout'] : null;
-        $connectionParameters['read_timeout'] = isset($config['read_timeout']) ? $config['read_timeout'] : null;
-        $connectionParameters['retry_interval'] = isset($config['retry_interval']) ? $config['retry_interval'] : null;
-        $connectionParameters['serializer'] = isset($config['serializer']) ? $config['serializer'] : null;
-        $connectionParameters['connection_persistent'] = isset($config['connection_persistent']) ? $config['connection_persistent'] : false;
-        $connectionParameters['pool_size'] = isset($config['pool_size']) ? $config['pool_size'] : 1;
+        $connectionParameters['host'] = $config['host'] ?? '127.0.0.1';
+        $connectionParameters['port'] = $config['port'] ?? 6379;
+        $connectionParameters['password'] = $config['password'] ?? null;
+        $connectionParameters['database'] = $config['database'] ?? 0;
+        $connectionParameters['timeout'] = $config['timeout'] ?? null;
+        $connectionParameters['read_timeout'] = $config['read_timeout'] ?? null;
+        $connectionParameters['retry_interval'] = $config['retry_interval'] ?? null;
+        $connectionParameters['serializer'] = $config['serializer'] ?? null;
+        $connectionParameters['connection_persistent'] = $config['connection_persistent'] ?? false;
+        $connectionParameters['pool_size'] = $config['pool_size'] ?? 1;
 
         return $connectionParameters;
     }

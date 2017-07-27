@@ -98,7 +98,7 @@ class CacheService
      */
     public function get(string $key)
     {
-        list($value, $success) = $this->recursiveGet($key);
+        [$value, $success] = $this->recursiveGet($key);
 
         if (!$success) {
             return;
@@ -129,7 +129,7 @@ class CacheService
             return [$value, $keyFound];
         }
 
-        list($value, $keyFound) = $this->recursiveGet($key, $level + 1);
+        [$value, $keyFound] = $this->recursiveGet($key, $level + 1);
 
         if ($keyFound || (!$keyFound && $adapter->cacheNotFoundKeys())) {
             $adapter->set($key, $value);
@@ -306,8 +306,8 @@ class CacheService
                 throw new InvalidConfigurationException('Adapter class does not exist: ' . $adapterClass);
             }
 
-            $adapterInstance = new $adapterClass($adapterConfig['adapter_options']);
             /** @var $adapterInstance AdapterInterface */
+            $adapterInstance = new $adapterClass($adapterConfig['adapter_options']);
             $adapterInstance->setNamespace($this->namespace);
 
             $this->adapterStack[] = $adapterInstance;

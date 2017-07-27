@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
@@ -30,8 +32,8 @@ class MemcachedAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 
     public function testIsCreatingPersistentConnection()
     {
-        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'memcached');
         /** @var $client \Memcached */
+        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'memcached');
         $this->assertTrue($client->isPersistent());
     }
 
@@ -229,7 +231,7 @@ class MemcachedAdapterPersistentTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'servers' => [
-                ['127.0.0.1', 11211]
+                ['127.0.0.1', 11211],
             ],
             'connection_persistent' => true,
             'pool_size' => 10,

@@ -84,8 +84,8 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     public function setMulti(array $data): bool
     {
         $responses = $this->getClient()->pipeline(
+            /** @var $pipe \Predis\Client */
             function ($pipe) use ($data) {
-                /** @var $pipe \Predis\Client */
                 foreach ($data as $key => $value) {
                     if ($this->ttl == 0) {
                         $pipe->set($key, $value);
