@@ -11,7 +11,6 @@ services:
   - redis
 
 before_install:
-  - travis_retry composer self-update
   - echo "extension = apcu.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "apc.enable_cli = On" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
@@ -23,7 +22,8 @@ install:
   - travis_retry composer install --no-interaction --prefer-source
 
 script:
-  - bin/phpunit --verbose
+  - vendor/bin/php-cs-fixer fix --dry-run -v
+  - vendor/bin/phpunit --verbose
 
 matrix:
   fast_finish: true
