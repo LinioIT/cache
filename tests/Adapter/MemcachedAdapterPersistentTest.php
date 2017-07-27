@@ -31,7 +31,7 @@ class MemcachedAdapterPersistentTest extends \PHPUnit_Framework_TestCase
     public function testIsCreatingPersistentConnection()
     {
         $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'memcached');
-        /* @var $client \Memcached */
+        /** @var $client \Memcached */
         $this->assertTrue($client->isPersistent());
     }
 
@@ -39,7 +39,7 @@ class MemcachedAdapterPersistentTest extends \PHPUnit_Framework_TestCase
     {
         $connection = new MemcachedAdapter($this->getMemcachedPersistentTestConfiguration());
         $client1 = PHPUnit_Framework_Assert::readAttribute($connection, 'memcached');
-        /* @var $client1 \Memcached */
+        /** @var $client1 \Memcached */
         $stats = $client1->getStats();
         $serverStats = reset($stats);
         $initialConnections = $serverStats['curr_connections'];
@@ -51,7 +51,7 @@ class MemcachedAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         }
 
         $client100 = PHPUnit_Framework_Assert::readAttribute($connection, 'memcached');
-        /* @var $client100 \Memcached */
+        /** @var $client100 \Memcached */
         $stats = $client100->getStats();
         $serverStats = reset($stats);
         $currentConnections = $serverStats['curr_connections'];

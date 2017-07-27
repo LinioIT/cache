@@ -32,7 +32,7 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
 
-        /* @var $client \Redis */
+        /** @var $client \Redis */
         $client->close();
     }
 

@@ -32,7 +32,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
     {
         $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
 
-        /* @var $client \Redis */
+        /** @var $client \Redis */
         $client->close();
     }
 
@@ -44,19 +44,19 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
 
         $connection1 = new PhpredisAdapter(['connection_persistent' => true], false);
         $client1 = PHPUnit_Framework_Assert::readAttribute($connection1, 'client');
-        /* @var $client1 \Redis */
+        /** @var $client1 \Redis */
         $info1 = $client1->info();
         $connectedClients1 = $info1['connected_clients'];
 
         $connection2 = new PhpredisAdapter(['connection_persistent' => true], false);
         $client2 = PHPUnit_Framework_Assert::readAttribute($connection2, 'client');
-        /* @var $client2 \Redis */
+        /** @var $client2 \Redis */
         $info2 = $client2->info();
         $connectedClients2 = $info2['connected_clients'];
 
         $connection3 = new PhpredisAdapter(['connection_persistent' => false], false);
         $client3 = PHPUnit_Framework_Assert::readAttribute($connection3, 'client');
-        /* @var $client3 \Redis */
+        /** @var $client3 \Redis */
         $info3 = $client3->info();
         $connectedClients3 = $info3['connected_clients'];
 
@@ -81,7 +81,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         }
 
         $client100 = PHPUnit_Framework_Assert::readAttribute($connection, 'client');
-        /* @var $client100 \Redis */
+        /** @var $client100 \Redis */
         $info = $client100->info();
         $connectedClients = $info['connected_clients'];
 

@@ -307,7 +307,7 @@ class CacheService
             }
 
             $adapterInstance = new $adapterClass($adapterConfig['adapter_options']);
-            /* @var $adapterInstance AdapterInterface */
+            /** @var $adapterInstance AdapterInterface */
             $adapterInstance->setNamespace($this->namespace);
 
             $this->adapterStack[] = $adapterInstance;

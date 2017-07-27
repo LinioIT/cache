@@ -85,7 +85,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     {
         $responses = $this->getClient()->pipeline(
             function ($pipe) use ($data) {
-                /* @var $pipe \Predis\Client */
+                /** @var $pipe \Predis\Client */
                 foreach ($data as $key => $value) {
                     if ($this->ttl == 0) {
                         $pipe->set($key, $value);
@@ -98,7 +98,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
 
         $result = true;
         foreach ($responses as $response) {
-            /* @var $response \Predis\Response\Status */
+            /** @var $response \Predis\Response\Status */
             $result = $result && ($response->getPayload() == 'OK');
         }
 
