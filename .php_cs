@@ -12,7 +12,6 @@ return PhpCsFixer\Config::create()
         'concat_space' => ['spacing' => 'one'],
         'declare_strict_types' => true,
         'is_null' => ['use_yoda_style' => false],
-        'list_syntax' => ['syntax' => 'short'],
         'method_argument_space' => ['ensure_fully_multiline' => true],
         'modernize_types_casting' => true,
         'no_multiline_whitespace_before_semicolons' => true,
@@ -26,6 +25,8 @@ return PhpCsFixer\Config::create()
         'pre_increment' => false,
         'single_line_comment_style' => true,
         'ternary_to_null_coalescing' => true,
+        'increment_style' => ['style' => 'post'],
+        'yoda_style' => false,
     ])
     ->setFinder($finder)
     ->setUsingCache(true)
