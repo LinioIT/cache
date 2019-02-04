@@ -13,7 +13,7 @@
         "doctrine/inflector": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.0",
+        "phpunit/phpunit": "^5.0 || ^8.0",
         "contorion/aerospike-stub": "1.0.*",
         "friendsofphp/php-cs-fixer": "^2.0"
     },
