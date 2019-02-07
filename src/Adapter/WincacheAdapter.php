@@ -48,9 +48,7 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
             return [];
         }
 
-        $values = $this->removeNamespaceFromKeys($namespacedValues);
-
-        return $values;
+        return $this->removeNamespaceFromKeys($namespacedValues);
     }
 
     public function set(string $key, $value): bool

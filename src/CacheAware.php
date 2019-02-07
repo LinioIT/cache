@@ -16,7 +16,7 @@ trait CacheAware
         return $this->cacheService;
     }
 
-    public function setCacheService(CacheService $cacheService)
+    public function setCacheService(CacheService $cacheService): void
     {
         $this->cacheService = $cacheService;
     }

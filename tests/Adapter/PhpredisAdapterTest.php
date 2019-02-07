@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
-use PHPUnit_Framework_Assert;
+use PHPUnit\Framework\Assert;
 
 /**
  * @requires extension redis
  */
-class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
+class PhpredisAdapterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PhpredisAdapter
@@ -22,7 +22,7 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
      */
     protected $namespace;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adapter = new PhpredisAdapter(['connection_persistent' => false]);
         $this->namespace = 'mx';
@@ -30,14 +30,14 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->adapter->flush();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         /** @var $client \Redis */
-        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
+        $client = Assert::readAttribute($this->adapter, 'client');
         $client->close();
     }
 
-    public function testIsSettingAndGetting()
+    public function testIsSettingAndGetting(): void
     {
         $setResult = $this->adapter->set('foo', 'bar');
         $actual = $this->adapter->get('foo');
@@ -46,15 +46,14 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\KeyNotFoundException
-     */
-    public function testIsGettingInexistentKey()
+    public function testIsGettingInexistentKey(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
+
         $actual = $this->adapter->get('foo');
     }
 
-    public function testIsFindingKey()
+    public function testIsFindingKey(): void
     {
         $this->adapter->set('foo', 'bar');
 
@@ -63,7 +62,7 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsNotFindingKey()
+    public function testIsNotFindingKey(): void
     {
         $this->adapter->set('foo', 'bar');
 
@@ -72,7 +71,7 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
     }
 
-    public function testIsGettingMultipleKeys()
+    public function testIsGettingMultipleKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -82,7 +81,7 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar', 'fooz' => 'baz'], $actual);
     }
 
-    public function testIsGettingMultipleKeysWithInvalidKeys()
+    public function testIsGettingMultipleKeysWithInvalidKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -92,7 +91,7 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar'], $actual);
     }
 
-    public function testIsSettingMultipleKeys()
+    public function testIsSettingMultipleKeys(): void
     {
         $actual = $this->adapter->setMulti(['foo' => 'bar', 'fooz' => 'baz']);
 
@@ -101,7 +100,7 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $this->adapter->get('fooz'));
     }
 
-    public function testIsDeletingKey()
+    public function testIsDeletingKey(): void
     {
         $this->adapter->set('foo', 'bar');
 
@@ -118,7 +117,7 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual);
     }
 
-    public function testIsDeletingMultipleKeys()
+    public function testIsDeletingMultipleKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -144,14 +143,14 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual2);
     }
 
-    public function testIsDeletingInexistentKey()
+    public function testIsDeletingInexistentKey(): void
     {
         $actual = $this->adapter->delete('foo');
 
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentMultipleKeys()
+    public function testIsDeletingInexistentMultipleKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -177,7 +176,7 @@ class PhpredisAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $actual2);
     }
 
-    public function testIsFlushingData()
+    public function testIsFlushingData(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');

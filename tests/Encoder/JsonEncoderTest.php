@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache\Encoder;
 
-class JsonEncoderTest extends \PHPUnit_Framework_TestCase
+class JsonEncoderTest extends \PHPUnit\Framework\TestCase
 {
-    public function testIsEncoding()
+    public function testIsEncoding(): void
     {
         $value = [
             'foo' => 1,
@@ -22,7 +22,7 @@ class JsonEncoderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testIsDecoding()
+    public function testIsDecoding(): void
     {
         $value = '{"foo":1,"bar":"string"}';
 
@@ -38,7 +38,7 @@ class JsonEncoderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testIsDecodingBoolean()
+    public function testIsDecodingBoolean(): void
     {
         $value = false;
         $expected = false;
@@ -49,7 +49,7 @@ class JsonEncoderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testIsDecodingNull()
+    public function testIsDecodingNull(): void
     {
         $value = null;
         $expected = null;

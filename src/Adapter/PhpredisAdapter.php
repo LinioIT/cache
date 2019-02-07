@@ -121,12 +121,12 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         return (bool) $this->getClient()->flushDB();
     }
 
-    public function setClient(Redis $client)
+    public function setClient(Redis $client): void
     {
         $this->client = $client;
     }
 
-    protected function createClient(array $config)
+    protected function createClient(array $config): void
     {
         $params = $this->getConnectionParameters($config);
         $this->client = new Redis();
@@ -135,7 +135,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
             $connectionId = 1;
 
             if ($params['pool_size'] > 1) {
-                $connectionId = mt_rand(1, $params['pool_size']);
+                $connectionId = random_int(1, $params['pool_size']);
             }
 
             $persistentId = sprintf('%s-%s-%s', $params['port'], $params['database'], $connectionId);
@@ -208,13 +208,13 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         return $connectionParameters;
     }
 
-    public function setNamespace(string $namespace)
+    public function setNamespace(string $namespace): void
     {
         $this->getClient()->setOption(Redis::OPT_PREFIX, $namespace . ':');
         parent::setNamespace($namespace);
     }
 
-    public function setTtl(int $ttl)
+    public function setTtl(int $ttl): void
     {
         $this->ttl = $ttl;
     }

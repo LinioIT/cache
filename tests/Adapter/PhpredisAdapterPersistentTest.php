@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
-use PHPUnit_Framework_Assert;
+use PHPUnit\Framework\Assert;
 
 /**
  * @requires extension redis
  */
-class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
+class PhpredisAdapterPersistentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PhpredisAdapter
@@ -22,7 +22,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
      */
     protected $namespace;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adapter = new PhpredisAdapter(['connection_persistent' => true], false);
         $this->namespace = 'mx';
@@ -30,33 +30,33 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->adapter->flush();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         /** @var $client \Redis */
-        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
+        $client = Assert::readAttribute($this->adapter, 'client');
         $client->close();
     }
 
-    public function testIsCreatingPersistentConnection()
+    public function testIsCreatingPersistentConnection(): void
     {
         if (!$this->isThreadSafe()) {
             $this->markTestSkipped('Using thread safe version. Persistent connection is not supported when thread safe is enabled.');
         }
 
         $connection1 = new PhpredisAdapter(['connection_persistent' => true], false);
-        $client1 = PHPUnit_Framework_Assert::readAttribute($connection1, 'client');
+        $client1 = Assert::readAttribute($connection1, 'client');
         /** @var $client1 \Redis */
         $info1 = $client1->info();
         $connectedClients1 = $info1['connected_clients'];
 
         $connection2 = new PhpredisAdapter(['connection_persistent' => true], false);
-        $client2 = PHPUnit_Framework_Assert::readAttribute($connection2, 'client');
+        $client2 = Assert::readAttribute($connection2, 'client');
         /** @var $client2 \Redis */
         $info2 = $client2->info();
         $connectedClients2 = $info2['connected_clients'];
 
         $connection3 = new PhpredisAdapter(['connection_persistent' => false], false);
-        $client3 = PHPUnit_Framework_Assert::readAttribute($connection3, 'client');
+        $client3 = Assert::readAttribute($connection3, 'client');
         /** @var $client3 \Redis */
         $info3 = $client3->info();
         $connectedClients3 = $info3['connected_clients'];
@@ -69,7 +69,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $connectedClients3 - $connectedClients2);
     }
 
-    public function testIsRespectingPoolSize()
+    public function testIsRespectingPoolSize(): void
     {
         if (!$this->isThreadSafe()) {
             $this->markTestSkipped('Using thread safe version. Persistent connection is not supported when thread safe is enabled.');
@@ -81,7 +81,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
             $connections[] = $connection;
         }
 
-        $client100 = PHPUnit_Framework_Assert::readAttribute($connection, 'client');
+        $client100 = Assert::readAttribute($connection, 'client');
         /** @var $client100 \Redis */
         $info = $client100->info();
         $connectedClients = $info['connected_clients'];
@@ -89,7 +89,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(10, $connectedClients);
     }
 
-    public function testIsSettingAndGetting()
+    public function testIsSettingAndGetting(): void
     {
         $setResult = $this->adapter->set('foo', 'bar');
         $actual = $this->adapter->get('foo');
@@ -98,15 +98,14 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\KeyNotFoundException
-     */
-    public function testIsGettingInexistentKey()
+    public function testIsGettingInexistentKey(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
+
         $actual = $this->adapter->get('foo');
     }
 
-    public function testIsFindingKey()
+    public function testIsFindingKey(): void
     {
         $this->adapter->set('foo', 'bar');
 
@@ -115,7 +114,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsNotFindingKey()
+    public function testIsNotFindingKey(): void
     {
         $this->adapter->set('foo', 'bar');
 
@@ -124,7 +123,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
     }
 
-    public function testIsGettingMultipleKeys()
+    public function testIsGettingMultipleKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -134,7 +133,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar', 'fooz' => 'baz'], $actual);
     }
 
-    public function testIsGettingMultipleKeysWithInvalidKeys()
+    public function testIsGettingMultipleKeysWithInvalidKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -144,7 +143,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar'], $actual);
     }
 
-    public function testIsSettingMultipleKeys()
+    public function testIsSettingMultipleKeys(): void
     {
         $actual = $this->adapter->setMulti(['foo' => 'bar', 'fooz' => 'baz']);
 
@@ -153,7 +152,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $this->adapter->get('fooz'));
     }
 
-    public function testIsDeletingKey()
+    public function testIsDeletingKey(): void
     {
         $this->adapter->set('foo', 'bar');
 
@@ -170,7 +169,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual);
     }
 
-    public function testIsDeletingMultipleKeys()
+    public function testIsDeletingMultipleKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -196,14 +195,14 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual2);
     }
 
-    public function testIsDeletingInexistentKey()
+    public function testIsDeletingInexistentKey(): void
     {
         $actual = $this->adapter->delete('foo');
 
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentMultipleKeys()
+    public function testIsDeletingInexistentMultipleKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -229,7 +228,7 @@ class PhpredisAdapterPersistentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $actual2);
     }
 
-    public function testIsFlushingData()
+    public function testIsFlushingData(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');

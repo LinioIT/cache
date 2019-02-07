@@ -37,7 +37,7 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
             $persistentId = '1';
 
             if (isset($config['pool_size']) && $config['pool_size'] > 1) {
-                $persistentId = (string) mt_rand(1, $config['pool_size']);
+                $persistentId = (string) random_int(1, $config['pool_size']);
             }
         }
 
@@ -113,7 +113,7 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
         return $this->memcached->flush();
     }
 
-    protected function validateMemcacheConfiguration(array $config)
+    protected function validateMemcacheConfiguration(array $config): void
     {
         if (!array_key_exists('servers', $config)) {
             throw new InvalidConfigurationException('Missing configuration parameter: servers');
@@ -138,7 +138,7 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
-    public function setNamespace(string $namespace)
+    public function setNamespace(string $namespace): void
     {
         parent::setNamespace($namespace);
         $this->memcached->setOption(Memcached::OPT_PREFIX_KEY, $this->namespace);

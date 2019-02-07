@@ -64,7 +64,7 @@ class CacheService
         return $this->logger;
     }
 
-    public function setLogger(LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
     }
@@ -74,7 +74,7 @@ class CacheService
         return $this->namespace;
     }
 
-    public function setNamespace(string $namespace)
+    public function setNamespace(string $namespace): void
     {
         $this->namespace = $namespace;
     }
@@ -91,14 +91,9 @@ class CacheService
         return $this->adapterStack;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
     public function get(string $key)
     {
-        list($value, $success) = $this->recursiveGet($key);
+        [$value, $success] = $this->recursiveGet($key);
 
         if (!$success) {
             return;
@@ -129,7 +124,7 @@ class CacheService
             return [$value, $keyFound];
         }
 
-        list($value, $keyFound) = $this->recursiveGet($key, $level + 1);
+        [$value, $keyFound] = $this->recursiveGet($key, $level + 1);
 
         if ($keyFound || (!$keyFound && $adapter->cacheNotFoundKeys())) {
             $adapter->set($key, $value);
@@ -172,9 +167,7 @@ class CacheService
             $adapter->setMulti($notFoundValues);
         }
 
-        $values = array_merge($values, $notFoundValues);
-
-        return $values;
+        return array_merge($values, $notFoundValues);
     }
 
     public function set(string $key, $value): bool
@@ -239,9 +232,7 @@ class CacheService
 
     public function contains(string $key): bool
     {
-        $value = $this->recursiveContains($key);
-
-        return $value;
+        return $this->recursiveContains($key);
     }
 
     protected function recursiveContains(string $key, int $level = 0): bool
@@ -254,9 +245,7 @@ class CacheService
             return $value;
         }
 
-        $value = $this->recursiveContains($key, $level + 1);
-
-        return $value;
+        return $this->recursiveContains($key, $level + 1);
     }
 
     public function delete(string $key): bool
@@ -295,7 +284,7 @@ class CacheService
     /**
      * @throws InvalidConfigurationException
      */
-    protected function createAdapterStack(array $cacheConfig)
+    protected function createAdapterStack(array $cacheConfig): void
     {
         foreach ($cacheConfig['layers'] as $adapterConfig) {
             $this->validateAdapterConfig($adapterConfig);
@@ -317,7 +306,7 @@ class CacheService
     /**
      * @throws InvalidConfigurationException
      */
-    protected function createEncoder(string $encoderName)
+    protected function createEncoder(string $encoderName): void
     {
         $encoderClass = sprintf('%s\\Encoder\\%sEncoder', __NAMESPACE__, Inflector::classify($encoderName));
 
@@ -331,7 +320,7 @@ class CacheService
     /**
      * @throws InvalidConfigurationException
      */
-    protected function validateAdapterConfig(array $adapterConfig)
+    protected function validateAdapterConfig(array $adapterConfig): void
     {
         if (!isset($adapterConfig['adapter_name'])) {
             throw new InvalidConfigurationException('Missing required configuration option: adapter_name');
@@ -345,7 +334,7 @@ class CacheService
     /**
      * @throws InvalidConfigurationException
      */
-    protected function validateServiceConfiguration(array $cacheConfig)
+    protected function validateServiceConfiguration(array $cacheConfig): void
     {
         if (!isset($cacheConfig['layers'])) {
             throw new InvalidConfigurationException('Missing required cache configuration parameter: layers');

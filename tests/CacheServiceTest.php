@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache;
 
-class CacheServiceTest extends \PHPUnit_Framework_TestCase
+class CacheServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -16,7 +16,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->layer1CacheAdapterName = (extension_loaded('apcu')) ? 'apcu' : 'wincache';
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (extension_loaded('apcu')) {
             apcu_clear_cache();
@@ -27,7 +27,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testIsConstructingService()
+    public function testIsConstructingService(): void
     {
         $cacheService = new CacheService(
             [
@@ -51,11 +51,10 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Linio\Component\Cache\CacheService', $cacheService);
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
-     */
-    public function testIsValidatingServiceConfiguration()
+    public function testIsValidatingServiceConfiguration(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+
         new CacheService(
             [
                 'namespace' => 'mx',
@@ -64,12 +63,11 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage Adapter class does not exist: Linio\Component\Cache\Adapter\NopAdapter
-     */
-    public function testIsValidatingAdapters()
+    public function testIsValidatingAdapters(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Adapter class does not exist: Linio\\Component\\Cache\\Adapter\\NopAdapter');
+
         $cacheService = new CacheService(
             [
                 'namespace' => 'mx',
@@ -86,12 +84,11 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $cacheService->get('test');
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage Encoder class does not exist: Linio\Component\Cache\Encoder\NopEncoder
-     */
-    public function testIsValidatingEncoder()
+    public function testIsValidatingEncoder(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Encoder class does not exist: Linio\\Component\\Cache\\Encoder\\NopEncoder');
+
         new CacheService(
             [
                 'namespace' => 'mx',
@@ -107,7 +104,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testIsGettingKey()
+    public function testIsGettingKey(): void
     {
         $cacheService = new CacheService(
             [
@@ -137,7 +134,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    public function testIsGettingKeyRecursively()
+    public function testIsGettingKeyRecursively(): void
     {
         $cacheService = new CacheService(
             [
@@ -167,7 +164,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_encode('bar'), $adapterStack[0]->get('foo'));
     }
 
-    public function testIsGettingMissingKey()
+    public function testIsGettingMissingKey(): void
     {
         $cacheService = new CacheService(
             [
@@ -197,7 +194,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual);
     }
 
-    public function testIsCachingGettingMissingKey()
+    public function testIsCachingGettingMissingKey(): void
     {
         $cacheService = new CacheService(
             [
@@ -231,7 +228,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($adapterStack[0]->contains('nop'));
     }
 
-    public function testIsGettingKeyMultipleKeys()
+    public function testIsGettingKeyMultipleKeys(): void
     {
         $cacheService = new CacheService(
             [
@@ -265,7 +262,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $actual['fooz']);
     }
 
-    public function testIsGettingKeyMultipleKeysRecursively()
+    public function testIsGettingKeyMultipleKeysRecursively(): void
     {
         $cacheService = new CacheService(
             [
@@ -297,7 +294,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $actual['fooz']);
     }
 
-    public function testIsGettingKeyMultipleKeysRecursivelyWithComplimentaryLevelData()
+    public function testIsGettingKeyMultipleKeysRecursivelyWithComplimentaryLevelData(): void
     {
         $cacheService = new CacheService(
             [
@@ -329,7 +326,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $actual['fooz']);
     }
 
-    public function testIsGettingKeyMultipleKeysRecursivelyWithMissingKeys()
+    public function testIsGettingKeyMultipleKeysRecursivelyWithMissingKeys(): void
     {
         $cacheService = new CacheService(
             [
@@ -361,7 +358,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayNotHasKey('nop', $actual);
     }
 
-    public function testIsSettingKeyRecursively()
+    public function testIsSettingKeyRecursively(): void
     {
         $cacheService = new CacheService(
             [
@@ -390,7 +387,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_encode('bar'), $adapterStack[1]->get('foo'));
     }
 
-    public function testIsSettingMultipleKeysRecursively()
+    public function testIsSettingMultipleKeysRecursively(): void
     {
         $cacheService = new CacheService(
             [
@@ -421,7 +418,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_encode('baz'), $adapterStack[1]->get('fooz'));
     }
 
-    public function testIsCheckingContainsKey()
+    public function testIsCheckingContainsKey(): void
     {
         $cacheService = new CacheService(
             [
@@ -451,7 +448,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsCheckingContainsKeyRecursively()
+    public function testIsCheckingContainsKeyRecursively(): void
     {
         $cacheService = new CacheService(
             [
@@ -481,7 +478,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($adapterStack[0]->contains('foo'));
     }
 
-    public function testIsCheckingNotContainsKey()
+    public function testIsCheckingNotContainsKey(): void
     {
         $cacheService = new CacheService(
             [
@@ -511,7 +508,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
     }
 
-    public function testIsDeletingKeyRecursively()
+    public function testIsDeletingKeyRecursively(): void
     {
         $cacheService = new CacheService(
             [
@@ -543,7 +540,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($adapterStack[1]->contains('foo'));
     }
 
-    public function testIsDeletingMissingKeyRecursively()
+    public function testIsDeletingMissingKeyRecursively(): void
     {
         $cacheService = new CacheService(
             [
@@ -575,7 +572,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($adapterStack[1]->contains('foo'));
     }
 
-    public function testIsDeletingMultipleKeysRecursively()
+    public function testIsDeletingMultipleKeysRecursively(): void
     {
         $cacheService = new CacheService(
             [
@@ -611,7 +608,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($adapterStack[1]->contains('fooz'));
     }
 
-    public function testIsDeletingMultipleMissingKeysRecursively()
+    public function testIsDeletingMultipleMissingKeysRecursively(): void
     {
         $cacheService = new CacheService(
             [
@@ -647,7 +644,7 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($adapterStack[1]->contains('fooz'));
     }
 
-    public function testIsFlushingRecursively()
+    public function testIsFlushingRecursively(): void
     {
         $cacheService = new CacheService(
             [

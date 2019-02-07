@@ -85,7 +85,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     {
         $responses = $this->getClient()->pipeline(
             /** @var $pipe \Predis\Client */
-            function ($pipe) use ($data) {
+            function ($pipe) use ($data): void {
                 foreach ($data as $key => $value) {
                     if ($this->ttl == 0) {
                         $pipe->set($key, $value);
@@ -131,12 +131,12 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         return $result->getPayload() == 'OK';
     }
 
-    public function setClient(Client $client)
+    public function setClient(Client $client): void
     {
         $this->client = $client;
     }
 
-    protected function createClient(array $config)
+    protected function createClient(array $config): void
     {
         $this->client = new Client($this->getConnectionParameters($config), ['prefix' => null]);
 
@@ -167,13 +167,13 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         return $connectionParameters;
     }
 
-    public function setNamespace(string $namespace)
+    public function setNamespace(string $namespace): void
     {
         $this->getClient()->getOptions()->prefix->setPrefix($namespace . ':');
         parent::setNamespace($namespace);
     }
 
-    public function setTtl(int $ttl)
+    public function setTtl(int $ttl): void
     {
         $this->ttl = $ttl;
     }

@@ -7,7 +7,6 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         syntaxCheck="true"
          stopOnFailure="false"
          bootstrap="./vendor/autoload.php">
     <testsuites>
@@ -25,12 +24,6 @@
                 <file>./src/CacheAware.php</file>
             </exclude>
         </whitelist>
-        <blacklist>
-            <directory suffix=".php">./vendor</directory>
-            <directory suffix=".php">./tests</directory>
-            <file>./src/Adapter/AdapterInterface.php</file>
-            <file>./src/CacheAware.php</file>
-        </blacklist>
     </filter>
     <logging>
         <log type="coverage-clover" target="./coverage.xml"/>

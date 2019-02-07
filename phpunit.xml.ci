@@ -7,7 +7,6 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         syntaxCheck="true"
          stopOnFailure="false"
          bootstrap="./vendor/autoload.php">
     <testsuites>
@@ -31,12 +30,5 @@
                 <file>./src/CacheAware.php</file>
             </exclude>
         </whitelist>
-        <blacklist>
-            <directory>./vendor</directory>
-            <directory>./tests</directory>
-            <file>./src/Adapter/AdapterInterface.php</file>
-            <file>./src/Adapter/WincacheAdapter.php</file>
-            <file>./src/CacheAware.php</file>
-        </blacklist>
     </filter>
 </phpunit>

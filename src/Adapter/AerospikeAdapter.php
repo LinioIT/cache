@@ -156,7 +156,7 @@ class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
         $this->db->scan(
             $this->aerospikeNamespace,
             $this->namespace,
-            function ($record) {
+            function ($record): void {
                 unset($record['key']['key']);
                 $this->db->remove($record['key']);
             }

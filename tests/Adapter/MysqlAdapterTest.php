@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
-class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
+class MysqlAdapterTest extends \PHPUnit\Framework\TestCase
 {
     const TABLE_NAME = 'key_value';
     const TEST_NAMESPACE = 'mx';
@@ -14,7 +14,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
      */
     protected $adapter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adapter = $this->getMockBuilder('Linio\Component\Cache\Adapter\MysqlAdapter')
             ->disableOriginalConstructor()
@@ -23,11 +23,10 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->adapter->setNamespace(static::TEST_NAMESPACE);
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
-     */
-    public function testIsValidatingConstructorParameterHost()
+    public function testIsValidatingConstructorParameterHost(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+
         $adapter = new MysqlAdapter(
             [
                 'host' => 'localhost',
@@ -39,11 +38,10 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
-     */
-    public function testIsValidatingConstructorParameterPort()
+    public function testIsValidatingConstructorParameterPort(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+
         $adapter = new MysqlAdapter(
             [
                 'host' => 'localhost',
@@ -55,11 +53,10 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
-     */
-    public function testIsValidatingConstructorParameterDbname()
+    public function testIsValidatingConstructorParameterDbname(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+
         $adapter = new MysqlAdapter(
             [
                 'host' => 'localhost',
@@ -71,11 +68,10 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
-     */
-    public function testIsValidatingConstructorParameterUsername()
+    public function testIsValidatingConstructorParameterUsername(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+
         $adapter = new MysqlAdapter(
             [
                 'host' => 'localhost',
@@ -87,11 +83,10 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
-     */
-    public function testIsValidatingConstructorParameterPassword()
+    public function testIsValidatingConstructorParameterPassword(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+
         $adapter = new MysqlAdapter(
             [
                 'host' => 'localhost',
@@ -103,11 +98,10 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\InvalidConfigurationException
-     */
-    public function testIsValidatingConstructorParameterTable_name()
+    public function testIsValidatingConstructorParameterTable_name(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+
         $adapter = new MysqlAdapter(
             [
                 'host' => 'localhost',
@@ -119,7 +113,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testIsGetting()
+    public function testIsGetting(): void
     {
         $expectedQuery = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', self::TABLE_NAME);
 
@@ -136,11 +130,10 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\KeyNotFoundException
-     */
-    public function testIsGettingInexistentKey()
+    public function testIsGettingInexistentKey(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
+
         $expectedQuery = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', self::TABLE_NAME);
 
         $mockDb = $this->createMock('Linio\Component\Database\DatabaseManager');
@@ -154,7 +147,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $actual = $this->adapter->get('foo');
     }
 
-    public function testIsFindingKey()
+    public function testIsFindingKey(): void
     {
         $expectedQuery = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', self::TABLE_NAME);
 
@@ -171,7 +164,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsNotFindingKey()
+    public function testIsNotFindingKey(): void
     {
         $expectedQuery = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', self::TABLE_NAME);
 
@@ -188,7 +181,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
     }
 
-    public function testIsGettingMultipleKeys()
+    public function testIsGettingMultipleKeys(): void
     {
         $expectedQuery = sprintf('SELECT `key`, `value` FROM `%s` WHERE `key` IN(?,?)', self::TABLE_NAME);
 
@@ -205,7 +198,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar', 'fooz' => 'baz'], $actual);
     }
 
-    public function testIsGettingMultipleKeysWithInvalidKeys()
+    public function testIsGettingMultipleKeysWithInvalidKeys(): void
     {
         $expectedQuery = sprintf('SELECT `key`, `value` FROM `%s` WHERE `key` IN(?,?)', self::TABLE_NAME);
 
@@ -222,7 +215,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar'], $actual);
     }
 
-    public function testIsSettingKey()
+    public function testIsSettingKey(): void
     {
         $expectedQuery = sprintf('INSERT INTO `%s` (`key`, `value`) VALUES(:key, :value) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)', self::TABLE_NAME);
 
@@ -239,7 +232,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsSettingMultipleKeys()
+    public function testIsSettingMultipleKeys(): void
     {
         $expectedQuery = sprintf('INSERT INTO `%s` (`key`, `value`) VALUES (?, ?),(?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)', self::TABLE_NAME);
 
@@ -256,7 +249,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingKey()
+    public function testIsDeletingKey(): void
     {
         $expectedQuery = sprintf('DELETE FROM `%s` WHERE `key` = :key', self::TABLE_NAME);
 
@@ -273,7 +266,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingMultipleKeys()
+    public function testIsDeletingMultipleKeys(): void
     {
         $expectedQuery = sprintf('DELETE FROM `%s` WHERE `key` IN (?,?)', self::TABLE_NAME);
 
@@ -290,7 +283,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentKey()
+    public function testIsDeletingInexistentKey(): void
     {
         $expectedQuery = sprintf('DELETE FROM `%s` WHERE `key` = :key', self::TABLE_NAME);
 
@@ -307,7 +300,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentMultipleKeys()
+    public function testIsDeletingInexistentMultipleKeys(): void
     {
         $expectedQuery = sprintf('DELETE FROM `%s` WHERE `key` IN (?,?)', self::TABLE_NAME);
 
@@ -324,7 +317,7 @@ class MysqlAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsFlushingData()
+    public function testIsFlushingData(): void
     {
         $expectedQuery = sprintf('DELETE FROM `%s`', self::TABLE_NAME);
 

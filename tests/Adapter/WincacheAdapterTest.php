@@ -9,21 +9,21 @@ use Linio\Component\Cache\Exception\KeyNotFoundException;
 /**
  * @requires extension wincache
  */
-class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
+class WincacheAdapterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var WinCacheAdapter
      */
     protected $adapter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adapter = new WincacheAdapter();
         $this->adapter->setNamespace('mx');
         wincache_ucache_clear();
     }
 
-    public function testIsSettingAndGetting()
+    public function testIsSettingAndGetting(): void
     {
         $setResult = $this->adapter->set('foo', 'bar');
         $actual = $this->adapter->get('foo');
@@ -32,15 +32,14 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    /**
-     * @expectedException \Linio\Component\Cache\Exception\KeyNotFoundException
-     */
-    public function testIsGettingInexistentKey()
+    public function testIsGettingInexistentKey(): void
     {
+        $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
+
         $actual = $this->adapter->get('foo');
     }
 
-    public function testIsFindingKey()
+    public function testIsFindingKey(): void
     {
         $this->adapter->set('foo', 'bar');
 
@@ -49,7 +48,7 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsNotFindingKey()
+    public function testIsNotFindingKey(): void
     {
         $this->adapter->set('foo', 'bar');
 
@@ -58,7 +57,7 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($actual);
     }
 
-    public function testIsGettingMultipleKeys()
+    public function testIsGettingMultipleKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -68,7 +67,7 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar', 'fooz' => 'baz'], $actual);
     }
 
-    public function testIsGettingMultipleKeysWithInvalidKeys()
+    public function testIsGettingMultipleKeysWithInvalidKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -78,7 +77,7 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar'], $actual);
     }
 
-    public function testIsSettingMultipleKeys()
+    public function testIsSettingMultipleKeys(): void
     {
         $actual = $this->adapter->setMulti(['foo' => 'bar', 'fooz' => 'baz']);
 
@@ -87,7 +86,7 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $this->adapter->get('fooz'));
     }
 
-    public function testIsDeletingKey()
+    public function testIsDeletingKey(): void
     {
         $this->adapter->set('foo', 'bar');
 
@@ -104,7 +103,7 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual);
     }
 
-    public function testIsDeletingMultipleKeys()
+    public function testIsDeletingMultipleKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -130,14 +129,14 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($actual2);
     }
 
-    public function testIsDeletingInexistentKey()
+    public function testIsDeletingInexistentKey(): void
     {
         $actual = $this->adapter->delete('foo');
 
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentMultipleKeys()
+    public function testIsDeletingInexistentMultipleKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
@@ -163,7 +162,7 @@ class WincacheAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $actual2);
     }
 
-    public function testIsFlushingData()
+    public function testIsFlushingData(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');

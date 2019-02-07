@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache\Encoder;
 
-class SerialEncoderTest extends \PHPUnit_Framework_TestCase
+class SerialEncoderTest extends \PHPUnit\Framework\TestCase
 {
-    public function testIsEncoding()
+    public function testIsEncoding(): void
     {
         $value = [
             'foo' => 1,
@@ -22,7 +22,7 @@ class SerialEncoderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testIsDecoding()
+    public function testIsDecoding(): void
     {
         $value = 'a:2:{s:3:"foo";i:1;s:3:"bar";s:6:"string";}';
 
@@ -38,7 +38,7 @@ class SerialEncoderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testIsDecodingBoolean()
+    public function testIsDecodingBoolean(): void
     {
         $value = false;
         $expected = false;
@@ -49,7 +49,7 @@ class SerialEncoderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testIsDecodingNull()
+    public function testIsDecodingNull(): void
     {
         $value = null;
         $expected = null;

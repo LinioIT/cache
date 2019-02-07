@@ -62,7 +62,7 @@ abstract class AbstractAdapter
         return $this->namespace;
     }
 
-    public function setNamespace(string $namespace)
+    public function setNamespace(string $namespace): void
     {
         $this->namespace = $namespace;
     }

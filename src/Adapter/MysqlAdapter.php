@@ -39,12 +39,12 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         $this->checkTableCreated($config);
     }
 
-    public function setDbManager(DatabaseManager $dbManager)
+    public function setDbManager(DatabaseManager $dbManager): void
     {
         $this->dbManager = $dbManager;
     }
 
-    public function setTableName(string $tableName)
+    public function setTableName(string $tableName): void
     {
         $this->tableName = $tableName;
     }
@@ -69,9 +69,8 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
 
         $namespacedKeys = $this->addNamespaceToKeys($keys);
         $namespacedData = $this->dbManager->fetchKeyPairs($sql, $namespacedKeys);
-        $data = $this->removeNamespaceFromKeys($namespacedData);
 
-        return $data;
+        return $this->removeNamespaceFromKeys($namespacedData);
     }
 
     public function set(string $key, $value): bool
@@ -147,7 +146,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @throws InvalidConfigurationException
      */
-    protected function validateConnectionOptions(array $config)
+    protected function validateConnectionOptions(array $config): void
     {
         if (!isset($config['host'])) {
             throw new InvalidConfigurationException('Missing configuration parameter: host');
@@ -169,7 +168,7 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
-    protected function checkTableCreated(array $config)
+    protected function checkTableCreated(array $config): void
     {
         if (!isset($config['ensure_table_created'])) {
             $this->dbManager->execute(
@@ -180,14 +179,12 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
 
     protected function getConnectionOptions(array $config): array
     {
-        $connectionOptions = [
+        return [
             'host' => $config['host'],
             'port' => $config['port'],
             'dbname' => $config['dbname'],
             'username' => $config['username'],
             'password' => $config['password'],
         ];
-
-        return $connectionOptions;
     }
 }

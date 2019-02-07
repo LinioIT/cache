@@ -7,7 +7,7 @@ namespace Linio\Component\Cache\Adapter;
 /**
  * @requires extension redis
  */
-class PhpredisAdapterPhpSerializerTest extends \PHPUnit_Framework_TestCase
+class PhpredisAdapterPhpSerializerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PhpredisAdapter
@@ -19,7 +19,7 @@ class PhpredisAdapterPhpSerializerTest extends \PHPUnit_Framework_TestCase
      */
     protected $namespace;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adapter = new PhpredisAdapter(['serializer' => 'php']);
         $this->namespace = 'mx';
@@ -27,7 +27,7 @@ class PhpredisAdapterPhpSerializerTest extends \PHPUnit_Framework_TestCase
         $this->adapter->flush();
     }
 
-    public function testIsSettingAndGettingArray()
+    public function testIsSettingAndGettingArray(): void
     {
         $setResult = $this->adapter->set('foo', ['bar']);
         $actual = $this->adapter->get('foo');
@@ -36,7 +36,7 @@ class PhpredisAdapterPhpSerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['bar'], $actual);
     }
 
-    public function testIsSettingAndGettingObject()
+    public function testIsSettingAndGettingObject(): void
     {
         $bar = new \StdClass();
         $bar->bar = 'bar';
@@ -48,7 +48,7 @@ class PhpredisAdapterPhpSerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($bar, $actual);
     }
 
-    public function testIsGettingMultipleKeysWithArrayValues()
+    public function testIsGettingMultipleKeysWithArrayValues(): void
     {
         $this->adapter->set('foo', ['bar']);
         $this->adapter->set('fooz', ['baz']);
@@ -58,7 +58,7 @@ class PhpredisAdapterPhpSerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => ['bar'], 'fooz' => ['baz']], $actual);
     }
 
-    public function testIsGettingMultipleKeysWithObjectValues()
+    public function testIsGettingMultipleKeysWithObjectValues(): void
     {
         $bar = new \StdClass();
         $bar->bar = 'bar';
@@ -74,7 +74,7 @@ class PhpredisAdapterPhpSerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => $bar, 'fooz' => $baz], $actual);
     }
 
-    public function testIsSettingMultipleKeys()
+    public function testIsSettingMultipleKeys(): void
     {
         $bar = new \StdClass();
         $bar->bar = 'bar';

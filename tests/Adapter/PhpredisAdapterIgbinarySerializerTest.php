@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
-use PHPUnit_Framework_Assert;
+use PHPUnit\Framework\Assert;
 
 /**
  * @requires extension redis
  * @requires extension igbinary
  */
-class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit_Framework_TestCase
+class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var PhpredisAdapter
@@ -23,7 +23,7 @@ class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit_Framework_TestCase
      */
     protected $namespace;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         try {
             $this->adapter = new PhpredisAdapter(['connection_persistent' => false, 'serializer' => 'igbinary']);
@@ -36,14 +36,14 @@ class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit_Framework_TestCase
         $this->adapter->flush();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         /** @var $client \Redis */
-        $client = PHPUnit_Framework_Assert::readAttribute($this->adapter, 'client');
+        $client = Assert::readAttribute($this->adapter, 'client');
         $client->close();
     }
 
-    public function testIsSettingAndGettingArray()
+    public function testIsSettingAndGettingArray(): void
     {
         $setResult = $this->adapter->set('foo', ['bar']);
         $actual = $this->adapter->get('foo');
@@ -52,7 +52,7 @@ class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['bar'], $actual);
     }
 
-    public function testIsSettingAndGettingObject()
+    public function testIsSettingAndGettingObject(): void
     {
         $bar = new \StdClass();
         $bar->bar = 'bar';
@@ -64,7 +64,7 @@ class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($bar, $actual);
     }
 
-    public function testIsGettingMultipleKeysWithArrayValues()
+    public function testIsGettingMultipleKeysWithArrayValues(): void
     {
         $this->adapter->set('foo', ['bar']);
         $this->adapter->set('fooz', ['baz']);
@@ -74,7 +74,7 @@ class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => ['bar'], 'fooz' => ['baz']], $actual);
     }
 
-    public function testIsGettingMultipleKeysWithObjectValues()
+    public function testIsGettingMultipleKeysWithObjectValues(): void
     {
         $bar = new \StdClass();
         $bar->bar = 'bar';
@@ -90,7 +90,7 @@ class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => $bar, 'fooz' => $baz], $actual);
     }
 
-    public function testIsSettingMultipleKeys()
+    public function testIsSettingMultipleKeys(): void
     {
         $bar = new \StdClass();
         $bar->bar = 'bar';

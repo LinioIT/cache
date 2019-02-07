@@ -8,8 +8,6 @@ class NoneEncoder implements EncoderInterface
 {
     /**
      * @param $value
-     *
-     * @return string
      */
     public function encode($value): string
     {
@@ -18,8 +16,6 @@ class NoneEncoder implements EncoderInterface
 
     /**
      * @param $value
-     *
-     * @return mixed
      */
     public function decode($value)
     {
