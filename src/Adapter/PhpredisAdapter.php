@@ -104,14 +104,14 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
 
     public function delete(string $key): bool
     {
-        $this->client->delete($key);
+        $this->client->del($key);
 
         return true;
     }
 
     public function deleteMulti(array $keys): bool
     {
-        $this->client->delete($keys);
+        $this->client->del($keys);
 
         return true;
     }
