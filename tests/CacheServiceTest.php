@@ -520,7 +520,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        // 'adapter_name' => self::$layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
