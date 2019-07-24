@@ -4,7 +4,6 @@ env:
   - PHP_BUILD_ZTS_ENABLE=off
 
 php:
-  - 7.0
   - 7.1
 
 services:
