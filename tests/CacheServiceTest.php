@@ -9,11 +9,11 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
     /**
      * @var string
      */
-    protected $layer1CacheAdapterName;
+    protected static $layer1CacheAdapterName;
 
-    public function __construct()
+    public static function setUpBeforeClass(): void
     {
-        $this->layer1CacheAdapterName = (extension_loaded('apcu')) ? 'apcu' : 'wincache';
+        self::$layer1CacheAdapterName = (extension_loaded('apcu')) ? 'apcu' : 'wincache';
     }
 
     protected function setUp(): void
@@ -39,7 +39,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -116,7 +116,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -146,7 +146,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -176,7 +176,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -208,7 +208,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         ],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -240,7 +240,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -274,7 +274,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -306,7 +306,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -338,7 +338,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -370,7 +370,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -399,7 +399,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -430,7 +430,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -460,7 +460,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -490,7 +490,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -520,7 +520,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        // 'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -552,7 +552,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -584,7 +584,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -620,7 +620,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
@@ -656,7 +656,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
                         'adapter_options' => [],
                     ],
                     1 => [
-                        'adapter_name' => $this->layer1CacheAdapterName,
+                        'adapter_name' => self::$layer1CacheAdapterName,
                         'adapter_options' => [
                             'ttl' => 3600,
                         ],
