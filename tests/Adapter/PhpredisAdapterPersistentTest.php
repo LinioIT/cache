@@ -6,21 +6,15 @@ namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @requires extension redis
  */
-class PhpredisAdapterPersistentTest extends \PHPUnit\Framework\TestCase
+class PhpredisAdapterPersistentTest extends TestCase
 {
-    /**
-     * @var PhpredisAdapter
-     */
-    protected $adapter;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
+    protected PhpredisAdapter $adapter;
+    protected string $namespace;
 
     protected function setUp(): void
     {

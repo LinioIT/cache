@@ -8,19 +8,13 @@ use Linio\Component\Cache\Exception\KeyNotFoundException;
 
 class ApcAdapter extends AbstractAdapter implements AdapterInterface
 {
-    /**
-     * @var int
-     */
-    protected $ttl;
+    protected int $ttl = 0;
 
     public function __construct(array $config = [])
     {
-        // default config
-        $this->ttl = 0;
-
         // config
         if (isset($config['ttl'])) {
-            $this->ttl = $config['ttl'];
+            $this->ttl = (int) $config['ttl'];
         }
 
         if (isset($config['cache_not_found_keys'])) {
@@ -28,6 +22,9 @@ class ApcAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function get(string $key)
     {
         $value = apc_fetch($this->addNamespaceToKey($key), $success);
@@ -53,6 +50,9 @@ class ApcAdapter extends AbstractAdapter implements AdapterInterface
         return $values;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function set(string $key, $value): bool
     {
         return apc_store($this->addNamespaceToKey($key), $value, $this->ttl);

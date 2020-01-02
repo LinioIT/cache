@@ -5,21 +5,15 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @requires extension apcu
  */
-class ApcuAdapterTest extends \PHPUnit\Framework\TestCase
+class ApcuAdapterTest extends TestCase
 {
-    /**
-     * @var ApcAdapter
-     */
-    protected $adapter;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
+    protected ApcuAdapter $adapter;
+    protected string $namespace;
 
     protected function setUp(): void
     {

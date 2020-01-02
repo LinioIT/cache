@@ -6,15 +6,8 @@ namespace Linio\Component\Cache\Adapter;
 
 abstract class AbstractAdapter
 {
-    /**
-     * @var string
-     */
-    protected $namespace;
-
-    /**
-     * @var bool
-     */
-    protected $cacheNotFoundKeys = false;
+    protected string $namespace = '';
+    protected bool $cacheNotFoundKeys = false;
 
     public function cacheNotFoundKeys(): bool
     {

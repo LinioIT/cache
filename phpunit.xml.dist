@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
-         backupGlobals="false"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         stopOnFailure="false"
-         bootstrap="./vendor/autoload.php">
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         executionOrder="depends,defects"
+         forceCoversAnnotation="true"
+         beStrictAboutCoversAnnotation="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         verbose="true">
+    <php>
+        <ini name="apc.enable_cli" value="true" />
+    </php>
     <testsuites>
-        <testsuite name="Linio Framework Test Suite">
-            <directory>./tests</directory>
+        <testsuite name="default">
+            <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
+
     <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-            <exclude>
-                <directory suffix=".php">./vendor</directory>
-                <directory suffix=".php">./tests</directory>
-                <file>./src/Adapter/AdapterInterface.php</file>
-                <file>./src/CacheAware.php</file>
-            </exclude>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
-    <logging>
-        <log type="coverage-clover" target="./coverage.xml"/>
-    </logging>
 </phpunit>

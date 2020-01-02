@@ -6,10 +6,7 @@ namespace Linio\Component\Cache;
 
 trait CacheAware
 {
-    /**
-     * @var CacheService
-     */
-    protected $cacheService;
+    protected CacheService $cacheService;
 
     public function getCacheService(): CacheService
     {

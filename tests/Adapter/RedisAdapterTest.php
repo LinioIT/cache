@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
+use PHPUnit\Framework\TestCase;
 use Predis\Response\Status;
 
-class RedisAdapterTest extends \PHPUnit\Framework\TestCase
+class RedisAdapterTest extends TestCase
 {
     public function testIsSettingNamespace(): void
     {

@@ -9,7 +9,7 @@ use Linio\Component\Util\Json;
 class JsonEncoder implements EncoderInterface
 {
     /**
-     * @param $value
+     * @param mixed $value
      */
     public function encode($value): string
     {
@@ -17,7 +17,9 @@ class JsonEncoder implements EncoderInterface
     }
 
     /**
-     * @param $value
+     * @param mixed $value
+     *
+     * @return mixed
      */
     public function decode($value)
     {

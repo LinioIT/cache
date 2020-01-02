@@ -5,22 +5,16 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
-use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 /**
  * @requires extension memcached
  */
-class MemcachedAdapterPersistentTest extends \PHPUnit\Framework\TestCase
+class MemcachedAdapterPersistentTest extends TestCase
 {
-    /**
-     * @var ApcAdapter
-     */
-    protected $adapter;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
+    protected MemcachedAdapter $adapter;
+    protected string $namespace;
 
     protected function setUp(): void
     {
@@ -33,14 +27,14 @@ class MemcachedAdapterPersistentTest extends \PHPUnit\Framework\TestCase
     public function testIsCreatingPersistentConnection(): void
     {
         /** @var $client \Memcached */
-        $client = Assert::readAttribute($this->adapter, 'memcached');
+        $client = $this->getInstanceProperty($this->adapter, 'memcached');
         $this->assertTrue($client->isPersistent());
     }
 
     public function testIsRespectingPoolSize(): void
     {
         $connection = new MemcachedAdapter($this->getMemcachedPersistentTestConfiguration());
-        $client1 = Assert::readAttribute($connection, 'memcached');
+        $client1 = $this->getInstanceProperty($connection, 'memcached');
         /** @var $client1 \Memcached */
         $stats = $client1->getStats();
         $serverStats = reset($stats);
@@ -52,7 +46,7 @@ class MemcachedAdapterPersistentTest extends \PHPUnit\Framework\TestCase
             $connections[] = $connection;
         }
 
-        $client100 = Assert::readAttribute($connection, 'memcached');
+        $client100 = $this->getInstanceProperty($connection, 'memcached');
         /** @var $client100 \Memcached */
         $stats = $client100->getStats();
         $serverStats = reset($stats);
@@ -72,7 +66,7 @@ class MemcachedAdapterPersistentTest extends \PHPUnit\Framework\TestCase
 
     public function testIsGettingInexistentKey(): void
     {
-        $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
+        $this->expectException(KeyNotFoundException::class);
 
         $actual = $this->adapter->get('foo');
     }
@@ -235,5 +229,14 @@ class MemcachedAdapterPersistentTest extends \PHPUnit\Framework\TestCase
             'connection_persistent' => true,
             'pool_size' => 10,
         ];
+    }
+
+    protected function getInstanceProperty(object $instance, string $propertyName)
+    {
+        $reflection = new ReflectionClass($instance);
+        $property = $reflection->getProperty($propertyName);
+        $property->setAccessible(true);
+
+        return $property->getValue($instance);
     }
 }

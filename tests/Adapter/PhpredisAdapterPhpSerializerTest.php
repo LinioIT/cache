@@ -4,20 +4,15 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @requires extension redis
  */
-class PhpredisAdapterPhpSerializerTest extends \PHPUnit\Framework\TestCase
+class PhpredisAdapterPhpSerializerTest extends TestCase
 {
-    /**
-     * @var PhpredisAdapter
-     */
-    protected $adapter;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
+    protected PhpredisAdapter $adapter;
+    protected string $namespace;
 
     protected function setUp(): void
     {

@@ -5,21 +5,15 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @requires extension memcached
  */
-class MemcachedAdapterTest extends \PHPUnit\Framework\TestCase
+class MemcachedAdapterTest extends TestCase
 {
-    /**
-     * @var ApcAdapter
-     */
-    protected $adapter;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
+    protected MemcachedAdapter $adapter;
+    protected string $namespace;
 
     protected function setUp(): void
     {

@@ -10,15 +10,8 @@ use Memcached;
 
 class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
 {
-    /**
-     * @var int
-     */
-    protected $ttl;
-
-    /**
-     * @var Memcached
-     */
-    protected $memcached;
+    protected int $ttl = 0;
+    protected Memcached $memcached;
 
     public function __construct(array $config = [])
     {
@@ -29,7 +22,7 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
 
         // config
         if (isset($config['ttl'])) {
-            $this->ttl = $config['ttl'];
+            $this->ttl = (int) $config['ttl'];
         }
 
         $persistentId = null;
@@ -57,6 +50,9 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function get(string $key)
     {
         $value = $this->memcached->get($key);
@@ -70,9 +66,18 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
 
     public function getMulti(array $keys): array
     {
-        return $this->memcached->getMulti($keys);
+        $values = $this->memcached->getMulti($keys);
+
+        if ($values === false) {
+            throw new KeyNotFoundException();
+        }
+
+        return $values;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function set(string $key, $value): bool
     {
         return $this->memcached->set($key, $value, $this->ttl);
