@@ -15,8 +15,8 @@ before_install:
   - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "apc.enable_cli = On" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - pecl install igbinary
-  - wget https://pecl.php.net/get/apcu_bc-1.0.3.tgz && tar -xzf apcu_bc-1.0.3.tgz && cd apcu_bc-1.0.3 && phpize . && ./configure && make install && echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini && cd ..
-  - wget https://pecl.php.net/get/redis-3.1.2.tgz && tar -xzf redis-3.1.2.tgz && cd redis-3.1.2 && phpize . && ./configure --enable-redis-igbinary && make install && echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini && cd ..
+  - wget https://pecl.php.net/get/apcu_bc-1.0.5.tgz && tar -xzf apcu_bc-1.0.5.tgz && cd apcu_bc-1.0.5 && phpize . && ./configure && make install && echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini && cd ..
+  - wget https://pecl.php.net/get/redis-5.1.1.tgz && tar -xzf redis-5.1.1.tgz && cd redis-5.1.1 && phpize . && ./configure --enable-redis-igbinary && make install && echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini && cd ..
 
 install:
   - travis_retry composer install --no-interaction --prefer-source
