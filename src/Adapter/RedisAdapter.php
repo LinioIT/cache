@@ -12,7 +12,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     const EXPIRE_RESOLUTION_EX = 'ex';
     const EXPIRE_RESOLUTION_PX = 'px';
 
-    protected Client $client;
+    protected ?Client $client;
     protected int $ttl = 0;
     protected array $config;
 
@@ -21,14 +21,14 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         $this->config = $config;
 
         if (!$lazy) {
-            $this->getClient();
+            $this->client = $this->getClient();
         }
     }
 
     protected function getClient(): Client
     {
-        if (!$this->client instanceof Client) {
-            $this->createClient($this->config);
+        if (!$this->client) {
+            $this->client = $this->createClient($this->config);
         }
 
         return $this->client;
@@ -132,7 +132,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         $this->client = $client;
     }
 
-    protected function createClient(array $config): void
+    protected function createClient(array $config): Client
     {
         $this->client = new Client($this->getConnectionParameters($config), ['prefix' => null]);
 
@@ -143,6 +143,8 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         if (isset($config['cache_not_found_keys'])) {
             $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
         }
+
+        return $this->client;
     }
 
     protected function getConnectionParameters(array $config): array
