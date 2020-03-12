@@ -10,20 +10,12 @@ use Linio\Component\Database\DatabaseManager;
 
 class MysqlAdapter extends AbstractAdapter implements AdapterInterface
 {
-    /**
-     * @var DatabaseManager
-     */
-    protected $dbManager;
-
-    /**
-     * @var string
-     */
-    protected $tableName;
+    protected DatabaseManager $dbManager;
+    protected string $tableName;
 
     public function __construct(array $config = [])
     {
-        $config = $this->validateConnectionOptions($config);
-
+        $this->validateConnectionOptions($config);
         $connectionOptions = $this->getConnectionOptions($config);
 
         if (isset($config['cache_not_found_keys'])) {
@@ -49,6 +41,9 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         $this->tableName = $tableName;
     }
 
+    /**
+     * @return mixed
+     */
     public function get(string $key)
     {
         $sql = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', $this->tableName);
@@ -73,6 +68,9 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         return $this->removeNamespaceFromKeys($namespacedData);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function set(string $key, $value): bool
     {
         $sql = sprintf('INSERT INTO `%s` (`key`, `value`) VALUES(:key, :value) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)', $this->tableName);
@@ -151,18 +149,23 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
         if (!isset($config['host'])) {
             throw new InvalidConfigurationException('Missing configuration parameter: host');
         }
+
         if (!isset($config['port'])) {
             throw new InvalidConfigurationException('Missing configuration parameter: port');
         }
+
         if (!isset($config['dbname'])) {
             throw new InvalidConfigurationException('Missing configuration parameter: dbname');
         }
+
         if (!isset($config['username'])) {
             throw new InvalidConfigurationException('Missing configuration parameter: username');
         }
+
         if (!isset($config['password'])) {
             throw new InvalidConfigurationException('Missing configuration parameter: password');
         }
+
         if (!isset($config['table_name'])) {
             throw new InvalidConfigurationException('Missing configuration parameter: table_name');
         }

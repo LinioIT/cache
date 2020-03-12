@@ -8,10 +8,7 @@ use Linio\Component\Cache\Exception\KeyNotFoundException;
 
 class ArrayAdapter extends AbstractAdapter implements AdapterInterface
 {
-    /**
-     * @var array
-     */
-    protected $cacheData = [];
+    protected array $cacheData = [];
 
     public function __construct(array $config = [])
     {
@@ -20,6 +17,9 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function get(string $key)
     {
         if (!array_key_exists($this->addNamespaceToKey($key), $this->cacheData)) {
@@ -42,6 +42,9 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
         return $values;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function set(string $key, $value): bool
     {
         $this->cacheData[$this->addNamespaceToKey($key)] = $value;

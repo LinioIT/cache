@@ -6,22 +6,16 @@ namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @requires extension redis
  * @requires extension igbinary
  */
-class PhpredisAdapterIgbinarySerializerTest extends \PHPUnit\Framework\TestCase
+class PhpredisAdapterIgbinarySerializerTest extends TestCase
 {
-    /**
-     * @var PhpredisAdapter
-     */
-    protected $adapter;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
+    protected PhpredisAdapter $adapter;
+    protected string $namespace;
 
     protected function setUp(): void
     {

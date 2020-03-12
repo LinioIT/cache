@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache;
 
-class CacheServiceTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class CacheServiceTest extends TestCase
 {
     /**
      * @var string
@@ -257,7 +259,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
 
         $actual = $cacheService->getMulti(['foo', 'fooz']);
 
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertEquals('bar', $actual['foo']);
         $this->assertEquals('baz', $actual['fooz']);
     }
@@ -289,7 +291,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
 
         $actual = $cacheService->getMulti(['foo', 'fooz']);
 
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertEquals('bar', $actual['foo']);
         $this->assertEquals('baz', $actual['fooz']);
     }
@@ -321,7 +323,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
 
         $actual = $cacheService->getMulti(['foo', 'fooz']);
 
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertEquals('bar', $actual['foo']);
         $this->assertEquals('baz', $actual['fooz']);
     }
@@ -353,7 +355,7 @@ class CacheServiceTest extends \PHPUnit\Framework\TestCase
 
         $actual = $cacheService->getMulti(['foo', 'nop']);
 
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertEquals('bar', $actual['foo']);
         $this->assertArrayNotHasKey('nop', $actual);
     }

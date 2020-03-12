@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
-class MysqlAdapterTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class MysqlAdapterTest extends TestCase
 {
     const TABLE_NAME = 'key_value';
     const TEST_NAMESPACE = 'mx';
 
-    /**
-     * @var MysqlAdapter
-     */
-    protected $adapter;
+    protected MysqlAdapter $adapter;
 
     protected function setUp(): void
     {
@@ -325,7 +324,7 @@ class MysqlAdapterTest extends \PHPUnit\Framework\TestCase
         $mockDb->expects($this->once())
             ->method('execute')
             ->with($this->equalTo($expectedQuery))
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(1));
         $this->adapter->setDbManager($mockDb);
         $this->adapter->setTableName(self::TABLE_NAME);
 

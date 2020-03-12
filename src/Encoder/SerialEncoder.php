@@ -7,7 +7,7 @@ namespace Linio\Component\Cache\Encoder;
 class SerialEncoder implements EncoderInterface
 {
     /**
-     * @param $value
+     * @param mixed $value
      */
     public function encode($value): string
     {
@@ -15,7 +15,9 @@ class SerialEncoder implements EncoderInterface
     }
 
     /**
-     * @param $value
+     * @param mixed $value
+     *
+     * @return mixed
      */
     public function decode($value)
     {

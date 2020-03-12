@@ -8,19 +8,13 @@ use Linio\Component\Cache\Exception\KeyNotFoundException;
 
 class WincacheAdapter extends AbstractAdapter implements AdapterInterface
 {
-    /**
-     * @var int
-     */
-    protected $ttl;
+    protected int $ttl = 0;
 
     public function __construct(array $config = [])
     {
-        // default config
-        $this->ttl = 0;
-
         // config
         if (isset($config['ttl'])) {
-            $this->ttl = $config['ttl'];
+            $this->ttl = (int) $config['ttl'];
         }
 
         if (isset($config['cache_not_found_keys'])) {
@@ -28,6 +22,9 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function get(string $key)
     {
         $result = wincache_ucache_get($this->addNamespaceToKey($key), $success);
@@ -51,6 +48,9 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
         return $this->removeNamespaceFromKeys($namespacedValues);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function set(string $key, $value): bool
     {
         return wincache_ucache_set($this->addNamespaceToKey($key), $value, $this->ttl);

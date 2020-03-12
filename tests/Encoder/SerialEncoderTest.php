@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache\Encoder;
 
-class SerialEncoderTest extends \PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class SerialEncoderTest extends TestCase
 {
     public function testIsEncoding(): void
     {

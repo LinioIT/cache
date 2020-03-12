@@ -13,39 +13,17 @@ use Psr\Log\LoggerInterface;
 
 class CacheService
 {
-    /**
-     * @var AdapterInterface[]
-     */
-    protected $adapterStack = [];
-
-    /**
-     * @var EncoderInterface
-     */
-    protected $encoder;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var array
-     */
-    protected $cacheConfig;
+    protected array $adapterStack = [];
+    protected EncoderInterface $encoder;
+    protected string $namespace = '';
+    protected LoggerInterface $logger;
+    protected array $cacheConfig = [];
 
     public function __construct(array $cacheConfig)
     {
         $this->validateServiceConfiguration($cacheConfig);
 
         $this->cacheConfig = $cacheConfig;
-
-        // default config
-        $this->namespace = '';
 
         // service config
         if (isset($cacheConfig['namespace'])) {
@@ -91,6 +69,9 @@ class CacheService
         return $this->adapterStack;
     }
 
+    /**
+     * @return mixed
+     */
     public function get(string $key)
     {
         [$value, $success] = $this->recursiveGet($key);
@@ -103,7 +84,7 @@ class CacheService
     }
 
     /**
-     * @return array [$value, $success]
+     * @return array(mixed, bool)
      */
     protected function recursiveGet(string $key, int $level = 0): array
     {
@@ -170,6 +151,9 @@ class CacheService
         return array_merge($values, $notFoundValues);
     }
 
+    /**
+     * @param mixed $value
+     */
     public function set(string $key, $value): bool
     {
         $value = $this->encoder->encode($value);
@@ -177,6 +161,9 @@ class CacheService
         return $this->recursiveSet($key, $value);
     }
 
+    /**
+     * @param mixed $value
+     */
     protected function recursiveSet(string $key, $value, int $level = null): bool
     {
         $adapterStack = $this->getAdapterStack();
@@ -295,7 +282,7 @@ class CacheService
                 throw new InvalidConfigurationException('Adapter class does not exist: ' . $adapterClass);
             }
 
-            /** @var $adapterInstance AdapterInterface */
+            /** @var AdapterInterface $adapterInstance */
             $adapterInstance = new $adapterClass($adapterConfig['adapter_options']);
             $adapterInstance->setNamespace($this->namespace);
 

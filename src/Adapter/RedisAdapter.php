@@ -12,44 +12,36 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
     const EXPIRE_RESOLUTION_EX = 'ex';
     const EXPIRE_RESOLUTION_PX = 'px';
 
-    /**
-     * @var \Predis\Client
-     */
-    protected $client;
-
-    /**
-     * @var int
-     */
-    protected $ttl;
-
-    /**
-     * @var array
-     */
-    protected $config;
+    protected ?Client $client;
+    protected int $ttl = 0;
+    protected array $config;
 
     public function __construct(array $config = [], bool $lazy = true)
     {
         $this->config = $config;
 
         if (!$lazy) {
-            $this->getClient();
+            $this->client = $this->getClient();
         }
     }
 
     protected function getClient(): Client
     {
-        if (!$this->client instanceof Client) {
-            $this->createClient($this->config);
+        if (!$this->client) {
+            $this->client = $this->createClient($this->config);
         }
 
         return $this->client;
     }
 
+    /**
+     * @return mixed
+     */
     public function get(string $key)
     {
         $value = $this->getClient()->get($key);
 
-        if ($value === null && !$this->getClient()->exists($key)) {
+        if (empty($value) && $this->getClient()->exists($key) == 0) {
             throw new KeyNotFoundException();
         }
 
@@ -70,6 +62,9 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         return $values;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function set(string $key, $value): bool
     {
         if ($this->ttl == 0) {
@@ -83,8 +78,9 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
 
     public function setMulti(array $data): bool
     {
+        /** @var iterable $responses */
         $responses = $this->getClient()->pipeline(
-            /** @var $pipe \Predis\Client */
+            /** @var Client $pipe */
             function ($pipe) use ($data): void {
                 foreach ($data as $key => $value) {
                     if ($this->ttl == 0) {
@@ -98,7 +94,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
 
         $result = true;
         foreach ($responses as $response) {
-            /** @var $response \Predis\Response\Status */
+            /** @var \Predis\Response\Status $response */
             $result = $result && ($response->getPayload() == 'OK');
         }
 
@@ -136,7 +132,7 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         $this->client = $client;
     }
 
-    protected function createClient(array $config): void
+    protected function createClient(array $config): Client
     {
         $this->client = new Client($this->getConnectionParameters($config), ['prefix' => null]);
 
@@ -147,6 +143,8 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
         if (isset($config['cache_not_found_keys'])) {
             $this->cacheNotFoundKeys = (bool) $config['cache_not_found_keys'];
         }
+
+        return $this->client;
     }
 
     protected function getConnectionParameters(array $config): array

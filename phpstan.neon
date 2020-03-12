@@ -1,0 +1,13 @@
+parameters:
+    level: max
+    checkMissingIterableValueType: false
+    paths:
+        - src
+    ignoreErrors:
+        - '#Method Redis\:\:connect\(\) invoked with 5 parameters\, 1\-4 required#'
+
+        # Failed to detect magic method in Predis\Client
+        - '#Call to an undefined method Predis\\Client\:\:flushAll\(\)#'
+
+        # Failed to detect magic property in Predis\Configuration\Options
+        - '#Access to an undefined property Predis\\Configuration\\OptionsInterface\:\:\$prefix#'

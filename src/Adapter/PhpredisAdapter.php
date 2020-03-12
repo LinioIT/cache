@@ -10,20 +10,9 @@ use Redis;
 
 class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
 {
-    /**
-     * @var Redis
-     */
-    protected $client;
-
-    /**
-     * @var int
-     */
-    protected $ttl;
-
-    /**
-     * @var array
-     */
-    protected $config;
+    protected ?Redis $client = null;
+    protected ?int $ttl = null;
+    protected array $config = [];
 
     public function __construct(array $config = [], bool $lazy = true)
     {
@@ -40,13 +29,16 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
 
     protected function getClient(): Redis
     {
-        if (!$this->client instanceof Redis) {
-            $this->createClient($this->config);
+        if (!$this->client) {
+            $this->client = $this->createClient($this->config);
         }
 
         return $this->client;
     }
 
+    /**
+     * @return mixed
+     */
     public function get(string $key)
     {
         $result = $this->getClient()->get($key);
@@ -72,6 +64,9 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         return $values;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function set(string $key, $value): bool
     {
         if ($this->ttl === null) {
@@ -90,7 +85,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         } else {
             $result = true;
             foreach ($data as $key => $value) {
-                $result = $result && $this->client->setex($key, $this->ttl, $value);
+                $result = $result && $this->getClient()->setex($key, $this->ttl, $value);
             }
         }
 
@@ -99,19 +94,19 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
 
     public function contains(string $key): bool
     {
-        return $this->getClient()->exists($key);
+        return $this->getClient()->exists($key) > 0;
     }
 
     public function delete(string $key): bool
     {
-        $this->client->del($key);
+        $this->getClient()->del($key);
 
         return true;
     }
 
     public function deleteMulti(array $keys): bool
     {
-        $this->client->del($keys);
+        $this->getClient()->del($keys);
 
         return true;
     }
@@ -126,7 +121,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         $this->client = $client;
     }
 
-    protected function createClient(array $config): void
+    protected function createClient(array $config): Redis
     {
         $params = $this->getConnectionParameters($config);
         $this->client = new Redis();
@@ -141,7 +136,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
             $persistentId = sprintf('%s-%s-%s', $params['port'], $params['database'], $connectionId);
             $this->client->pconnect($params['host'], $params['port'], $params['timeout'] ?? 0, $persistentId, $params['retry_interval'] ?? 0);
         } else {
-            $this->client->connect($params['host'], $params['port'], $params['timeout'] ?? 0, '', $params['retry_interval'] ?? 0);
+            $this->client->connect($params['host'], $params['port'], $params['timeout'] ?? 0, null, $params['retry_interval'] ?? 0);
         }
 
         if ($params['password']) {
@@ -189,6 +184,8 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         if (isset($params['read_timeout'])) {
             $this->client->setOption(Redis::OPT_READ_TIMEOUT, (string) $params['read_timeout']);
         }
+
+        return $this->client;
     }
 
     protected function getConnectionParameters(array $config): array

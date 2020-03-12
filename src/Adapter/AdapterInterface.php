@@ -12,11 +12,16 @@ interface AdapterInterface
 
     /**
      * @throws KeyNotFoundException
+     *
+     * @return mixed
      */
     public function get(string $key);
 
     public function getMulti(array $keys): array;
 
+    /**
+     * @param mixed $value
+     */
     public function set(string $key, $value): bool;
 
     public function setMulti(array $data): bool;
@@ -31,7 +36,7 @@ interface AdapterInterface
 
     public function getNamespace(): string;
 
-    public function setNamespace(string $namespace);
+    public function setNamespace(string $namespace): void;
 
     public function cacheNotFoundKeys(): bool;
 }

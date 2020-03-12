@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @requires extension aerospike
  */
-class AerospikeAdapterTest extends \PHPUnit\Framework\TestCase
+class AerospikeAdapterTest extends TestCase
 {
     const TEST_NAMESPACE = 'mx';
-
-    /**
-     * @var AerospikeAdapter
-     */
-    protected $adapter;
+    protected AerospikeAdapter $adapter;
 
     protected function setUp(): void
     {

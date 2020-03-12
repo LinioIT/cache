@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @requires extension wincache
  */
-class WincacheAdapterTest extends \PHPUnit\Framework\TestCase
+class WincacheAdapterTest extends TestCase
 {
-    /**
-     * @var WinCacheAdapter
-     */
-    protected $adapter;
+    protected WinCacheAdapter $adapter;
 
     protected function setUp(): void
     {

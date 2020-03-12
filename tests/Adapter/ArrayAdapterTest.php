@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use PHPUnit\Framework\TestCase;
 
-class ArrayAdapterTest extends \PHPUnit\Framework\TestCase
+class ArrayAdapterTest extends TestCase
 {
     const TEST_NAMESPACE = 'mx';
 

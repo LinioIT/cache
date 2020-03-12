@@ -5,21 +5,15 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @requires extension apc
  */
-class ApcAdapterTest extends \PHPUnit\Framework\TestCase
+class ApcAdapterTest extends TestCase
 {
-    /**
-     * @var ApcAdapter
-     */
-    protected $adapter;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
+    protected ApcAdapter $adapter;
+    protected string $namespace;
 
     protected function setUp(): void
     {
@@ -40,7 +34,7 @@ class ApcAdapterTest extends \PHPUnit\Framework\TestCase
 
     public function testIsGettingInexistentKey(): void
     {
-        $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
+        $this->expectException(KeyNotFoundException::class);
 
         $actual = $this->adapter->get('foo');
     }
