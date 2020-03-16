@@ -16,7 +16,7 @@
     "contorion/aerospike-stub": "1.0.*",
     "friendsofphp/php-cs-fixer": "^2.16",
     "phpstan/phpstan": "^0.12",
-    "phpunit/phpunit": "^8.5"
+    "phpunit/phpunit": "^8.5 || ^9.0"
   },
   "suggest": {
     "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol",
