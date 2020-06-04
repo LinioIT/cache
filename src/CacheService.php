@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache;
 
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use Linio\Component\Cache\Adapter\AdapterInterface;
 use Linio\Component\Cache\Encoder\EncoderInterface;
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
@@ -289,7 +289,8 @@ class CacheService
         foreach ($cacheConfig['layers'] as $adapterConfig) {
             $this->validateAdapterConfig($adapterConfig);
 
-            $adapterClass = sprintf('%s\\Adapter\\%sAdapter', __NAMESPACE__, Inflector::classify($adapterConfig['adapter_name']));
+            $inflector = InflectorFactory::create()->build();
+            $adapterClass = sprintf('%s\\Adapter\\%sAdapter', __NAMESPACE__, $inflector->classify($adapterConfig['adapter_name']));
 
             if (!class_exists($adapterClass)) {
                 throw new InvalidConfigurationException('Adapter class does not exist: ' . $adapterClass);
@@ -308,7 +309,8 @@ class CacheService
      */
     protected function createEncoder(string $encoderName): void
     {
-        $encoderClass = sprintf('%s\\Encoder\\%sEncoder', __NAMESPACE__, Inflector::classify($encoderName));
+        $inflector = InflectorFactory::create()->build();
+        $encoderClass = sprintf('%s\\Encoder\\%sEncoder', __NAMESPACE__, $inflector->classify($encoderName));
 
         if (!class_exists($encoderClass)) {
             throw new InvalidConfigurationException('Encoder class does not exist: ' . $encoderClass);
