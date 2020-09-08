@@ -23,7 +23,7 @@ To run the test suite, you need install the dependencies via composer, then
 run PHPUnit.
 
     $ composer install
-    $ phpunit
+    $ composer phpunit
 
 ## Cache Not Found Keys
 

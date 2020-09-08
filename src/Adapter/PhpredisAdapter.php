@@ -55,6 +55,10 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         $result = $this->getClient()->mGet($keys);
         $values = [];
 
+        if (!is_array($result)) {
+            return $values;
+        }
+
         foreach ($keys as $index => $key) {
             if ($result[$index]) {
                 $values[$key] = $result[$index];
