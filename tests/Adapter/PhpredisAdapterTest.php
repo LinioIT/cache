@@ -85,27 +85,6 @@ class PhpredisAdapterTest extends TestCase
         $this->assertEquals(['foo' => 'bar'], $actual);
     }
 
-    public function testIsGettingInvalidBoolValues(): void
-    {
-        $clientMock = $this->getMockBuilder('\Redis')
-            ->disableOriginalConstructor()
-            ->setMethods(['mget'])
-            ->getMock();
-
-        $clientMock->expects($this->once())
-            ->method('mget')
-            ->with($this->equalTo(['foo', 'nop']))
-            ->willReturn(false);
-
-        $adapter = $this->getRedisAdapterMock();
-        $adapter->setClient($clientMock);
-        $adapter->setNamespace('mx');
-
-        $actual = $adapter->getMulti(['foo', 'nop']);
-
-        $this->assertEquals([], $actual);
-    }
-
     public function testIsSettingMultipleKeys(): void
     {
         $actual = $this->adapter->setMulti(['foo' => 'bar', 'fooz' => 'baz']);
