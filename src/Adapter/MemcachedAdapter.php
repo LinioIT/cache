@@ -25,7 +25,7 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
             $this->ttl = (int) $config['ttl'];
         }
 
-        $persistentId = null;
+        $persistentId = 'null';
         if (isset($config['connection_persistent']) && $config['connection_persistent']) {
             $persistentId = '1';
 

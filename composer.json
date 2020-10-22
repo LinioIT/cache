@@ -10,7 +10,7 @@
     "linio/util": "^3.0",
     "linio/database": "^4.0",
     "predis/predis": "^1.0",
-    "doctrine/inflector": "^1.0"
+    "doctrine/inflector": "^2.0"
   },
   "require-dev": {
     "contorion/aerospike-stub": "1.0.*",
