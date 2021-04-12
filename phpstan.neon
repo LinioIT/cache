@@ -6,6 +6,4 @@ parameters:
     ignoreErrors:
         # Failed to detect magic method in Predis\Client
         - '#Call to an undefined method Predis\\Client\:\:flushAll\(\)#'
-
-        # Failed to detect magic property in Predis\Configuration\Options
-        - '#Access to an undefined property Predis\\Configuration\\OptionsInterface\:\:\$prefix#'
+        - '#Call to an undefined method Predis\\Command\\Processor\\ProcessorInterface\:\:setPrefix\(\)#'
