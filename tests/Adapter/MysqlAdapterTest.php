@@ -97,7 +97,7 @@ class MysqlAdapterTest extends TestCase
         );
     }
 
-    public function testIsValidatingConstructorParameterTable_name(): void
+    public function testIsValidatingConstructorParameterTableName(): void
     {
         $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
 
