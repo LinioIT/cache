@@ -14,7 +14,7 @@
   },
   "require-dev": {
     "contorion/aerospike-stub": "1.0.*",
-    "friendsofphp/php-cs-fixer": "^2.16",
+    "friendsofphp/php-cs-fixer": "^2.16 || ^3.0",
     "phpstan/phpstan": "^0.12",
     "phpunit/phpunit": "^8.5"
   },
