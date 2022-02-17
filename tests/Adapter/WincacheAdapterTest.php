@@ -7,22 +7,31 @@ namespace Linio\Component\Cache\Adapter;
 use Linio\Component\Cache\Exception\KeyNotFoundException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @requires extension wincache
- */
 class WincacheAdapterTest extends TestCase
 {
     protected WinCacheAdapter $adapter;
 
     protected function setUp(): void
     {
-        $this->adapter = new WincacheAdapter();
+        $this->adapter = $this->getMockBuilder('Linio\Component\Cache\Adapter\WinCacheAdapter')
+            ->disableOriginalConstructor()
+            ->setMethods(['setNamespace', 'set', 'get', 'delete', 'contains', 'flush', 'getMulti', 'setMulti', 'deleteMulti'])
+            ->getMock();
         $this->adapter->setNamespace('mx');
-        wincache_ucache_clear();
     }
 
     public function testIsSettingAndGetting(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('set')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willReturn('bar');
+
         $setResult = $this->adapter->set('foo', 'bar');
         $actual = $this->adapter->get('foo');
 
@@ -30,15 +39,25 @@ class WincacheAdapterTest extends TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    public function testIsGettingInexistentKey(): void
+    public function testIsGettingNonexistentKey(): void
     {
-        $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
+        $this->adapter->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willThrowException(new KeyNotFoundException());
 
-        $actual = $this->adapter->get('foo');
+        $this->expectException(KeyNotFoundException::class);
+
+        $this->adapter->get('foo');
     }
 
     public function testIsFindingKey(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('contains')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
         $this->adapter->set('foo', 'bar');
 
         $actual = $this->adapter->contains('foo');
@@ -48,6 +67,11 @@ class WincacheAdapterTest extends TestCase
 
     public function testIsNotFindingKey(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('contains')
+            ->with($this->equalTo('baz'))
+            ->willReturn(false);
+
         $this->adapter->set('foo', 'bar');
 
         $actual = $this->adapter->contains('baz');
@@ -57,6 +81,11 @@ class WincacheAdapterTest extends TestCase
 
     public function testIsGettingMultipleKeys(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('getMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn(['foo' => 'bar', 'fooz' => 'baz']);
+
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
 
@@ -67,6 +96,11 @@ class WincacheAdapterTest extends TestCase
 
     public function testIsGettingMultipleKeysWithInvalidKeys(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('getMulti')
+            ->with($this->equalTo(['foo', 'nop']))
+            ->willReturn(['foo' => 'bar']);
+
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
 
@@ -77,25 +111,34 @@ class WincacheAdapterTest extends TestCase
 
     public function testIsSettingMultipleKeys(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('setMulti')
+            ->with($this->equalTo(['foo' => 'bar', 'fooz' => 'baz']))
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('getMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn(['bar', 'baz']);
+
         $actual = $this->adapter->setMulti(['foo' => 'bar', 'fooz' => 'baz']);
 
         $this->assertTrue($actual);
-        $this->assertEquals('bar', $this->adapter->get('foo'));
-        $this->assertEquals('baz', $this->adapter->get('fooz'));
+        $this->assertEquals(['bar', 'baz'], $this->adapter->getMulti(['foo', 'fooz']));
     }
 
     public function testIsDeletingKey(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('delete')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
         $this->adapter->set('foo', 'bar');
 
         $deleteResult = $this->adapter->delete('foo');
 
-        $actual = 'bar';
-        try {
-            $actual = $this->adapter->get('foo');
-        } catch (KeyNotFoundException $e) {
-            $actual = null;
-        }
+        $actual = $this->adapter->get('foo');
 
         $this->assertTrue($deleteResult);
         $this->assertNull($actual);
@@ -103,57 +146,57 @@ class WincacheAdapterTest extends TestCase
 
     public function testIsDeletingMultipleKeys(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('deleteMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('getMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn([]);
+
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
 
         $deleteResult = $this->adapter->deleteMulti(['foo', 'fooz']);
 
-        $actual1 = 'bar';
-        try {
-            $actual1 = $this->adapter->get('foo');
-        } catch (KeyNotFoundException $e) {
-            $actual1 = null;
-        }
-
-        $actual2 = 'baz';
-        try {
-            $actual2 = $this->adapter->get('fooz');
-        } catch (KeyNotFoundException $e) {
-            $actual2 = null;
-        }
+        $actual = $this->adapter->getMulti(['foo', 'fooz']);
 
         $this->assertTrue($deleteResult);
-        $this->assertNull($actual1);
-        $this->assertNull($actual2);
+        $this->assertEmpty($actual);
     }
 
-    public function testIsDeletingInexistentKey(): void
+    public function testIsDeletingNonexistentKey(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('delete')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
         $actual = $this->adapter->delete('foo');
 
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentMultipleKeys(): void
+    public function testIsDeletingNonexistentMultipleKeys(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('deleteMulti')
+            ->with($this->equalTo(['foo', 'nop']))
+            ->willReturn(true);
+
+        $this->adapter->method('get')
+            ->withConsecutive(['foo'], ['fooz'])
+            ->willReturnOnConsecutiveCalls(null, 'baz');
+
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
 
         $deleteResult = $this->adapter->deleteMulti(['foo', 'nop']);
 
-        $actual1 = 'bar';
-        try {
-            $actual1 = $this->adapter->get('foo');
-        } catch (KeyNotFoundException $e) {
-            $actual1 = null;
-        }
-
-        $actual2 = 'baz';
-        try {
-            $actual2 = $this->adapter->get('fooz');
-        } catch (KeyNotFoundException $e) {
-            $actual2 = null;
-        }
+        $actual1 = $this->adapter->get('foo');
+        $actual2 = $this->adapter->get('fooz');
 
         $this->assertTrue($deleteResult);
         $this->assertNull($actual1);
@@ -162,24 +205,18 @@ class WincacheAdapterTest extends TestCase
 
     public function testIsFlushingData(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('flush')
+            ->willReturn(true);
+
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
 
         $flushResult = $this->adapter->flush();
 
-        $actual1 = 'bar';
-        try {
-            $actual1 = $this->adapter->get('foo');
-        } catch (KeyNotFoundException $e) {
-            $actual1 = null;
-        }
+        $actual1 = $this->adapter->get('foo');
 
-        $actual2 = 'baz';
-        try {
-            $actual2 = $this->adapter->get('fooz');
-        } catch (KeyNotFoundException $e) {
-            $actual2 = null;
-        }
+        $actual2 = $this->adapter->get('fooz');
 
         $this->assertTrue($flushResult);
         $this->assertNull($actual1);

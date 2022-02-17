@@ -4,14 +4,8 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache\Adapter;
 
-use Linio\Component\Cache\Exception\InvalidConfigurationException;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @requires extension redis
- * @requires extension igbinary
- */
 class PhpredisAdapterIgbinarySerializerTest extends TestCase
 {
     protected PhpredisAdapter $adapter;
@@ -19,26 +13,25 @@ class PhpredisAdapterIgbinarySerializerTest extends TestCase
 
     protected function setUp(): void
     {
-        try {
-            $this->adapter = new PhpredisAdapter(['connection_persistent' => false, 'serializer' => 'igbinary']);
-        } catch (InvalidConfigurationException $e) {
-            $this->markTestSkipped('phpredis extension not compiled with igbinary support');
-        }
-
-        $this->namespace = 'mx';
-        $this->adapter->setNamespace($this->namespace);
-        $this->adapter->flush();
-    }
-
-    protected function tearDown(): void
-    {
-        /** @var $client \Redis */
-        $client = Assert::readAttribute($this->adapter, 'client');
-        $client->close();
+        $this->adapter = $this->getMockBuilder('Linio\Component\Cache\Adapter\PhpredisAdapter')
+            ->disableOriginalConstructor()
+            ->setMethods(['setNamespace', 'set', 'get', 'delete', 'contains', 'flush', 'getMulti', 'setMulti', 'deleteMulti'])
+            ->getMock();
+        $this->adapter->setNamespace('mx');
     }
 
     public function testIsSettingAndGettingArray(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('set')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willReturn(['bar']);
+
         $setResult = $this->adapter->set('foo', ['bar']);
         $actual = $this->adapter->get('foo');
 
@@ -48,8 +41,18 @@ class PhpredisAdapterIgbinarySerializerTest extends TestCase
 
     public function testIsSettingAndGettingObject(): void
     {
-        $bar = new \StdClass();
+        $bar = new \stdClass();
         $bar->bar = 'bar';
+
+        $this->adapter->expects($this->once())
+            ->method('set')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willReturn($bar);
 
         $setResult = $this->adapter->set('foo', $bar);
         $actual = $this->adapter->get('foo');
@@ -60,6 +63,11 @@ class PhpredisAdapterIgbinarySerializerTest extends TestCase
 
     public function testIsGettingMultipleKeysWithArrayValues(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('getMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn(['foo' => ['bar'], 'fooz' => ['baz']]);
+
         $this->adapter->set('foo', ['bar']);
         $this->adapter->set('fooz', ['baz']);
 
@@ -70,11 +78,16 @@ class PhpredisAdapterIgbinarySerializerTest extends TestCase
 
     public function testIsGettingMultipleKeysWithObjectValues(): void
     {
-        $bar = new \StdClass();
+        $bar = new \stdClass();
         $bar->bar = 'bar';
 
-        $baz = new \StdClass();
+        $baz = new \stdClass();
         $baz->baz = 'baz';
+
+        $this->adapter->expects($this->once())
+            ->method('getMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn(['foo' => $bar, 'fooz' => $baz]);
 
         $this->adapter->set('foo', $bar);
         $this->adapter->set('fooz', $baz);
@@ -86,13 +99,22 @@ class PhpredisAdapterIgbinarySerializerTest extends TestCase
 
     public function testIsSettingMultipleKeys(): void
     {
-        $bar = new \StdClass();
+        $bar = new \stdClass();
         $bar->bar = 'bar';
 
-        $baz = new \StdClass();
+        $baz = new \stdClass();
         $baz->baz = 'baz';
 
-        $actual = $this->adapter->setMulti(['foo' => $bar, 'fooz' => $baz]);
+        $this->adapter->expects($this->once())
+            ->method('setMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn(true);
+
+        $this->adapter->method('get')
+            ->withConsecutive(['foo'], ['fooz'])
+            ->willReturnOnConsecutiveCalls($bar, $baz);
+
+        $actual = $this->adapter->setMulti(['foo', 'fooz']);
 
         $this->assertTrue($actual);
         $this->assertEquals($bar, $this->adapter->get('foo'));

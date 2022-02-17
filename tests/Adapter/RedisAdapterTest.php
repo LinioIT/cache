@@ -88,7 +88,7 @@ class RedisAdapterTest extends TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    public function testIsGettingInexistentKey(): void
+    public function testIsGettingNonexistentKey(): void
     {
         $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
 
@@ -261,7 +261,7 @@ class RedisAdapterTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentKey(): void
+    public function testIsDeletingNonexistentKey(): void
     {
         $clientMock = $this->getMockBuilder('\Predis\Client')
             ->disableOriginalConstructor()
@@ -282,7 +282,7 @@ class RedisAdapterTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentMultipleKeys(): void
+    public function testIsDeletingNonexistentMultipleKeys(): void
     {
         $clientMock = $this->getMockBuilder('\Predis\Client')
             ->disableOriginalConstructor()

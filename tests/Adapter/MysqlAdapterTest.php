@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 class MysqlAdapterTest extends TestCase
 {
-    const TABLE_NAME = 'key_value';
-    const TEST_NAMESPACE = 'mx';
+    public const TABLE_NAME = 'key_value';
+    public const TEST_NAMESPACE = 'mx';
 
     protected MysqlAdapter $adapter;
 
@@ -129,7 +129,7 @@ class MysqlAdapterTest extends TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    public function testIsGettingInexistentKey(): void
+    public function testIsGettingNonexistentKey(): void
     {
         $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
 
@@ -282,7 +282,7 @@ class MysqlAdapterTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentKey(): void
+    public function testIsDeletingNonexistentKey(): void
     {
         $expectedQuery = sprintf('DELETE FROM `%s` WHERE `key` = :key', self::TABLE_NAME);
 
@@ -299,7 +299,7 @@ class MysqlAdapterTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentMultipleKeys(): void
+    public function testIsDeletingNonexistentMultipleKeys(): void
     {
         $expectedQuery = sprintf('DELETE FROM `%s` WHERE `key` IN (?,?)', self::TABLE_NAME);
 

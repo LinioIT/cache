@@ -12,18 +12,34 @@ use PHPUnit\Framework\TestCase;
  */
 class AerospikeAdapterTest extends TestCase
 {
-    const TEST_NAMESPACE = 'mx';
+    public const TEST_NAMESPACE = 'mx';
     protected AerospikeAdapter $adapter;
 
     protected function setUp(): void
     {
-        $this->adapter = new AerospikeAdapter(['hosts' => [['addr' => '127.0.0.1', 'port' => 3000]], 'persistent' => true]);
-        $this->adapter->setNamespace(static::TEST_NAMESPACE);
+        $this->adapter = $this->getMockBuilder('Linio\Component\Cache\Adapter\AerospikeAdapter')
+            ->disableOriginalConstructor()
+            ->setMethods(['setNamespace', 'set', 'get', 'contains', 'getMulti', 'setMulti', 'deleteMulti'])
+            ->getMock();
+        $this->adapter->setNamespace('mx');
+
+        // $this->adapter = new AerospikeAdapter(['hosts' => [['addr' => '127.0.0.1', 'port' => 3000]], 'persistent' => true]);
+        // $this->adapter->setNamespace(static::TEST_NAMESPACE);
         $this->adapter->flush();
     }
 
     public function testIsSettingAndGetting(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('set')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willReturn('bar');
+
         $setResult = $this->adapter->set('foo', 'bar');
         $actual = $this->adapter->get('foo');
 
@@ -31,11 +47,11 @@ class AerospikeAdapterTest extends TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    public function testIsGettingInexistentKey(): void
+    public function testIsGettingNonexistentKey(): void
     {
-        $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
+        $this->expectException(KeyNotFoundException::class);
 
-        $actual = $this->adapter->get('foo');
+        $this->adapter->get('foo');
     }
 
     public function testIsFindingKey(): void
@@ -130,14 +146,14 @@ class AerospikeAdapterTest extends TestCase
         $this->assertNull($actual2);
     }
 
-    public function testIsDeletingInexistentKey(): void
+    public function testIsDeletingNonexistentKey(): void
     {
         $actual = $this->adapter->delete('foo');
 
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentMultipleKeys(): void
+    public function testIsDeletingNonexistentMultipleKeys(): void
     {
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');

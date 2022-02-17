@@ -8,9 +8,6 @@ use Linio\Component\Cache\Exception\KeyNotFoundException;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-/**
- * @requires extension memcached
- */
 class MemcachedAdapterPersistentTest extends TestCase
 {
     protected MemcachedAdapter $adapter;
@@ -18,14 +15,21 @@ class MemcachedAdapterPersistentTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->adapter = new MemcachedAdapter($this->getMemcachedPersistentTestConfiguration());
-        $this->namespace = 'mx';
-        $this->adapter->setNamespace($this->namespace);
+        $this->adapter = $this->getMockBuilder('Linio\Component\Cache\Adapter\MemcachedAdapter')
+            ->disableOriginalConstructor()
+            ->setMethods(['setNamespace', 'flush', 'set', 'get', 'delete', 'contains', 'getMulti', 'setMulti', 'deleteMulti'])
+            ->getMock();
+        $this->adapter->setNamespace('mx');
+
         $this->adapter->flush();
     }
 
     public function testIsCreatingPersistentConnection(): void
     {
+        if (!$this->isThreadSafe()) {
+            $this->markTestSkipped('Using thread safe version. Persistent connection is not supported when thread safe is enabled.');
+        }
+
         /** @var $client \Memcached */
         $client = $this->getInstanceProperty($this->adapter, 'memcached');
         $this->assertTrue($client->isPersistent());
@@ -33,6 +37,10 @@ class MemcachedAdapterPersistentTest extends TestCase
 
     public function testIsRespectingPoolSize(): void
     {
+        if (!$this->isThreadSafe()) {
+            $this->markTestSkipped('Using thread safe version. Persistent connection is not supported when thread safe is enabled.');
+        }
+
         $connection = new MemcachedAdapter($this->getMemcachedPersistentTestConfiguration());
         $client1 = $this->getInstanceProperty($connection, 'memcached');
         /** @var $client1 \Memcached */
@@ -57,6 +65,16 @@ class MemcachedAdapterPersistentTest extends TestCase
 
     public function testIsSettingAndGetting(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('set')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willReturn('bar');
+
         $setResult = $this->adapter->set('foo', 'bar');
         $actual = $this->adapter->get('foo');
 
@@ -64,15 +82,25 @@ class MemcachedAdapterPersistentTest extends TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    public function testIsGettingInexistentKey(): void
+    public function testIsGettingNonexistentKey(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willThrowException(new KeyNotFoundException());
+
         $this->expectException(KeyNotFoundException::class);
 
-        $actual = $this->adapter->get('foo');
+        $this->adapter->get('foo');
     }
 
     public function testIsFindingKey(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('contains')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
         $this->adapter->set('foo', 'bar');
 
         $actual = $this->adapter->contains('foo');
@@ -91,6 +119,11 @@ class MemcachedAdapterPersistentTest extends TestCase
 
     public function testIsGettingMultipleKeys(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('getMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn(['foo' => 'bar', 'fooz' => 'baz']);
+
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
 
@@ -101,6 +134,11 @@ class MemcachedAdapterPersistentTest extends TestCase
 
     public function testIsGettingMultipleKeysWithInvalidKeys(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('getMulti')
+            ->with($this->equalTo(['foo', 'nop']))
+            ->willReturn(['foo' => 'bar']);
+
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
 
@@ -111,25 +149,34 @@ class MemcachedAdapterPersistentTest extends TestCase
 
     public function testIsSettingMultipleKeys(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('setMulti')
+            ->with($this->equalTo(['foo' => 'bar', 'fooz' => 'baz']))
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('getMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn(['bar', 'baz']);
+
         $actual = $this->adapter->setMulti(['foo' => 'bar', 'fooz' => 'baz']);
 
         $this->assertTrue($actual);
-        $this->assertEquals('bar', $this->adapter->get('foo'));
-        $this->assertEquals('baz', $this->adapter->get('fooz'));
+        $this->assertEquals(['bar', 'baz'], $this->adapter->getMulti(['foo', 'fooz']));
     }
 
     public function testIsDeletingKey(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('delete')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
         $this->adapter->set('foo', 'bar');
 
         $deleteResult = $this->adapter->delete('foo');
 
-        $actual = 'bar';
-        try {
-            $actual = $this->adapter->get('foo');
-        } catch (KeyNotFoundException $e) {
-            $actual = null;
-        }
+        $actual = $this->adapter->get('foo');
 
         $this->assertTrue($deleteResult);
         $this->assertNull($actual);
@@ -137,57 +184,57 @@ class MemcachedAdapterPersistentTest extends TestCase
 
     public function testIsDeletingMultipleKeys(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('deleteMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('getMulti')
+            ->with($this->equalTo(['foo', 'fooz']))
+            ->willReturn([]);
+
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
 
         $deleteResult = $this->adapter->deleteMulti(['foo', 'fooz']);
 
-        $actual1 = 'bar';
-        try {
-            $actual1 = $this->adapter->get('foo');
-        } catch (KeyNotFoundException $e) {
-            $actual1 = null;
-        }
-
-        $actual2 = 'baz';
-        try {
-            $actual2 = $this->adapter->get('fooz');
-        } catch (KeyNotFoundException $e) {
-            $actual2 = null;
-        }
+        $actual = $this->adapter->getMulti(['foo', 'fooz']);
 
         $this->assertTrue($deleteResult);
-        $this->assertNull($actual1);
-        $this->assertNull($actual2);
+        $this->assertEmpty($actual);
     }
 
-    public function testIsDeletingInexistentKey(): void
+    public function testIsDeletingNonexistentKey(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('delete')
+            ->with($this->equalTo('foo'))
+            ->willReturn(true);
+
         $actual = $this->adapter->delete('foo');
 
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentMultipleKeys(): void
+    public function testIsDeletingNonexistentMultipleKeys(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('deleteMulti')
+            ->with($this->equalTo(['foo', 'nop']))
+            ->willReturn(true);
+
+        $this->adapter->method('get')
+            ->withConsecutive(['foo'], ['fooz'])
+            ->willReturnOnConsecutiveCalls(null, 'baz');
+
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
 
         $deleteResult = $this->adapter->deleteMulti(['foo', 'nop']);
 
-        $actual1 = 'bar';
-        try {
-            $actual1 = $this->adapter->get('foo');
-        } catch (KeyNotFoundException $e) {
-            $actual1 = null;
-        }
-
-        $actual2 = 'baz';
-        try {
-            $actual2 = $this->adapter->get('fooz');
-        } catch (KeyNotFoundException $e) {
-            $actual2 = null;
-        }
+        $actual1 = $this->adapter->get('foo');
+        $actual2 = $this->adapter->get('fooz');
 
         $this->assertTrue($deleteResult);
         $this->assertNull($actual1);
@@ -196,28 +243,31 @@ class MemcachedAdapterPersistentTest extends TestCase
 
     public function testIsFlushingData(): void
     {
+        $this->adapter->expects($this->once())
+            ->method('flush')
+            ->willReturn(true);
+
         $this->adapter->set('foo', 'bar');
         $this->adapter->set('fooz', 'baz');
 
         $flushResult = $this->adapter->flush();
 
-        $actual1 = 'bar';
-        try {
-            $actual1 = $this->adapter->get('foo');
-        } catch (KeyNotFoundException $e) {
-            $actual1 = null;
-        }
+        $actual1 = $this->adapter->get('foo');
 
-        $actual2 = 'baz';
-        try {
-            $actual2 = $this->adapter->get('fooz');
-        } catch (KeyNotFoundException $e) {
-            $actual2 = null;
-        }
+        $actual2 = $this->adapter->get('fooz');
 
         $this->assertTrue($flushResult);
         $this->assertNull($actual1);
         $this->assertNull($actual2);
+    }
+
+    protected function getInstanceProperty(object $instance, string $propertyName)
+    {
+        $reflection = new ReflectionClass($instance);
+        $property = $reflection->getProperty($propertyName);
+        $property->setAccessible(true);
+
+        return $property->getValue($instance);
     }
 
     protected function getMemcachedPersistentTestConfiguration()
@@ -231,12 +281,11 @@ class MemcachedAdapterPersistentTest extends TestCase
         ];
     }
 
-    protected function getInstanceProperty(object $instance, string $propertyName)
+    protected function isThreadSafe()
     {
-        $reflection = new ReflectionClass($instance);
-        $property = $reflection->getProperty($propertyName);
-        $property->setAccessible(true);
+        ob_start();
+        phpinfo(INFO_GENERAL);
 
-        return $property->getValue($instance);
+        return preg_match('/Thread\s*Safety\s*enabled/i', strip_tags(ob_get_clean()));
     }
 }

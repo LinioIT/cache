@@ -34,8 +34,8 @@
     }
   },
   "scripts": {
-    "lint": "php-cs-fixer fix --verbose --show-progress=estimating",
-    "lint:check": "php-cs-fixer fix --dry-run --verbose --show-progress=estimating",
+    "lint": "php-cs-fixer fix --verbose --show-progress=dots",
+    "lint:check": "php-cs-fixer fix --dry-run --verbose --show-progress=dots",
     "phpunit": "phpunit",
     "phpstan": "phpstan analyze",
     "test": [

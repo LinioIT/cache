@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class ArrayAdapterTest extends TestCase
 {
-    const TEST_NAMESPACE = 'mx';
+    public const TEST_NAMESPACE = 'mx';
 
     public function testIsSettingAndGetting(): void
     {
@@ -23,7 +23,7 @@ class ArrayAdapterTest extends TestCase
         $this->assertEquals('bar', $actual);
     }
 
-    public function testIsGettingInexistentKey(): void
+    public function testIsGettingNonexistentKey(): void
     {
         $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
 
@@ -138,7 +138,7 @@ class ArrayAdapterTest extends TestCase
         $this->assertNull($actual2);
     }
 
-    public function testIsDeletingInexistentKey(): void
+    public function testIsDeletingNonexistentKey(): void
     {
         $adapter = new ArrayAdapter();
         $adapter->setNamespace(static::TEST_NAMESPACE);
@@ -148,7 +148,7 @@ class ArrayAdapterTest extends TestCase
         $this->assertTrue($actual);
     }
 
-    public function testIsDeletingInexistentMultipleKeys(): void
+    public function testIsDeletingNonexistentMultipleKeys(): void
     {
         $adapter = new ArrayAdapter();
         $adapter->setNamespace(static::TEST_NAMESPACE);

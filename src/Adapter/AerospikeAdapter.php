@@ -7,11 +7,15 @@ namespace Linio\Component\Cache\Adapter;
 use Aerospike;
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
 use Linio\Component\Cache\Exception\KeyNotFoundException;
+use phpDocumentor\Reflection\DocBlock\Tags\Deprecated;
 
+/**
+ * @deprecated 8.0
+ */
 class AerospikeAdapter extends AbstractAdapter implements AdapterInterface
 {
-    const BIN_KEY = 'v';
-    const DEFAULT_AEROSPIKE_NAMESPACE = 'test';
+    public const BIN_KEY = 'v';
+    public const DEFAULT_AEROSPIKE_NAMESPACE = 'test';
 
     protected Aerospike $db;
     protected string $aerospikeNamespace;
