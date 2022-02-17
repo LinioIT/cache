@@ -5,16 +5,16 @@
   "type": "library",
   "license": "BSD-3-Clause",
   "require": {
-    "php": "^7.4",
-    "psr/log": "^1.0",
-    "linio/util": "^3.0",
-    "linio/database": "^4.0",
+    "php": "^8.0",
+    "psr/log": "^3.0",
+    "linio/util": "^4.0",
+    "linio/database": "^5.0",
     "predis/predis": "^1.0",
     "doctrine/inflector": "^2.0"
   },
   "require-dev": {
     "contorion/aerospike-stub": "1.0.*",
-    "friendsofphp/php-cs-fixer": "^2.16",
+    "friendsofphp/php-cs-fixer": "^3.6",
     "phpstan/phpstan": "^0.12",
     "phpunit/phpunit": "^8.5"
   },
