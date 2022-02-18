@@ -5,14 +5,6 @@ on:
     branches: [ master ]
   pull_request: ~
 
-env:
-  PHP_VERSION: 8.0
-  APPLICATION_NAME: cache
-  GCP_REGION: us-east4
-  PR_NUMBER: ${{ github.event.number }}
-  NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
-  NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
-
 jobs:
   test-php-80:
     name: Code quality PHP 8.0
@@ -41,3 +33,4 @@ jobs:
 
       - name: Unit Test
         run: composer phpunit
+        
