@@ -9,8 +9,8 @@ use Predis\Client;
 
 class RedisAdapter extends AbstractAdapter implements AdapterInterface
 {
-    const EXPIRE_RESOLUTION_EX = 'ex';
-    const EXPIRE_RESOLUTION_PX = 'px';
+    public const EXPIRE_RESOLUTION_EX = 'ex';
+    public const EXPIRE_RESOLUTION_PX = 'px';
 
     protected ?Client $client = null;
     protected int $ttl = 0;

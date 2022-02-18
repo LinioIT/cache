@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Linio\Component\Cache;
 
+use Linio\Component\Cache\Exception\InvalidConfigurationException;
 use PHPUnit\Framework\TestCase;
 
 class CacheServiceTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    protected static $layer1CacheAdapterName;
+    protected static string $layer1CacheAdapterName;
 
     public static function setUpBeforeClass(): void
     {
@@ -20,8 +18,10 @@ class CacheServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        if (extension_loaded('apcu')) {
-            apcu_clear_cache();
+        if (!extension_loaded('apcu')) {
+            self::markTestSkipped('Required extension "apcu" is not loaded');
+        } elseif (!ini_get('apc.enable_cli')) {
+            self::markTestSkipped('APC is installed but not enabled. Enable with "apc.enable_cli=1" from php.ini. Skipping.');
         } elseif (extension_loaded('wincache')) {
             wincache_ucache_clear();
         } else {
@@ -55,7 +55,7 @@ class CacheServiceTest extends TestCase
 
     public function testIsValidatingServiceConfiguration(): void
     {
-        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+        $this->expectException(InvalidConfigurationException::class);
 
         new CacheService(
             [
@@ -67,7 +67,7 @@ class CacheServiceTest extends TestCase
 
     public function testIsValidatingAdapters(): void
     {
-        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+        $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('Adapter class does not exist: Linio\\Component\\Cache\\Adapter\\NopAdapter');
 
         $cacheService = new CacheService(
@@ -88,7 +88,7 @@ class CacheServiceTest extends TestCase
 
     public function testIsValidatingEncoder(): void
     {
-        $this->expectException(\Linio\Component\Cache\Exception\InvalidConfigurationException::class);
+        $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('Encoder class does not exist: Linio\\Component\\Cache\\Encoder\\NopEncoder');
 
         new CacheService(
