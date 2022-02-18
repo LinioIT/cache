@@ -25,7 +25,7 @@ class CacheService
 
         $this->cacheConfig = $cacheConfig;
 
-        // service config
+        // Service config
         if (isset($cacheConfig['namespace'])) {
             $this->namespace = $cacheConfig['namespace'];
         }
