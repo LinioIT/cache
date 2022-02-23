@@ -6,7 +6,7 @@
   "license": "BSD-3-Clause",
   "require": {
     "php": "^8.0",
-    "psr/log": "^3.0",
+    "psr/log": "^1.0.1 || ^2.0 || ^3.0",
     "linio/util": "^4.0",
     "linio/database": "^5.0",
     "predis/predis": "^1.0",
