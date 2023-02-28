@@ -5,18 +5,19 @@
   "type": "library",
   "license": "BSD-3-Clause",
   "require": {
-    "php": "^8.0",
+    "php": "^8.1",
     "psr/log": "^1.0.1 || ^2.0 || ^3.0",
     "linio/util": "^4.0",
-    "linio/database": "^5.0",
+    "linio/database": "^5.1.0",
     "predis/predis": "^1.0",
     "doctrine/inflector": "^2.0"
   },
   "require-dev": {
     "contorion/aerospike-stub": "1.0.*",
     "friendsofphp/php-cs-fixer": "^3.6",
-    "phpstan/phpstan": "^0.12",
-    "phpunit/phpunit": "^8.5"
+    "phpstan/phpstan": "^1.9",
+    "phpunit/phpunit": "^8.5",
+    "phpspec/prophecy-phpunit": "^1.1"
   },
   "suggest": {
     "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol",
