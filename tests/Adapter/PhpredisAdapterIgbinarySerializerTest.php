@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class PhpredisAdapterIgbinarySerializerTest extends TestCase
 {
@@ -41,7 +42,7 @@ class PhpredisAdapterIgbinarySerializerTest extends TestCase
 
     public function testIsSettingAndGettingObject(): void
     {
-        $bar = new \stdClass();
+        $bar = new stdClass();
         $bar->bar = 'bar';
 
         $this->adapter->expects($this->once())
@@ -78,10 +79,10 @@ class PhpredisAdapterIgbinarySerializerTest extends TestCase
 
     public function testIsGettingMultipleKeysWithObjectValues(): void
     {
-        $bar = new \stdClass();
+        $bar = new stdClass();
         $bar->bar = 'bar';
 
-        $baz = new \stdClass();
+        $baz = new stdClass();
         $baz->baz = 'baz';
 
         $this->adapter->expects($this->once())
@@ -99,10 +100,10 @@ class PhpredisAdapterIgbinarySerializerTest extends TestCase
 
     public function testIsSettingMultipleKeys(): void
     {
-        $bar = new \stdClass();
+        $bar = new stdClass();
         $bar->bar = 'bar';
 
-        $baz = new \stdClass();
+        $baz = new stdClass();
         $baz->baz = 'baz';
 
         $this->adapter->expects($this->once())

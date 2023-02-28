@@ -303,7 +303,9 @@ class CacheService
             throw new InvalidConfigurationException('Encoder class does not exist: ' . $encoderClass);
         }
 
-        $this->encoder = new $encoderClass();
+        /** @var EncoderInterface $encoder */
+        $encoder = new $encoderClass();
+        $this->encoder = $encoder;
     }
 
     /**

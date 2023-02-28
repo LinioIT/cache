@@ -14,8 +14,10 @@ $config
         'array_syntax' => ['syntax' => 'short'],
         'blank_line_after_opening_tag' => true,
         'concat_space' => ['spacing' => 'one'],
-        'class_attributes_separation' => ['elements' => ['method'=>'one']],
+        'class_attributes_separation' => ['elements' => ['method' => 'one']],
+        'comment_to_phpdoc' => true,
         'declare_strict_types' => true,
+        'global_namespace_import' => ['import_classes' => true],
         'increment_style' => ['style' => 'post'],
         'list_syntax' => ['syntax' => 'short'],
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
@@ -43,13 +45,12 @@ $config
     ->setRiskyAllowed(true);
 
 // special handling of fabbot.io service if it's using too old PHP CS Fixer version
-if (false !== getenv('FABBOT_IO')) {
+if (getenv('FABBOT_IO') !== false) {
     try {
         PhpCsFixer\FixerFactory::create()
             ->registerBuiltInFixers()
             ->registerCustomFixers($config->getCustomFixers())
-            ->useRuleSet(new PhpCsFixer\RuleSet($config->getRules()))
-        ;
+            ->useRuleSet(new PhpCsFixer\RuleSet($config->getRules()));
     } catch (PhpCsFixer\ConfigurationException\InvalidConfigurationException $e) {
         $config->setRules([]);
     } catch (UnexpectedValueException $e) {
