@@ -39,6 +39,7 @@ class WincacheAdapter extends AbstractAdapter implements AdapterInterface
     public function getMulti(array $keys): array
     {
         $namespacedKeys = $this->addNamespaceToKeys($keys);
+        /** @var array $namespacedValues */
         $namespacedValues = wincache_ucache_get($namespacedKeys, $success);
 
         if (!$success) {

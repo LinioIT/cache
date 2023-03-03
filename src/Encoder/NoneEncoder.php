@@ -11,7 +11,11 @@ class NoneEncoder implements EncoderInterface
      */
     public function encode($value): string
     {
-        return $value;
+        if (is_string($value)) {
+            return $value;
+        }
+
+        return '';
     }
 
     /**

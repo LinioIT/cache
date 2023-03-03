@@ -38,6 +38,7 @@ class ApcuAdapter extends AbstractAdapter implements AdapterInterface
 
     public function getMulti(array $keys): array
     {
+        /** @var array $namespacedKeys */
         $namespacedKeys = apcu_fetch($this->addNamespaceToKeys($keys));
 
         return $this->removeNamespaceFromKeys($namespacedKeys);

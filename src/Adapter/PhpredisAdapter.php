@@ -72,6 +72,7 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
         if ($this->ttl === null) {
             $result = $this->getClient()->set($key, $value);
         } else {
+            /** @var string $value */
             $result = $this->getClient()->setex($key, $this->ttl, $value);
         }
 
