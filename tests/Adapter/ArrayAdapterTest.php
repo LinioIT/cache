@@ -30,7 +30,7 @@ class ArrayAdapterTest extends TestCase
         $adapter = new ArrayAdapter();
         $adapter->setNamespace(static::TEST_NAMESPACE);
 
-        $actual = $adapter->get('foo');
+        $adapter->get('foo');
     }
 
     public function testIsFindingKey(): void
@@ -99,7 +99,6 @@ class ArrayAdapterTest extends TestCase
 
         $deleteResult = $adapter->delete('foo');
 
-        $actual = 'bar';
         try {
             $actual = $adapter->get('foo');
         } catch (KeyNotFoundException $e) {
@@ -157,14 +156,12 @@ class ArrayAdapterTest extends TestCase
 
         $deleteResult = $adapter->deleteMulti(['foo', 'nop']);
 
-        $actual1 = 'bar';
         try {
             $actual1 = $adapter->get('foo');
         } catch (KeyNotFoundException $e) {
             $actual1 = null;
         }
 
-        $actual2 = 'baz';
         try {
             $actual2 = $adapter->get('fooz');
         } catch (KeyNotFoundException $e) {
@@ -185,14 +182,12 @@ class ArrayAdapterTest extends TestCase
 
         $flushResult = $adapter->flush();
 
-        $actual1 = 'bar';
         try {
             $actual1 = $adapter->get('foo');
         } catch (KeyNotFoundException $e) {
             $actual1 = null;
         }
 
-        $actual2 = 'baz';
         try {
             $actual2 = $adapter->get('fooz');
         } catch (KeyNotFoundException $e) {
