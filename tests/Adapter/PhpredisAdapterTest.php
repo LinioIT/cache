@@ -15,7 +15,7 @@ class PhpredisAdapterTest extends TestCase
     {
         $this->adapter = $this->getMockBuilder(PhpredisAdapter::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setNamespace', 'set', 'get', 'delete', 'contains', 'flush', 'getMulti', 'setMulti', 'deleteMulti'])
+            ->onlyMethods(['setNamespace', 'set', 'get', 'delete', 'contains', 'flush', 'getMulti', 'setMulti', 'deleteMulti'])
             ->getMock();
         $this->adapter->setNamespace('mx');
     }

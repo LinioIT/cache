@@ -35,7 +35,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['get', 'set'])
+            ->addMethods(['get', 'set'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -64,7 +64,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['get', 'set'])
+            ->addMethods(['get', 'set'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -97,7 +97,7 @@ class RedisAdapterTest extends TestCase
 
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['get', 'exists'])
+            ->addMethods(['get', 'exists'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -121,7 +121,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['exists'])
+            ->addMethods(['exists'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -142,7 +142,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['exists'])
+            ->addMethods(['exists'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -163,7 +163,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['mget'])
+            ->addMethods(['mget'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -184,7 +184,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['mget'])
+            ->addMethods(['mget'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -205,7 +205,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['pipeline'])
+            ->onlyMethods(['pipeline'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -226,7 +226,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['del'])
+            ->addMethods(['del'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -247,7 +247,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['del'])
+            ->addMethods(['del'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -268,7 +268,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['del'])
+            ->addMethods(['del'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -289,7 +289,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['del'])
+            ->addMethods(['del'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -310,7 +310,7 @@ class RedisAdapterTest extends TestCase
     {
         $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->setMethods(['flushAll'])
+            ->addMethods(['flushAll'])
             ->getMock();
 
         $clientMock->expects($this->once())
@@ -333,7 +333,7 @@ class RedisAdapterTest extends TestCase
     {
         return $this->getMockBuilder(RedisAdapter::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setNamespace'])
+            ->onlyMethods(['setNamespace'])
             ->getMock();
     }
 }

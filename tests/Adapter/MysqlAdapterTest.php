@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use Linio\Component\Cache\Exception\InvalidConfigurationException;
+use Linio\Component\Cache\Exception\KeyNotFoundException;
 use Linio\Component\Database\DatabaseManager;
 use PHPUnit\Framework\TestCase;
 
@@ -19,7 +20,7 @@ class MysqlAdapterTest extends TestCase
     {
         $this->adapter = $this->getMockBuilder(MysqlAdapter::class)
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods([])
             ->getMock();
         $this->adapter->setNamespace(static::TEST_NAMESPACE);
     }
@@ -133,7 +134,7 @@ class MysqlAdapterTest extends TestCase
 
     public function testIsGettingNonexistentKey(): void
     {
-        $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
+        $this->expectException(KeyNotFoundException::class);
 
         $expectedQuery = sprintf('SELECT `value` FROM `%s` WHERE `key` = :key LIMIT 1', self::TABLE_NAME);
 
@@ -145,7 +146,7 @@ class MysqlAdapterTest extends TestCase
         $this->adapter->setDbManager($mockDb);
         $this->adapter->setTableName(self::TABLE_NAME);
 
-        $actual = $this->adapter->get('foo');
+        $this->adapter->get('foo');
     }
 
     public function testIsFindingKey(): void
