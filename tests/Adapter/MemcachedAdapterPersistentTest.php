@@ -15,7 +15,7 @@ class MemcachedAdapterPersistentTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->adapter = $this->getMockBuilder('Linio\Component\Cache\Adapter\MemcachedAdapter')
+        $this->adapter = $this->getMockBuilder(MemcachedAdapter::class)
             ->disableOriginalConstructor()
             ->setMethods(['setNamespace', 'flush', 'set', 'get', 'delete', 'contains', 'getMulti', 'setMulti', 'deleteMulti'])
             ->getMock();

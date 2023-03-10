@@ -13,7 +13,7 @@ class WincacheAdapterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->adapter = $this->getMockBuilder('Linio\Component\Cache\Adapter\WinCacheAdapter')
+        $this->adapter = $this->getMockBuilder(WincacheAdapter::class)
             ->disableOriginalConstructor()
             ->setMethods(['setNamespace', 'set', 'get', 'delete', 'contains', 'flush', 'getMulti', 'setMulti', 'deleteMulti'])
             ->getMock();

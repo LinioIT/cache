@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace Linio\Component\Cache\Adapter;
 
 use PHPUnit\Framework\TestCase;
+use Predis\Client;
+use Predis\Command\Processor\KeyPrefixProcessor;
+use Predis\Configuration\Options;
 use Predis\Response\Status;
 
 class RedisAdapterTest extends TestCase
 {
     public function testIsSettingNamespace(): void
     {
-        $clientMock = $this->prophesize('Predis\Client');
-        $processorMock = $this->prophesize('Predis\Command\Processor\KeyPrefixProcessor');
-        $optionsMock = $this->prophesize('Predis\Configuration\Options');
+        $clientMock = $this->prophesize(Client::class);
+        $processorMock = $this->prophesize(KeyPrefixProcessor::class);
+        $optionsMock = $this->prophesize(Options::class);
         $optionsMock->prefix = $processorMock;
 
         $redisAdapter = new RedisAdapter();
@@ -30,7 +33,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsSettingAndGettingWithTtl(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['get', 'set'])
             ->getMock();
@@ -59,7 +62,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsSettingAndGettingWithoutTtl(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['get', 'set'])
             ->getMock();
@@ -92,7 +95,7 @@ class RedisAdapterTest extends TestCase
     {
         $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
 
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['get', 'exists'])
             ->getMock();
@@ -116,7 +119,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsFindingKey(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['exists'])
             ->getMock();
@@ -137,7 +140,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsNotFindingKey(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['exists'])
             ->getMock();
@@ -158,7 +161,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsGettingMultipleKeys(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['mget'])
             ->getMock();
@@ -179,7 +182,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsGettingMultipleKeysWithInvalidKeys(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['mget'])
             ->getMock();
@@ -200,7 +203,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsSettingMultipleKeys(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['pipeline'])
             ->getMock();
@@ -221,7 +224,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsDeletingKey(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['del'])
             ->getMock();
@@ -242,7 +245,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsDeletingMultipleKeys(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['del'])
             ->getMock();
@@ -263,7 +266,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsDeletingNonexistentKey(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['del'])
             ->getMock();
@@ -284,7 +287,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsDeletingNonexistentMultipleKeys(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['del'])
             ->getMock();
@@ -305,7 +308,7 @@ class RedisAdapterTest extends TestCase
 
     public function testIsFlushingData(): void
     {
-        $clientMock = $this->getMockBuilder('\Predis\Client')
+        $clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->setMethods(['flushAll'])
             ->getMock();
@@ -328,7 +331,7 @@ class RedisAdapterTest extends TestCase
      */
     private function getRedisAdapterMock()
     {
-        return $this->getMockBuilder('Linio\Component\Cache\Adapter\RedisAdapter')
+        return $this->getMockBuilder(RedisAdapter::class)
             ->disableOriginalConstructor()
             ->setMethods(['setNamespace'])
             ->getMock();

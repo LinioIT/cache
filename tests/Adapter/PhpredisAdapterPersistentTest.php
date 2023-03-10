@@ -15,7 +15,7 @@ class PhpredisAdapterPersistentTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->adapter = $this->getMockBuilder('Linio\Component\Cache\Adapter\PhpredisAdapter')
+        $this->adapter = $this->getMockBuilder(PhpredisAdapter::class)
             ->disableOriginalConstructor()
             ->setMethods(['setNamespace', 'set', 'get', 'delete', 'contains', 'flush', 'getMulti', 'setMulti', 'deleteMulti'])
             ->getMock();

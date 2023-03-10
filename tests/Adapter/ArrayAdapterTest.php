@@ -25,7 +25,7 @@ class ArrayAdapterTest extends TestCase
 
     public function testIsGettingNonexistentKey(): void
     {
-        $this->expectException(\Linio\Component\Cache\Exception\KeyNotFoundException::class);
+        $this->expectException(KeyNotFoundException::class);
 
         $adapter = new ArrayAdapter();
         $adapter->setNamespace(static::TEST_NAMESPACE);

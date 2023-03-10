@@ -13,7 +13,7 @@ class ApcuAdapterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->adapter = $this->getMockBuilder('Linio\Component\Cache\Adapter\ApcuAdapter')
+        $this->adapter = $this->getMockBuilder(ApcuAdapter::class)
             ->disableOriginalConstructor()
             ->setMethods(['setNamespace', 'set', 'get', 'delete', 'contains', 'flush', 'getMulti', 'setMulti', 'deleteMulti'])
             ->getMock();

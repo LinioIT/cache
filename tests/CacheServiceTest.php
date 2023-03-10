@@ -50,7 +50,7 @@ class CacheServiceTest extends TestCase
             ]
         );
 
-        $this->assertInstanceOf('\Linio\Component\Cache\CacheService', $cacheService);
+        $this->assertInstanceOf(CacheService::class, $cacheService);
     }
 
     public function testIsValidatingServiceConfiguration(): void
