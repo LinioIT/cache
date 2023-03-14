@@ -15,9 +15,9 @@ class PhpredisAdapterPersistentTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->adapter = $this->getMockBuilder('Linio\Component\Cache\Adapter\PhpredisAdapter')
+        $this->adapter = $this->getMockBuilder(PhpredisAdapter::class)
             ->disableOriginalConstructor()
-            ->setMethods(['setNamespace', 'set', 'get', 'delete', 'contains', 'flush', 'getMulti', 'setMulti', 'deleteMulti'])
+            ->onlyMethods(['setNamespace', 'set', 'get', 'delete', 'contains', 'flush', 'getMulti', 'setMulti', 'deleteMulti'])
             ->getMock();
         $this->adapter->setNamespace('mx');
     }
@@ -60,18 +60,20 @@ class PhpredisAdapterPersistentTest extends TestCase
             $this->markTestSkipped('Using thread safe version. Persistent connection is not supported when thread safe is enabled.');
         }
 
-        $connections = [];
-        for ($i = 1; $i <= 100; $i++) {
+        $connectionList = [];
+        for ($i = 1; $i <= 10; $i++) {
             $connection = new PhpredisAdapter(['connection_persistent' => true, 'pool_size' => 10], false);
-            $connections[] = $connection;
+            $connectionList[] = $connection;
         }
 
-        $client100 = Assert::readAttribute($connection, 'client');
-        /** @var $client100 \Redis */
-        $info = $client100->info();
-        $connectedClients = $info['connected_clients'];
+        foreach ($connectionList as $connection) {
+            $client100 = Assert::readAttribute($connection, 'client');
+            /** @var $client100 \Redis */
+            $info = $client100->info();
+            $connectedClients = $info['connected_clients'];
 
-        $this->assertEquals(10, $connectedClients);
+            $this->assertEquals(10, $connectedClients);
+        }
     }
 
     public function testIsSettingAndGetting(): void

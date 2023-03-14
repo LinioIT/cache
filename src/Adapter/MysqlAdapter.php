@@ -42,6 +42,8 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
     }
 
     /**
+     * @throws KeyNotFoundException when the key does not exist
+     *
      * @return mixed
      */
     public function get(string $key)
