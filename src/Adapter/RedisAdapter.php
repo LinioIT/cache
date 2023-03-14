@@ -68,14 +68,14 @@ class RedisAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function set(string $key, $value, ?int $ttl = null): bool
     {
-        $customTll = $ttl ?? $this->ttl;
+        $customTtl = $ttl ?? $this->ttl;
 
-        if ($customTll == 0) {
+        if ($customTtl == 0) {
             /** @var Status $result */
             $result = $this->getClient()->set($key, $value);
         } else {
             /** @var Status $result */
-            $result = $this->getClient()->set($key, $value, static::EXPIRE_RESOLUTION_EX, $customTll);
+            $result = $this->getClient()->set($key, $value, static::EXPIRE_RESOLUTION_EX, $customTtl);
         }
 
         return $result->getPayload() == 'OK';
