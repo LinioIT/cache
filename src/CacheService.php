@@ -153,7 +153,7 @@ class CacheService
 
     /**
      * @param mixed $value
-     * @param int $ttl [optional] Time To Live; store value in the cache for ttl seconds.
+     * @param int $ttl [optional] Time To Live; store value in the cache for ttl seconds
      */
     public function set(string $key, $value, ?int $ttl = null): bool
     {
