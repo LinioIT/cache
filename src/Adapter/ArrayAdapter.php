@@ -44,8 +44,9 @@ class ArrayAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @param mixed $value
+     * @param ?int $ttl it does not have effect here
      */
-    public function set(string $key, $value): bool
+    public function set(string $key, $value, ?int $ttl = null): bool
     {
         $this->cacheData[$this->addNamespaceToKey($key)] = $value;
 

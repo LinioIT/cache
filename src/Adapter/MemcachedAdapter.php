@@ -78,9 +78,9 @@ class MemcachedAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @param mixed $value
      */
-    public function set(string $key, $value): bool
+    public function set(string $key, $value, ?int $ttl = null): bool
     {
-        return $this->memcached->set($key, $value, $this->ttl);
+        return $this->memcached->set($key, $value, $ttl ?? $this->ttl);
     }
 
     public function setMulti(array $data): bool

@@ -72,8 +72,9 @@ class MysqlAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @param mixed $value
+     * @param ?int $ttl it does not have effect here
      */
-    public function set(string $key, $value): bool
+    public function set(string $key, $value, ?int $ttl = null): bool
     {
         $sql = sprintf('INSERT INTO `%s` (`key`, `value`) VALUES(:key, :value) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)', $this->tableName);
 

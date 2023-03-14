@@ -24,7 +24,7 @@ class PhpredisAdapterTest extends TestCase
     {
         $this->adapter->expects($this->once())
             ->method('set')
-            ->with($this->equalTo('foo'))
+            ->with($this->equalTo('foo'), $this->equalTo('bar'))
             ->willReturn(true);
 
         $this->adapter->expects($this->once())
@@ -33,6 +33,25 @@ class PhpredisAdapterTest extends TestCase
             ->willReturn('bar');
 
         $setResult = $this->adapter->set('foo', 'bar');
+        $actual = $this->adapter->get('foo');
+
+        $this->assertTrue($setResult);
+        $this->assertEquals('bar', $actual);
+    }
+
+    public function testIsSettingWithCustomTtlAndGetting(): void
+    {
+        $this->adapter->expects($this->once())
+            ->method('set')
+            ->with($this->equalTo('foo'), $this->equalTo('bar'), 60)
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willReturn('bar');
+
+        $setResult = $this->adapter->set('foo', 'bar', 60);
         $actual = $this->adapter->get('foo');
 
         $this->assertTrue($setResult);

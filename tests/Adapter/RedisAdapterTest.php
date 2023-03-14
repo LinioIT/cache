@@ -60,6 +60,35 @@ class RedisAdapterTest extends TestCase
         $this->assertEquals('bar', $actual);
     }
 
+    public function testIsSettingAndGettingWithCustomTtl(): void
+    {
+        $clientMock = $this->getMockBuilder(Client::class)
+            ->disableOriginalConstructor()
+            ->addMethods(['get', 'set'])
+            ->getMock();
+
+        $clientMock->expects($this->once())
+            ->method('set')
+            ->with($this->equalTo('foo'), $this->equalTo('bar'), $this->equalTo(RedisAdapter::EXPIRE_RESOLUTION_EX), 30)
+            ->willReturn(new Status('OK'));
+
+        $clientMock->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willReturn('bar');
+
+        $adapter = $this->getRedisAdapterMock();
+        $adapter->setClient($clientMock);
+        $adapter->setNamespace('mx');
+        $adapter->setTtl(60);
+
+        $setResult = $adapter->set('foo', 'bar', 30);
+        $actual = $adapter->get('foo');
+
+        $this->assertTrue($setResult);
+        $this->assertEquals('bar', $actual);
+    }
+
     public function testIsSettingAndGettingWithoutTtl(): void
     {
         $clientMock = $this->getMockBuilder(Client::class)

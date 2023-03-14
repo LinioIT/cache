@@ -47,9 +47,9 @@ class ApcuAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @param mixed $value
      */
-    public function set(string $key, $value): bool
+    public function set(string $key, $value, ?int $ttl = null): bool
     {
-        return apcu_store($this->addNamespaceToKey($key), $value, $this->ttl);
+        return apcu_store($this->addNamespaceToKey($key), $value, $ttl ?? $this->ttl);
     }
 
     public function setMulti(array $data): bool
