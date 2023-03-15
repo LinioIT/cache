@@ -39,6 +39,25 @@ class ApcuAdapterTest extends TestCase
         $this->assertEquals('bar', $actual);
     }
 
+    public function testIsSettingWithCustomTtlAndGetting(): void
+    {
+        $this->adapter->expects($this->once())
+            ->method('set')
+            ->with($this->equalTo('foo'), $this->equalTo('bar'), 20)
+            ->willReturn(true);
+
+        $this->adapter->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('foo'))
+            ->willReturn('bar');
+
+        $setResult = $this->adapter->set('foo', 'bar', 20);
+        $actual = $this->adapter->get('foo');
+
+        $this->assertTrue($setResult);
+        $this->assertEquals('bar', $actual);
+    }
+
     public function testIsGettingNonexistentKey(): void
     {
         $this->adapter->expects($this->once())

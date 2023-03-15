@@ -67,13 +67,15 @@ class PhpredisAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @param mixed $value
      */
-    public function set(string $key, $value): bool
+    public function set(string $key, $value, ?int $ttl = null): bool
     {
-        if ($this->ttl === null) {
+        $customTtl = $ttl ?? $this->ttl;
+
+        if ($customTtl === null) {
             $result = $this->getClient()->set($key, $value);
         } else {
             /** @var string $value */
-            $result = $this->getClient()->setex($key, $this->ttl, $value);
+            $result = $this->getClient()->setex($key, $customTtl, $value);
         }
 
         return (bool) $result;

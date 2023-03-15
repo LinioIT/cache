@@ -121,11 +121,14 @@ $app['cache.service']->set('foo', 'bar');
      /**
      * @param string $key
      * @param string $value
+     * @param ?int $ttl Time To Live; store value in the cache for ttl seconds.
+     * This ttl overwrites the configuration ttl of the adapter
      * @return bool
      */
-    public function set($key, $value);
+    public function set(string $key, $value, ?int $ttl = null);
 
     $adapter->set('foo', 'bar');
+    $adapter->set('foo', 'bar', 60); // store bar in the cache for 60 seconds
 
 ```
 

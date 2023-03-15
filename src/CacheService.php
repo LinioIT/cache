@@ -153,18 +153,19 @@ class CacheService
 
     /**
      * @param mixed $value
+     * @param int $ttl [optional] Time To Live; store value in the cache for ttl seconds
      */
-    public function set(string $key, $value): bool
+    public function set(string $key, $value, ?int $ttl = null): bool
     {
         $value = $this->encoder->encode($value);
 
-        return $this->recursiveSet($key, $value);
+        return $this->recursiveSet($key, $value, null, $ttl);
     }
 
     /**
      * @param mixed $value
      */
-    protected function recursiveSet(string $key, $value, int $level = null): bool
+    protected function recursiveSet(string $key, $value, int $level = null, ?int $ttl = null): bool
     {
         $adapterStack = $this->getAdapterStack();
 
@@ -173,7 +174,7 @@ class CacheService
         }
 
         $adapter = $adapterStack[$level];
-        $result = $adapter->set($key, $value);
+        $result = $adapter->set($key, $value, $ttl);
 
         if ($level == 0) {
             return true;
@@ -183,7 +184,7 @@ class CacheService
             return false;
         }
 
-        return $this->recursiveSet($key, $value, $level - 1);
+        return $this->recursiveSet($key, $value, $level - 1, $ttl);
     }
 
     public function setMulti(array $data): bool
