@@ -9,7 +9,7 @@
     "psr/log": "^1.0.1 || ^2.0 || ^3.0",
     "linio/util": "^4.0",
     "linio/database": "^5.1.0",
-    "predis/predis": "^1.0",
+    "predis/predis": "^1.0 || ^2.0",
     "doctrine/inflector": "^2.0"
   },
   "require-dev": {
